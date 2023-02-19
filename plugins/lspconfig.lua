@@ -3,7 +3,19 @@ local capabilities = require("plugins.configs.lspconfig").capabilities
 
 local lspconfig = require "lspconfig"
 -- local servers = { "html", "cssls", "tsserver", "eslint", "pylsp", "bashls", "sumneko_lua", "jsonls", "yamlls" }
-local servers = { "html", "cssls", "tsserver", "pylsp", "bashls", "sumneko_lua", "jsonls", "yamlls", "marksman" }
+local servers = {
+  "html",
+  "cssls",
+  "tsserver",
+  "pyright",
+  "bashls",
+  "jsonls",
+  "yamlls",
+  "marksman",
+  "texlab",
+  "lua_ls",
+  "grammarly",
+}
 
 -- Neodev Setup
 require("neodev").setup()

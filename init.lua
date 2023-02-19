@@ -31,6 +31,8 @@ for _, plugin in pairs(enable_providers) do
   vim.cmd("runtime " .. plugin)
 end
 
+g.matchup_matchparen_offscreen = { method = "popup" }
+
 g.mkdp_auto_start = 0
 g.vim_markdown_math = 1
 
@@ -49,8 +51,7 @@ g.luasnippets_path = vim.fn.stdpath "config" .. "/lua/custom/snippets/LuaSnip"
 --   vim.fn.stdpath "data" .. "/site/pack/packer/start/vim-snippets/UltiSnips/",
 --   vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/",
 -- }
-
-opt.conceallevel = 1
+opt.conceallevel = 2
 
 api.nvim_command "autocmd FileType markdown setlocal spell"
 api.nvim_command "autocmd FileType markdown set spelllang=en_gb"
@@ -64,3 +65,4 @@ api.nvim_command "autocmd BufWritePre *.ts lua vim.lsp.buf.format()"
 api.nvim_command "autocmd BufWritePre *.sh lua vim.lsp.buf.format()"
 api.nvim_command "autocmd BufWritePre *.md lua vim.lsp.buf.format()"
 api.nvim_command "autocmd BufWritePre *.lua lua vim.lsp.buf.format()"
+api.nvim_command "autocmd BufWritePre *.yml lua vim.lsp.buf.format()"

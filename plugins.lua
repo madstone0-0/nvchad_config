@@ -8,6 +8,14 @@ return {
     end,
   },
 
+  ["nvim-treesitter/nvim-treesitter"] = {
+    override_options = {
+      matchup = {
+        enable = true,
+      },
+    },
+  },
+
   ["williamboman/mason.nvim"] = {
     override_options = {
       ensure_installed = {
@@ -47,41 +55,6 @@ return {
     end,
   },
 
-  ["hrsh7th/nvim-cmp"] = {
-    override_options = function()
-      local cmp = require "cmp"
-
-      -- local cmp_ultisnips_mappings = require "cmp_nvim_ultisnips.mappings"
-      return {
-        mapping = {
-          ["<Tab>"] = cmp.mapping(function(fallback)
-            -- local copilot_keys = vim.fn["copilot#Accept"]()
-            if cmp.visible() then
-              cmp.select_next_item()
-            elseif require("luasnip").expand_or_jumpable() then
-              vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
-            -- elseif require("cmp_nvim_ultisnips").expand_or_jumpable() then
-            --   cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
-            -- elseif copilot_keys ~= "" and type(copilot_keys) == "string" then
-            --   vim.api.nvim_feedkeys(copilot_keys, "i", true)
-            else
-              fallback()
-            end
-          end, {
-            "i",
-            "s",
-          }),
-        },
-        -- formatters = {
-        --   insert_text = require("copilot_cmp.format").remove_existing,
-        -- },
-        -- sources = {
-        --   { name = "copilot" },
-        -- },
-      }
-    end,
-  },
-
   ["quangnguyen30192/cmp-nvim-ultisnips"] = {
     config = function()
       require("cmp_nvim_ultisnips").setup {}
@@ -91,11 +64,32 @@ return {
   ["nvim-tree/nvim-tree.lua"] = {
     override_options = {
       filters = {
-        exclude = { vim.fn.getcwd() .. "/node_modules/" },
+        exclude = { vim.fn.stdpath "config" },
+        custom = { vim.fn.getcwd() .. "/node_modules/" },
       },
       git = {
         enable = true,
-        ignore = false,
+      },
+
+      trash = {
+        cmd = "del",
+      },
+
+      renderer = {
+        -- highlight_git = true,
+
+        icons = {
+          show = {
+            git = true,
+          },
+        },
+
+        special_files = {
+          "README.md",
+          "readme.md",
+          "package.json",
+          "yarn.lock",
+        },
       },
     },
   },
@@ -112,7 +106,6 @@ return {
 
   ["junegunn/fzf.vim"] = {},
 
-  -- ["luochen1990/rainbow"] = {},
   ["godlygeek/tabular"] = {},
 
   ["preservim/vim-markdown"] = {},
@@ -175,6 +168,10 @@ return {
     end,
   },
 
+  -- ["mxsdev/nvim-dap-vscode-js"] = {
+  --   requires = "mfussenegger/nvim-dap",
+  -- },
+
   ["smjonas/snippet-converter.nvim"] = {
     config = function()
       local template = {
@@ -197,6 +194,12 @@ return {
     end,
   },
 
+  -- ["vim-pandoc/vim-pandoc"] = {},
+  --
+  -- ["vim-pandoc/vim-pandoc-syntax"] = {
+  --   after = "vim-pandoc",
+  -- },
+
   -- ["puremourning/vimspector"] = {},
 
   ["lukas-reineke/indent-blankline.nvim"] = {
@@ -215,14 +218,6 @@ return {
   },
 
   ["andymass/vim-matchup"] = {},
-
-  ["nvim-treesitter/nvim-treesitter"] = {
-    override_options = {
-      matchup = {
-        enabled = true,
-      },
-    },
-  },
 
   ["NvChad/ui"] = {
     override_options = {

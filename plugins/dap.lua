@@ -1,6 +1,15 @@
 local M = {}
 
-local present, dap_python = pcall(require, "dap-python")
+local python_present, dap_python = pcall(require, "dap-python")
+local dap_present, dap = pcall(require, "dap")
+
+if not dap_present then
+  function M.setup()
+    print "DAP not loaded"
+  end
+
+  return M
+end
 
 local function configure()
   local dap_breakpoint = {
@@ -57,7 +66,7 @@ local function configure_exts()
           },
         },
         position = "left",
-        size = 40,
+        size = 35,
       },
       {
         elements = {
@@ -74,7 +83,7 @@ local function configure_exts()
         size = 10,
       },
     },
-  } -- use default
+  }
   dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
   end
@@ -87,13 +96,13 @@ local function configure_exts()
 end
 
 local function configure_debuggers()
-  if present then
+  if python_present then
     require("custom.plugins.python_dap").setup()
   end
 end
 
 function M.setup()
-  if present then
+  if python_present then
     configure() -- Configuration
     configure_exts() -- Extensions
     configure_debuggers() -- Debugger

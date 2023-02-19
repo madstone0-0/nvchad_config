@@ -6,7 +6,7 @@ M.short = {
     ["<leader>rg"] = { "<cmd> :Rg <CR>", "Search with rg" },
     ["<leader>pr"] = { "<Plug>MarkdownPreview" },
     ["<leader>ul"] = { "<cmd> :UltiSnipsEdit <CR>", "Edit snippets" },
-    ["<leader>re"] = { "<cmd> :source ~/.config/nvim/lua/custom/init.lua <CR>", "Source config" },
+    ["<leader>tc"] = { "<cmd> :Telescope <CR> ", "Telescope window" },
     ["<F5>"] = { "<cmd> DapContinue <CR>", "Debugger continue" },
     ["<F10>"] = { "<cmd> DapStepOver <CR>", "Debugger step over" },
     ["<S-F11>"] = { "<cmd> DapStepInto <CR>", "Debugger step into" },
@@ -30,6 +30,7 @@ M.short = {
 
   i = {
     ["<C-l>"] = { "<c-g>u<Esc>[s1z=`]a<c-g>u", "Spell check" },
+    ["jj"] = { "<Esc>", "Escape" },
   },
 }
 
