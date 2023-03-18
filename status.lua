@@ -1,15 +1,11 @@
 local st_modules = require "nvchad_ui.statusline.modules"
 
--- local function human_readable(size)
---   local bytes = size
---   local sizes = {"B", "KiB", "MiB", "GiB"}
---   local i = 0
---   while bytes >= 1024 do
---     bytes = bytes / 1024.0
---     i += 1
+-- local function CurrentVistaFunction()
+--   local method = vim.fn["vista#GetCurrentMethod"]()
+--   if method ~= "" then
+--     return "  " .. method
 --   end
---   return p
---
+--   return method
 -- end
 
 return {

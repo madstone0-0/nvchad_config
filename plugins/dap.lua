@@ -39,59 +39,64 @@ local function configure()
 end
 
 local function configure_exts()
-  require("nvim-dap-virtual-text").setup {
-    commented = true,
-  }
+  local dap_virtual_present, dap_virtual = pcall(require, "nvim-dap-virtual-text")
+  if dap_virtual_present then
+    dap_virtual.setup {
+      commented = true,
+    }
+  end
 
-  local dap, dapui = require "dap", require "dapui"
-  dapui.setup {
-    layouts = {
-      {
-        elements = {
-          {
-            id = "scopes",
-            size = 0.25,
+  local dapui_present, dapui = pcall(require, "dapui")
+  if dapui_present then
+    dapui.setup {
+      layouts = {
+        {
+          elements = {
+            {
+              id = "scopes",
+              size = 0.25,
+            },
+            {
+              id = "breakpoints",
+              size = 0.25,
+            },
+            {
+              id = "stacks",
+              size = 0.25,
+            },
+            {
+              id = "watches",
+              size = 0.25,
+            },
           },
-          {
-            id = "breakpoints",
-            size = 0.25,
-          },
-          {
-            id = "stacks",
-            size = 0.25,
-          },
-          {
-            id = "watches",
-            size = 0.25,
-          },
+          position = "left",
+          size = 35,
         },
-        position = "left",
-        size = 35,
-      },
-      {
-        elements = {
-          {
-            id = "repl",
-            size = 0.5,
+        {
+          elements = {
+            {
+              id = "repl",
+              size = 0.5,
+            },
+            {
+              id = "console",
+              size = 0.7,
+            },
           },
-          {
-            id = "console",
-            size = 0.7,
-          },
+          position = "bottom",
+          size = 10,
         },
-        position = "bottom",
-        size = 10,
       },
-    },
-  }
-  dap.listeners.after.event_initialized["dapui_config"] = function()
-    dapui.open()
-  end
-  dap.listeners.before.event_terminated["dapui_config"] = function()
-    dapui.close()
-  end
-  dap.listeners.before.event_exited["dapui_config"] = function()
-    dapui.close()
+    }
+    dap.listeners.after.event_initialized["dapui_config"] = function()
+      dapui.open()
+    end
+    dap.listeners.before.event_terminated["dapui_config"] = function()
+      dapui.close()
+    end
+    dap.listeners.before.event_exited["dapui_config"] = function()
+      dapui.close()
+    end
   end
 end
 
@@ -99,14 +104,14 @@ local function configure_debuggers()
   if python_present then
     require("custom.plugins.python_dap").setup()
   end
+  require("custom.plugins.cpp_dap").setup()
 end
 
 function M.setup()
-  if python_present then
-    configure() -- Configuration
-    configure_exts() -- Extensions
-    configure_debuggers() -- Debugger
-  end
+  configure() -- Configuration
+  configure_exts() -- Extensions
+  configure_debuggers() -- Debugger
+  -- end
 end
 
 configure_debuggers()

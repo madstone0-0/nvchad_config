@@ -1,5 +1,6 @@
 return {
-  ["wakatime/vim-wakatime"] = {},
+
+  -- Overrides
 
   ["neovim/nvim-lspconfig"] = {
     config = function()
@@ -55,12 +56,6 @@ return {
     end,
   },
 
-  ["quangnguyen30192/cmp-nvim-ultisnips"] = {
-    config = function()
-      require("cmp_nvim_ultisnips").setup {}
-    end,
-  },
-
   ["nvim-tree/nvim-tree.lua"] = {
     override_options = {
       filters = {
@@ -94,6 +89,72 @@ return {
     },
   },
 
+  ["folke/which-key.nvim"] = {
+    disable = false,
+  },
+
+  ["goolord/alpha-nvim"] = {
+    disable = false,
+  },
+
+  ["mfussenegger/nvim-dap"] = {
+    disable = false,
+    opt = true,
+    event = "BufReadPre",
+    module = { "dap" },
+    requires = {
+      "mfussenegger/nvim-dap-python",
+      "theHamsta/nvim-dap-virtual-text",
+      "rcarriga/nvim-dap-ui",
+      "nvim-telescope/telescope-dap.nvim",
+    },
+    config = function()
+      require("custom.plugins.dap").setup()
+    end,
+  },
+
+  ["lukas-reineke/indent-blankline.nvim"] = {
+    override_options = {
+      char = "",
+      char_highlight_list = {
+        "IndentBlanklineIndent1",
+        "IndentBlanklineIndent2",
+      },
+      space_char_highlight_list = {
+        "IndentBlanklineIndent1",
+        "IndentBlanklineIndent2",
+      },
+      show_trailing_blankline_indent = false,
+    },
+  },
+
+  ["NvChad/ui"] = {
+    override_options = {
+      statusline = {
+        separator_style = "round",
+        overriden_modules = function()
+          return require "custom.status"
+        end,
+      },
+
+      tabufline = {
+        enabled = true,
+        lazyload = true,
+        overriden_modules = nil,
+      },
+    },
+  },
+
+  -- User Plugins
+
+  ["wakatime/vim-wakatime"] = {},
+
+  ["quangnguyen30192/cmp-nvim-ultisnips"] = {
+    config = function()
+      require("cmp_nvim_ultisnips").setup {}
+    end,
+  },
+
   ["junegunn/fzf"] = {
     run = ":call fzf#install()",
   },
@@ -122,55 +183,9 @@ return {
 
   ["github/copilot.vim"] = {},
 
-  -- ["zbirenbaum/copilot.lua"] = {
-  --   cmd = "Copilot",
-  --   event = "InsertEnter",
-  --   config = function()
-  --     require("copilot").setup {
-  --       suggestion = { enabled = false },
-  --       panel = { enabled = false },
-  --     }
-  --   end,
-  -- },
-  --
-  -- ["zbirenbaum/copilot-cmp"] = {
-  --   after = { "copilot.lua", "nvim-cmp" },
-  --   config = function()
-  --     require("copilot_cmp").setup()
-  --   end,
-  -- },
-
-  ["folke/which-key.nvim"] = {
-    disable = false,
-  },
-
   ["folke/neodev.nvim"] = {
     library = { plugins = { "nvim-dap-ui" }, types = true },
   },
-
-  ["goolord/alpha-nvim"] = {
-    disable = false,
-  },
-
-  ["mfussenegger/nvim-dap"] = {
-    disable = false,
-    opt = true,
-    event = "BufReadPre",
-    module = { "dap" },
-    requires = {
-      "mfussenegger/nvim-dap-python",
-      "theHamsta/nvim-dap-virtual-text",
-      "rcarriga/nvim-dap-ui",
-      "nvim-telescope/telescope-dap.nvim",
-    },
-    config = function()
-      require("custom.plugins.dap").setup()
-    end,
-  },
-
-  -- ["mxsdev/nvim-dap-vscode-js"] = {
-  --   requires = "mfussenegger/nvim-dap",
-  -- },
 
   ["smjonas/snippet-converter.nvim"] = {
     config = function()
@@ -194,45 +209,26 @@ return {
     end,
   },
 
-  -- ["vim-pandoc/vim-pandoc"] = {},
-  --
-  -- ["vim-pandoc/vim-pandoc-syntax"] = {
-  --   after = "vim-pandoc",
-  -- },
+  ["derekwyatt/vim-fswitch"] = {},
 
-  -- ["puremourning/vimspector"] = {},
+  ["liuchengxu/vista.vim"] = {},
 
-  ["lukas-reineke/indent-blankline.nvim"] = {
-    override_options = {
-      char = "",
-      char_highlight_list = {
-        "IndentBlanklineIndent1",
-        "IndentBlanklineIndent2",
-      },
-      space_char_highlight_list = {
-        "IndentBlanklineIndent1",
-        "IndentBlanklineIndent2",
-      },
-      show_trailing_blankline_indent = false,
-    },
-  },
+  ["ludovicchabant/vim-gutentags"] = {},
+
+  ["jackguo380/vim-lsp-cxx-highlight"] = {},
+
+  -- ["m-pilia/vim-ccls"] = {},
 
   ["andymass/vim-matchup"] = {},
 
-  ["NvChad/ui"] = {
-    override_options = {
-      statusline = {
-        separator_style = "round",
-        overriden_modules = function()
-          return require "custom.status"
-        end,
-      },
-
-      tabufline = {
-        enabled = true,
-        lazyload = true,
-        overriden_modules = nil,
-      },
+  ["folke/trouble.nvim"] = {
+    requires = "nvim-tree/nvim-web-devicons",
+    config = {
+      require("trouble").setup {},
     },
   },
+
+  -- ["numirias/semshi"] = {
+  --   run = ":UpdateRemotePlugins",
+  -- },
 }
