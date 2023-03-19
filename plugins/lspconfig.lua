@@ -1,7 +1,33 @@
 local on_attach = require("plugins.configs.lspconfig").on_attach
 local capabilities = require("plugins.configs.lspconfig").capabilities
 local utils = require "core.utils"
+-- local navic = require "nvim-navic"
 -- capabilities.offsetEncoding = "utf-8"
+
+local user_attach = function(client, bufnr)
+  local cs = client.server_capabilities
+  cs.documentFormattingProvider = false
+  cs.documentRangeFormattingProvider = false
+
+  utils.load_mappings("lspconfig", { buffer = bufnr })
+
+  if cs.signatureHelpProvider then
+    require("nvchad_ui.signature").setup(client)
+  end
+
+  if client.name == "ruff_lsp" then
+    cs.hover = false
+  end
+
+  if client.name == "pyright" then
+    cs.rename = false
+    cs.signatureHelp = false
+  end
+
+  -- if cs.documentSymbolProvider then
+  --   navic.attach(client, bufnr)
+  -- end
+end
 
 local lspconfig = require "lspconfig"
 -- local servers = { "html", "cssls", "tsserver", "eslint", "pylsp", "bashls", "sumneko_lua", "jsonls", "yamlls" }
@@ -23,7 +49,7 @@ local servers = {
 require("neodev").setup()
 
 lspconfig.ccls.setup {
-  on_attach = on_attach,
+  on_attach = user_attach,
   capabilities = capabilities,
   offset_encoding = "utf-8",
   init_options = {
@@ -32,27 +58,6 @@ lspconfig.ccls.setup {
     },
   },
 }
-
-local user_attach = function(client, bufnr)
-  local sc = client.server_capabilities
-  sc.documentFormattingProvider = false
-  sc.documentRangeFormattingProvider = false
-
-  utils.load_mappings("lspconfig", { buffer = bufnr })
-
-  if client.server_capabilities.signatureHelpProvider then
-    require("nvchad_ui.signature").setup(client)
-  end
-
-  if client.name == "ruff_lsp" then
-    sc.hover = false
-  end
-
-  if client.name == "pyright" then
-    sc.rename = false
-    sc.signatureHelp = false
-  end
-end
 
 lspconfig.ruff_lsp.setup {
   on_attach = user_attach,

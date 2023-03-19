@@ -30,6 +30,7 @@ local sources = {
 
   -- yaml
   b.formatting.yamlfmt,
+  b.diagnostics.yamllint,
 
   -- markdown
   -- b.diagnostics.markdownlint,

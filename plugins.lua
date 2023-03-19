@@ -28,6 +28,8 @@ return {
         "css-lsp",
         "html-lsp",
         "typescript-language-server",
+        "eslint_d",
+        "prettier",
         "json-lsp",
 
         -- shell
@@ -37,14 +39,21 @@ return {
 
         --python
         "black",
-        "pylint",
+        "ruff",
         "python-lsp-server",
-        "mypy",
+        "pyright",
+        "ruff-lsp",
+        "debugpy",
 
         -- markdown
         "remark-cli",
-        "markdownlint",
+        "cbfmt",
+        "cspell",
         "marksman",
+
+        -- c++
+        "clang-format",
+        "cpptools",
       },
     },
   },
@@ -160,6 +169,7 @@ return {
   },
 
   ["iamcco/markdown-preview.nvim"] = {
+    cmd = "MarkdownPreview",
     run = function()
       vim.fn["mkdp#util#install"]()
     end,
@@ -169,7 +179,15 @@ return {
 
   ["godlygeek/tabular"] = {},
 
-  ["preservim/vim-markdown"] = {},
+  ["preservim/vim-markdown"] = {
+    cond = function()
+      if vim.fn.expand "%:e" == "md" then
+        return true
+      else
+        return false
+      end
+    end,
+  },
 
   ["sheerun/vim-polyglot"] = {},
 
@@ -177,9 +195,25 @@ return {
 
   ["honza/vim-snippets"] = {},
 
-  ["lervag/vimtex"] = {},
+  ["lervag/vimtex"] = {
+    cond = function()
+      if vim.fn.expand "%:e" == "md" or vim.fn.expand "%:e" == "tex" then
+        return true
+      else
+        return false
+      end
+    end,
+  },
 
-  ["KeitaNakamura/tex-conceal.vim"] = {},
+  ["KeitaNakamura/tex-conceal.vim"] = {
+    cond = function()
+      if vim.fn.expand "%:e" == "md" or vim.fn.expand "%:e" == "tex" then
+        return true
+      else
+        return false
+      end
+    end,
+  },
 
   ["github/copilot.vim"] = {},
 
@@ -187,48 +221,129 @@ return {
     library = { plugins = { "nvim-dap-ui" }, types = true },
   },
 
-  ["smjonas/snippet-converter.nvim"] = {
-    config = function()
-      local template = {
-        sources = {
-          ultisnips = {
-            vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/markdown.snippets",
-          },
-        },
+  -- ["smjonas/snippet-converter.nvim"] = {
+  --   cmd = "ConvertSnippets",
+  --   config = function()
+  --     local template = {
+  --       sources = {
+  --         ultisnips = {
+  --           vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/markdown.snippets",
+  --         },
+  --       },
+  --
+  --       output = {
+  --         vscode_luasnip = {
+  --           vim.fn.stdpath "config" .. "/lua/custom/snippets/LuaSnip",
+  --         },
+  --       },
+  --     }
+  --
+  --     require("snippet_converter").setup {
+  --       templates = { template },
+  --     }
+  --   end,
+  -- },
 
-        output = {
-          vscode_luasnip = {
-            vim.fn.stdpath "config" .. "/lua/custom/snippets/LuaSnip",
-          },
-        },
-      }
+  ["derekwyatt/vim-fswitch"] = {
+    cmd = { "FSSplitBelow" },
+  },
 
-      require("snippet_converter").setup {
-        templates = { template },
-      }
+  ["liuchengxu/vista.vim"] = {
+    -- cmd = { "Vista!!", "Vista" },
+  },
+
+  ["ludovicchabant/vim-gutentags"] = {
+    cond = function()
+      if vim.fn.expand "%:e" == "cpp" or vim.fn.expand "%:e" == "h" or vim.fn.expand "%:e" == "c" then
+        return true
+      else
+        return false
+      end
     end,
   },
 
-  ["derekwyatt/vim-fswitch"] = {},
+  ["jackguo380/vim-lsp-cxx-highlight"] = {
 
-  ["liuchengxu/vista.vim"] = {},
-
-  ["ludovicchabant/vim-gutentags"] = {},
-
-  ["jackguo380/vim-lsp-cxx-highlight"] = {},
+    -- cond = function()
+    --   if vim.fn.expand "%:e" == "cpp" or vim.fn.expand "%:e" == "h" then
+    --     return true
+    --   else
+    --     return false
+    --   end
+    -- end,
+  },
 
   -- ["m-pilia/vim-ccls"] = {},
 
   ["andymass/vim-matchup"] = {},
 
   ["folke/trouble.nvim"] = {
+    cmd = { "Trouble", "TroubleToggle" },
     requires = "nvim-tree/nvim-web-devicons",
-    config = {
-      require("trouble").setup {},
-    },
+    config = function()
+      require("trouble").setup {}
+    end,
   },
 
-  -- ["numirias/semshi"] = {
-  --   run = ":UpdateRemotePlugins",
-  -- },
+  ["wellle/targets.vim"] = {},
+
+  ["edluffy/specs.nvim"] = {
+    config = function()
+      require("specs").setup {
+        show_jumps = true,
+        min_jump = 30,
+        popup = {
+          delay_ms = 0, -- delay before popup displays
+          inc_ms = 10, -- time increments used for fade/resize effects
+          blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+          width = 10,
+          winhl = "PMenu",
+          fader = require("specs").linear_fader,
+          resizer = require("specs").shrink_resizer,
+        },
+        ignore_filetypes = {},
+        ignore_buftypes = {
+          nofile = true,
+        },
+      }
+    end,
+  },
+
+  ["max397574/better-escape.nvim"] = {
+    config = function()
+      require("better_escape").setup {
+        mapping = { "jk", "jj" }, -- a table with mappings to use
+        timeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
+        clear_empty_lines = false, -- clear line after escaping if there is only whitespace
+        keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
+        -- example(recommended)
+        -- keys = function()
+        --   return vim.api.nvim_win_get_cursor(0)[2] > 1 and '<esc>l' or '<esc>'
+        -- end,
+      }
+    end,
+  },
+
+  ["CRAG666/code_runner.nvim"] = {
+    requires = "nvim-lua/plenary.nvim",
+    cmd = "RunCode",
+    config = function()
+      require("code_runner").setup {
+        filetype = {
+          python = "python3 -u",
+        },
+      }
+    end,
+  },
+
+  ["ojroques/nvim-bufdel"] = {
+    cmd = "BufDel",
+    config = function()
+      require("bufdel").setup {
+        quit = false,
+      }
+    end,
+  },
+
+  ["nvim-treesitter/nvim-treesitter-context"] = {},
 }

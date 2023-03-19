@@ -23,6 +23,13 @@ M.short = {
     ["<leader>pr"] = { "<Plug>MarkdownPreview", silent = true },
     ["<leader>ul"] = { "<cmd> :UltiSnipsEdit <CR>", "Edit snippets", silent = true },
     ["<leader>tc"] = { "<cmd> :Telescope <CR> ", "Telescope window" },
+    ["<leader>tt"] = {
+      function()
+        require("base46").toggle_transparency()
+      end,
+      "toggle transparency",
+    },
+    -- ["<leader>x"] = { "<cmd> :BufDel <CR>", "BufDel", noremap = false },
     ["<F5>"] = { "<cmd> DapContinue <CR>", "Debugger continue" },
     ["<F10>"] = { "<cmd> DapStepOver <CR>", "Debugger step over" },
     ["<F9>"] = { "<cmd> DapStepInto <CR>", "Debugger step into" },
