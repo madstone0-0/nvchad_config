@@ -20,8 +20,17 @@ M.short = {
   n = {
     ["<C-A-c>"] = { "<cmd> qall <CR>", "Close all" },
     ["<leader>rg"] = { "<cmd> :Rg <CR>", "Search with rg", silent = true },
+    -- ["<leader>s"] = { string.format("<cmd> :source %s<CR>", vim.fn.stdpath "config" .. "/init.lua"), silent = true },
+    ["<up>"] = { "<cmd> :resize -2<CR>", noremap = true },
+    ["<down>"] = { "<cmd> :resize +2<CR>", noremap = true },
+    ["<left>"] = { "<cmd> :vertical resize -2<CR>", noremap = true },
+    ["<right>"] = { "<cmd> :vertical resize +2<CR>", noremap = true },
+    [";"] = { ":", "enter cmdline", opts = { nowait = true } },
+
+    ["<leader>ll"] = { require("lsp_lines").toggle, "Toggle lsp_lines" },
+    ["<leader>lg"] = { "<cmd> :Legendary <CR>", "Legendary", silent = true },
     ["<leader>pr"] = { "<Plug>MarkdownPreview", silent = true },
-    ["<leader>ul"] = { "<cmd> :UltiSnipsEdit <CR>", "Edit snippets", silent = true },
+    ["<leader>ul"] = { "<cmd> :UltiSnipsEdit! <CR>", "Edit snippets", silent = true },
     ["<leader>tc"] = { "<cmd> :Telescope <CR> ", "Telescope window" },
     ["<leader>tt"] = {
       function()
@@ -40,7 +49,7 @@ M.short = {
       function()
         require("dap").run_last()
       end,
-      "Debugger run las config",
+      "Debugger run last config",
     },
     ["<leader>dh"] = {
       function()
@@ -48,7 +57,13 @@ M.short = {
       end,
       "Debugger ui hover",
     },
-    ["<leader>dt"] = { "<Plug>DapTerminate", "Debugger terminate" },
+    ["<leader>dt"] = { "<cmd>DapTerminate <CR>", "Debugger terminate" },
+    ["<leader>te"] = {
+      function()
+        require("neotest").run.run { strategy = "dap" }
+      end,
+      "Test nearest",
+    },
 
     ["<leader>oj"] = { "<cmd> :FSSplitBelow<CR>", "FSSplitBelow" },
     ["<leader>cv"] = { "<cmd> :Vista!!<CR>", "Vista!!" },
@@ -62,12 +77,19 @@ M.short = {
       noremap = false,
     },
 
-    ["<leader>t"] = { "<cmd> :TroubleToggle<CR>", "TroubleToggle", silent = true, noremap = true },
+    -- ["<leader>t"] = { "<cmd> :TroubleToggle<CR>", "TroubleToggle", silent = true, noremap = true },
     ["<leader>q"] = {
       "<cmd> :TroubleToggle workspace_diagnostics<CR>",
       "TroubleToggle",
       silent = true,
     },
+
+    ["<leader>rr"] = { "<cmd> :RunCode<CR>", "Run Code", slient = true },
+    ["<leader>cr"] = { "<cmd> :VimtexCompile <CR>", "Compile latex", silent = true },
+
+    ["<leader>un"] = { "<cmd> :UndotreeToggle<CR>", "Toggle undo tree", silent = true },
+
+    ["<F3>"] = { "<cmd> :set spell!<CR>", "Toggle spell check" },
   },
 
   i = {

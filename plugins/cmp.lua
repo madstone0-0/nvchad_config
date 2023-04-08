@@ -21,16 +21,17 @@ local function border(hl_name)
   }
 end
 
-local cmp_window = require "cmp.utils.window"
-
-cmp_window.info_ = cmp_window.info
-cmp_window.info = function(self)
-  local info = self:info_()
-  info.scrollable = false
-  return info
+local has_words_before = function()
+  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then
+    return false
+  end
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match "^%s*$" == nil
 end
 
-local cmp_ultisnips_mappings = require "cmp_nvim_ultisnips.mappings"
+local cmp_window = require "cmp.utils.window"
+local copilot_cmp = require "copilot_cmp.format"
+
 local options = {
   window = {
     completion = {
@@ -54,6 +55,9 @@ local options = {
       return vim_item
     end,
   },
+  formatters = {
+    insert_text = copilot_cmp.remove_existing,
+  },
   mapping = {
     ["<C-p>"] = cmp.mapping.select_prev_item(),
     ["<C-n>"] = cmp.mapping.select_next_item(),
@@ -67,12 +71,10 @@ local options = {
     },
     ["<Tab>"] = cmp.mapping(function(fallback)
       local copilot_keys = vim.fn["copilot#Accept"]()
-      if cmp.visible() then
-        cmp.select_next_item()
+      if cmp.visible() and has_words_before() then
+        cmp.select_next_item { behavior = cmp.SelectBehavior.Select }
       elseif require("luasnip").expand_or_jumpable() then
         vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-expand-or-jump", true, true, true), "")
-      elseif require("cmp_nvim_ultisnips").expand_or_jumpable() then
-        cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
       elseif copilot_keys ~= "" and type(copilot_keys) == "string" then
         vim.api.nvim_feedkeys(copilot_keys, "i", true)
       else
@@ -87,8 +89,6 @@ local options = {
         cmp.select_prev_item()
       elseif require("luasnip").jumpable(-1) then
         vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<Plug>luasnip-jump-prev", true, true, true), "")
-      elseif require("cmp_nvim_ultisnips").jumpable(-1) then
-        cmp_ultisnips_mappings.jump_backwards(fallback)
       else
         fallback()
       end
@@ -99,15 +99,12 @@ local options = {
   },
   sources = {
     { name = "luasnip" },
+    { name = "copilot" },
     { name = "nvim_lsp" },
     { name = "buffer" },
     { name = "nvim_lua" },
     { name = "path" },
-    { name = "ultisnips" },
   },
 }
 
--- check for any override
-options = require("core.utils").load_override(options, "hrsh7th/nvim-cmp")
-
-cmp.setup(options)
+return options

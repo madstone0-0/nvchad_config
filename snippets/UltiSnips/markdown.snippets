@@ -1,6 +1,5 @@
 global !p
 
-
 def math():
     return vim.eval('vimtex#syntax#in_mathzone()') == '1'
 
@@ -17,6 +16,15 @@ endglobal
 # SELF MADE #
 #############
 
+snippet menv "Math environ aligned" bA
+$$
+\begin{aligned}
+	$1
+\end{aligned}
+$$
+endsnippet
+
+context "math()"
 snippet beg "LaTex begin" bA
 \begin{$1}
 	$0
@@ -140,10 +148,10 @@ endsnippet
 
 context "math()"
 snippet ooo "Infinity" iA
-\infin
+\infty
 endsnippet
 
-
+context "math()"
 snippet == "equals" iA
 &= $1 \\\\
 endsnippet
@@ -176,5 +184,97 @@ endsnippet
 
 context "math()"
 snippet ~ "prime" iA
-\prime
+^{\prime}
 endsnippet
+
+context "math()"
+snippet 1/2 "half" iA
+\frac{1}{2}
+endsnippet
+
+context "math()"
+snippet sin "sine" iwA
+\sin($1)
+endsnippet
+
+context "math()"
+snippet tan "tangent" iwA
+\tan($1)
+endsnippet
+
+context "math()"
+snippet cos "cosine" iwA
+\cos($1)
+endsnippet
+
+context "math()"
+snippet sec "secant" iwA
+\sec($1)
+endsnippet
+
+context "math()"
+snippet csc "cosecant" iwA
+\csc($1)
+endsnippet
+
+context "math()"
+snippet cot "cotangent" iwA
+\cot($1)
+endsnippet
+
+context "math()"
+snippet +- "Plus or Minus" iA
+\pm$1
+endsnippet
+
+context "math()"
+snippet * "Times" iA
+ \times $1
+endsnippet
+
+context "math()"
+snippet teta "Theta" iA
+\theta
+endsnippet
+
+context "math()"
+snippet alp "Alpha" iwA
+\alpha
+endsnippet
+
+context "math()"
+snippet beta "Beta" iwA
+\beta
+endsnippet
+
+context "math()"
+snippet txt "text" iA
+\text{$1 }$2
+endsnippet
+
+context "math()"
+snippet there "therefore" iwA
+\therefore
+endsnippet
+
+context "math()"
+snippet in "in" iwA
+\in
+endsnippet
+
+context "math()"
+snippet diff "Dy/Dx" iA
+\frac{d}{d$1}$2
+endsnippet
+
+context "math()"
+snippet dy "Dy/Dx" iwA
+\frac{d${1}}{d${2}}$3
+endsnippet
+
+
+context "math()"
+snippet pi "Pie" iwA
+\pi $1
+endsnippet
+

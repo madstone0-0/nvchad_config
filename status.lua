@@ -8,8 +8,24 @@ local st_modules = require "nvchad_ui.statusline.modules"
 --   return method
 -- end
 
+local function customSections(sections)
+  return table.concat(sections, " ")
+end
+
+-- local function autoSession()
+--   if require("auto-session-library").current_session_name(),
+-- end
+
+local sections = {
+  -- CurrentVistaFunction(),
+}
+
 return {
   mode = function()
     return st_modules.mode()
+  end,
+
+  git = function()
+    return st_modules.git() .. " " .. customSections(sections)
   end,
 }

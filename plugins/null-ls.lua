@@ -8,9 +8,7 @@ local b = null_ls.builtins
 
 local sources = {
   -- webdev
-  b.formatting.prettier.with {
-    -- disabled_filetypes = { "markdown" },
-  },
+  b.formatting.prettier.with {},
   b.code_actions.eslint_d,
 
   -- lua
@@ -22,9 +20,6 @@ local sources = {
 
   -- python
   b.formatting.black,
-  -- b.diagnostics.flake8.with {
-  --   extra_args = { "--max-line-length=120" },
-  -- },
   b.diagnostics.ruff,
   b.formatting.ruff,
 
@@ -33,23 +28,20 @@ local sources = {
   b.diagnostics.yamllint,
 
   -- markdown
-  -- b.diagnostics.markdownlint,
-  -- b.code_actions.proselint,
   b.formatting.remark.with {
     extra_args = { "--use remark-math" },
   },
   b.formatting.cbfmt,
   -- b.diagnostics.write_good,
-  b.diagnostics.cspell,
+  b.diagnostics.cspell.with {
+    filetypes = { "markdown" },
+  },
   b.code_actions.cspell,
 
   -- latex
-  b.formatting.latexindent.with {
-    -- extra_filetypes = { "markdown" },
-  },
+  b.formatting.latexindent,
 
   -- c++
-  -- b.diagnostics.cpplint,
   b.formatting.clang_format.with {
     extra_args = { "--style=file" },
   },

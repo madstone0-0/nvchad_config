@@ -1,5 +1,6 @@
-return {
+local overrides = require "custom.plugins.overrides"
 
+return {
   -- Overrides
 
   ["neovim/nvim-lspconfig"] = {
@@ -10,52 +11,11 @@ return {
   },
 
   ["nvim-treesitter/nvim-treesitter"] = {
-    override_options = {
-      matchup = {
-        enable = true,
-      },
-    },
+    override_options = overrides.treesiter,
   },
 
   ["williamboman/mason.nvim"] = {
-    override_options = {
-      ensure_installed = {
-        -- lua
-        "lua-language-server",
-        "stylua",
-
-        -- webdev
-        "css-lsp",
-        "html-lsp",
-        "typescript-language-server",
-        "eslint_d",
-        "prettier",
-        "json-lsp",
-
-        -- shell
-        "shfmt",
-        "shellcheck",
-        "bash-language-server",
-
-        --python
-        "black",
-        "ruff",
-        "python-lsp-server",
-        "pyright",
-        "ruff-lsp",
-        "debugpy",
-
-        -- markdown
-        "remark-cli",
-        "cbfmt",
-        "cspell",
-        "marksman",
-
-        -- c++
-        "clang-format",
-        "cpptools",
-      },
-    },
+    override_options = overrides.mason,
   },
 
   ["jose-elias-alvarez/null-ls.nvim"] = {
@@ -66,36 +26,7 @@ return {
   },
 
   ["nvim-tree/nvim-tree.lua"] = {
-    override_options = {
-      filters = {
-        exclude = { vim.fn.stdpath "config" },
-        custom = { vim.fn.getcwd() .. "/node_modules/" },
-      },
-      git = {
-        enable = true,
-      },
-
-      trash = {
-        cmd = "del",
-      },
-
-      renderer = {
-        -- highlight_git = true,
-
-        icons = {
-          show = {
-            git = true,
-          },
-        },
-
-        special_files = {
-          "README.md",
-          "readme.md",
-          "package.json",
-          "yarn.lock",
-        },
-      },
-    },
+    override_options = overrides.tree,
   },
 
   ["folke/which-key.nvim"] = {
@@ -123,71 +54,47 @@ return {
   },
 
   ["lukas-reineke/indent-blankline.nvim"] = {
-    override_options = {
-      char = "",
-      char_highlight_list = {
-        "IndentBlanklineIndent1",
-        "IndentBlanklineIndent2",
-      },
-      space_char_highlight_list = {
-        "IndentBlanklineIndent1",
-        "IndentBlanklineIndent2",
-      },
-      show_trailing_blankline_indent = false,
-    },
+    override_options = overrides.blankline,
   },
 
   ["NvChad/ui"] = {
-    override_options = {
-      statusline = {
-        separator_style = "round",
-        overriden_modules = function()
-          return require "custom.status"
-        end,
-      },
+    override_options = overrides.ui,
+  },
 
-      tabufline = {
-        enabled = true,
-        lazyload = true,
-        overriden_modules = nil,
-      },
-    },
+  -- ["hrsh7th/nvim-cmp"] = {
+  --   override_options = function()
+  --     require "custom.plugins.cmp"
+  --   end,
+  -- },
+
+  ["L3MON4D3/LuaSnip"] = {
+    override_options = overrides.luasnip,
+  },
+
+  ["nvim-telescope/telescope.nvim"] = {
+    override_options = overrides.telescope,
   },
 
   -- User Plugins
 
   ["wakatime/vim-wakatime"] = {},
 
-  ["quangnguyen30192/cmp-nvim-ultisnips"] = {
-    config = function()
-      require("cmp_nvim_ultisnips").setup {}
-    end,
-  },
-
   ["junegunn/fzf"] = {
     run = ":call fzf#install()",
   },
 
   ["iamcco/markdown-preview.nvim"] = {
-    cmd = "MarkdownPreview",
+    -- cmd = "MarkdownPreview",
     run = function()
       vim.fn["mkdp#util#install"]()
     end,
   },
 
-  ["junegunn/fzf.vim"] = {},
-
-  ["godlygeek/tabular"] = {},
-
-  ["preservim/vim-markdown"] = {
-    cond = function()
-      if vim.fn.expand "%:e" == "md" then
-        return true
-      else
-        return false
-      end
-    end,
+  ["junegunn/fzf.vim"] = {
+    cmd = { "FZF", "FZF!", "Rg" },
   },
+
+  ["preservim/vim-markdown"] = {},
 
   ["sheerun/vim-polyglot"] = {},
 
@@ -195,83 +102,51 @@ return {
 
   ["honza/vim-snippets"] = {},
 
-  ["lervag/vimtex"] = {
-    cond = function()
-      if vim.fn.expand "%:e" == "md" or vim.fn.expand "%:e" == "tex" then
-        return true
-      else
-        return false
-      end
-    end,
-  },
+  ["lervag/vimtex"] = {},
 
-  ["KeitaNakamura/tex-conceal.vim"] = {
-    cond = function()
-      if vim.fn.expand "%:e" == "md" or vim.fn.expand "%:e" == "tex" then
-        return true
-      else
-        return false
-      end
-    end,
-  },
+  ["KeitaNakamura/tex-conceal.vim"] = {},
 
   ["github/copilot.vim"] = {},
-
-  ["folke/neodev.nvim"] = {
-    library = { plugins = { "nvim-dap-ui" }, types = true },
-  },
-
-  -- ["smjonas/snippet-converter.nvim"] = {
-  --   cmd = "ConvertSnippets",
+  -- ["zbirenbaum/copilot.lua"] = {
+  --   cmd = "Copilot",
+  --   event = "InsertEnter",
   --   config = function()
-  --     local template = {
-  --       sources = {
-  --         ultisnips = {
-  --           vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/markdown.snippets",
-  --         },
-  --       },
-  --
-  --       output = {
-  --         vscode_luasnip = {
-  --           vim.fn.stdpath "config" .. "/lua/custom/snippets/LuaSnip",
-  --         },
-  --       },
-  --     }
-  --
-  --     require("snippet_converter").setup {
-  --       templates = { template },
+  --     require("copilot").setup {
+  --       suggestion = { enabled = false },
+  --       panel = { enabled = false },
+  --       copilot_node_command = "\\node",
   --     }
   --   end,
   -- },
+  -- ["zbirenbaum/copilot-cmp"] = {
+  --   after = "copilot.lua",
+  --   config = function()
+  --     require("copilot_cmp").setup()
+  --   end,
+  -- },
+
+  ["folke/neodev.nvim"] = {
+    library = { plugins = { "nvim-dap-ui", "neotest" }, types = true },
+  },
+
+  ["smjonas/snippet-converter.nvim"] = {
+    cmd = "ConvertSnippets",
+    config = function()
+      require "custom.plugins.snippet_converter"
+    end,
+  },
 
   ["derekwyatt/vim-fswitch"] = {
     cmd = { "FSSplitBelow" },
   },
 
   ["liuchengxu/vista.vim"] = {
-    -- cmd = { "Vista!!", "Vista" },
+    cmd = { "Vista!!", "Vista" },
   },
 
-  ["ludovicchabant/vim-gutentags"] = {
-    cond = function()
-      if vim.fn.expand "%:e" == "cpp" or vim.fn.expand "%:e" == "h" or vim.fn.expand "%:e" == "c" then
-        return true
-      else
-        return false
-      end
-    end,
-  },
+  ["ludovicchabant/vim-gutentags"] = {},
 
-  ["jackguo380/vim-lsp-cxx-highlight"] = {
-
-    -- cond = function()
-    --   if vim.fn.expand "%:e" == "cpp" or vim.fn.expand "%:e" == "h" then
-    --     return true
-    --   else
-    --     return false
-    --   end
-    -- end,
-  },
+  ["jackguo380/vim-lsp-cxx-highlight"] = {},
 
   -- ["m-pilia/vim-ccls"] = {},
 
@@ -346,4 +221,104 @@ return {
   },
 
   ["nvim-treesitter/nvim-treesitter-context"] = {},
+
+  ["HiPhish/nvim-ts-rainbow2"] = {},
+
+  ["lambdalisue/suda.vim"] = {},
+
+  ["nvim-telescope/telescope-fzf-native.nvim"] = {
+    cmd = "Telescope",
+    run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+  },
+
+  ["kevinhwang91/nvim-bqf"] = {
+    ft = "qf",
+  },
+
+  ["mbbill/undotree"] = {
+    cmd = "UndotreeToggle",
+  },
+
+  ["windwp/nvim-ts-autotag"] = {},
+
+  -- ["rmagatti/auto-session"] = {
+  --   config = function()
+  --     require("auto-session").setup {
+  --       log_level = "info",
+  --       auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/Documents", "~/.config" },
+  --       auto_session_use_git_branch = true,
+  --       auto_save_enabled = true,
+  --     }
+  --   end,
+  -- },
+
+  ["nmac427/guess-indent.nvim"] = {
+    config = function()
+      require("guess-indent").setup {}
+    end,
+  },
+
+  ["gelguy/wilder.nvim"] = {
+    config = function()
+      require "custom.plugins.wilder"
+    end,
+  },
+
+  ["nixprime/cpsm"] = {},
+
+  ["kylechui/nvim-surround"] = {
+    config = function()
+      require("nvim-surround").setup {}
+    end,
+  },
+
+  ["stevearc/dressing.nvim"] = {
+    config = function()
+      require("dressing").setup {
+        require "custom.plugins.dressing",
+      }
+    end,
+  },
+
+  ["mrjones2014/legendary.nvim"] = {
+    cmd = "Legendary",
+    config = function()
+      require("legendary").setup {
+        which_key = {
+          auto_register = true,
+        },
+        extensions = {
+          nvim_tree = true,
+        },
+      }
+    end,
+  },
+
+  ["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = {
+    config = function()
+      require("lsp_lines").setup {}
+    end,
+  },
+
+  ["antoinemadec/FixCursorHold.nvim"] = {},
+
+  ["nvim-neotest/neotest-python"] = {},
+
+  ["nvim-neotest/neotest"] = {
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "antoinemadec/FixCursorHold.nvim",
+      "nvim-neotest/neotest-python",
+    },
+    config = function()
+      require("neotest").setup {
+        adapters = {
+          require "neotest-python" {
+            dap = { justMyCode = false },
+          },
+        },
+      }
+    end,
+  },
 }

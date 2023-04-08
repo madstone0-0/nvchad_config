@@ -1,17 +1,20 @@
 local opt = vim.opt
 local g = vim.g
-local api = vim.api
+local a = vim.api
+local exec = vim.api.nvim_command
+local fn = vim.fn
+HOME = fn.environ()["HOME"]
 
+-- Global
 opt.encoding = "utf-8"
 opt.hidden = true
 opt.expandtab = true
--- vim.opt.relativenumber = true
 opt.title = true
 opt.shiftwidth = 4
 opt.tabstop = 4
 opt.grepprg = "rg --vimgrep --smart-case --follow"
 opt.list = true
-opt.listchars = "eol:↴,tab:>·,trail:~,extends:>,precedes:<,space:·"
+opt.listchars:append "eol:↴,tab:>·,trail:~,extends:>,precedes:<,space:·"
 opt.conceallevel = 1
 opt.thesaurus = "/home/mads/thesaurus/thesaurii.txt"
 opt.termguicolors = true
@@ -19,12 +22,21 @@ opt.timeout = true
 opt.timeoutlen = 500
 opt.tag = "./tags"
 opt.termguicolors = true
--- vim.o.timeout = true
--- vim.o.timeoutlen = 500
+opt.ignorecase = true
+opt.undofile = true
+opt.splitbelow = true
+opt.splitright = true
+opt.smartcase = true
+opt.undofile = true -- undo even when it closes
+-- opt.foldmethod = "expr" -- treesiter time
+-- opt.foldexpr = "nvim_treesitter#foldexpr()" -- treesiter
+opt.wildignore:append { ".javac", "node_modules", "*.pyc" }
+
+vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
 
 local enable_providers = {
   "python3_provider",
-  -- "node_provider",
+  "node_provider",
   -- and so on
 }
 
@@ -62,32 +74,60 @@ g.UltiSnipsEditSplit = "horizontal"
 g.tex_flavour = "latex"
 g.vimtex_view_method = "zathura"
 g.vimtex_quickfix_mode = 0
-g.tex_conceal = "abdmg"
+g.tex_conceal = "abdmgs"
 g.copilot_assume_mapped = true
--- g.luasnippets_path = vim.fn.stdpath "config" .. "/lua/custom/snippets/LuaSnip"
--- g.UltiSnipsSnippetDirectories = {
---   vim.fn.stdpath "data" .. "/site/pack/packer/start/vim-snippets/UltiSnips/",
---   vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/",
--- }
+g.luasnippets_path = {
+  -- string.format("%s/lua/custom/snippets/vs_luasnip", vim.fn.stdpath "config"),
+  string.format("%s/lua/custom/snippets/LuaSnip", fn.stdpath "config"),
+  -- string.format("%s/lua/custom/snippets/SnipMate", vim.fn.stdpath "config"),
+}
+exec(
+  string.format(
+    "let g:UltiSnipsSnippetDirectories=['%s','%s']",
+    vim.fn.stdpath "data" .. "/site/pack/packer/start/vim-snippets/UltiSnips/",
+    vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/"
+  )
+)
 opt.conceallevel = 2
 
-api.nvim_command "autocmd BufNewFile,BufRead *.md set filetype=markdown"
-api.nvim_command "autocmd FileType markdown setlocal spell"
-api.nvim_command "autocmd FileType markdown set spelllang=en_gb"
+g.suda_smart_edit = 1
 
-vim.cmd [[highlight IndentBlanklineIndent1 guibg=#1f1f1f gui=nocombine]]
-vim.cmd [[highlight IndentBlanklineIndent2 guibg=#1a1a1a gui=nocombine]]
+a.nvim_create_autocmd({ "BufEnter" }, {
+  pattern = "NvimTree*",
+  callback = function()
+    local view = require "nvim-tree.view"
+    local is_visible = view.is_visible()
 
-api.nvim_command "autocmd BufWritePre *.js lua vim.lsp.buf.format()"
-api.nvim_command "autocmd BufWritePre *.py lua vim.lsp.buf.format()"
-api.nvim_command "autocmd BufWritePre *.ts lua vim.lsp.buf.format()"
-api.nvim_command "autocmd BufWritePre *.sh lua vim.lsp.buf.format()"
-api.nvim_command "autocmd BufWritePre *.md lua vim.lsp.buf.format()"
-api.nvim_command "autocmd BufWritePre *.lua lua vim.lsp.buf.format()"
-api.nvim_command "autocmd BufWritePre *.yml lua vim.lsp.buf.format()"
-api.nvim_command "autocmd BufWritePre *.cpp lua vim.lsp.buf.format()"
-api.nvim_command "autocmd BufWritePre *.h lua vim.lsp.buf.format()"
+    local api = require "nvim-tree.api"
+    if not is_visible then
+      api.tree.open()
+    end
+  end,
+})
 
-api.nvim_command "au BufEnter *.h let b:fswitchdst ='cpp,c,cc,m'"
-api.nvim_command "au BufEnter *.cpp let b:fswitchdst ='h,hpp'"
-api.nvim_command(string.format("au BufWritePost %s :luafile %", vim.fn.stdpath "config" .. "/custom/plugins/dap.lua"))
+exec "autocmd BufNewFile,BufRead *.md set filetype=markdown"
+exec "autocmd FileType markdown setlocal spell"
+exec "autocmd FileType markdown set spelllang=en_gb"
+exec "au FileType markdown setlocal complete+=kspell"
+
+exec "autocmd FileType tex setlocal spell"
+exec "autocmd FileType tex set spelllang=en_gb"
+exec "au FileType tex setlocal complete+=kspell"
+
+exec "au FileType gitcommit setlocal spell"
+exec "au FileType gitcommit set spelllang=en_gb"
+exec "au FileType gitcommit setlocal complete+=kspell"
+
+-- vim.cmd [[highlight IndentBlanklineIndent1 guibg=#1f1f1f gui=nocombine]]
+-- vim.cmd [[highlight IndentBlanklineIndent2 guibg=#1a1a1a gui=nocombine]]
+
+local exts = { "js", "py", "ts", "sh", "md", "lua", "yml", "cpp", "h", "tex" }
+
+for _, ext in pairs(exts) do
+  exec("au BufWritePre *" .. ext .. " lua vim.lsp.buf.format()")
+end
+
+exec "au BufEnter *.h let b:fswitchdst ='cpp,c,cc,m'"
+exec "au BufEnter *.cpp let b:fswitchdst ='h,hpp'"
+exec(string.format("au BufWritePost %s :luafile %", vim.fn.stdpath "config" .. "/custom/plugins/dap.lua"))
+opt.clipboard = { "unnamed", "unnamedplus" }

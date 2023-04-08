@@ -29,24 +29,37 @@ local user_attach = function(client, bufnr)
   -- end
 end
 
-local lspconfig = require "lspconfig"
 -- local servers = { "html", "cssls", "tsserver", "eslint", "pylsp", "bashls", "sumneko_lua", "jsonls", "yamlls" }
 local servers = {
   "html",
   "cssls",
   "tsserver",
-  "bashls",
   "jsonls",
   "yamlls",
   "marksman",
   "texlab",
   "lua_ls",
-  "grammarly",
   "cmake",
 }
 
 -- Neodev Setup
 require("neodev").setup()
+
+local lspconfig = require "lspconfig"
+
+lspconfig.grammarly.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  init_options = {
+    clientId = "client_S7ht7UbDxdnrnQ8cs269cG",
+  },
+}
+
+lspconfig.bashls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  single_file_support = true,
+}
 
 lspconfig.ccls.setup {
   on_attach = user_attach,
