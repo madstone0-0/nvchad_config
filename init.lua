@@ -92,18 +92,26 @@ opt.conceallevel = 2
 
 g.suda_smart_edit = 1
 
-a.nvim_create_autocmd({ "BufEnter" }, {
-  pattern = "NvimTree*",
-  callback = function()
-    local view = require "nvim-tree.view"
-    local is_visible = view.is_visible()
+-- a.nvim_create_autocmd({ "BufEnter" }, {
+--   pattern = "NvimTree*",
+--   callback = function()
+--     local view = require "nvim-tree.view"
+--     local is_visible = view.is_visible()
+--
+--     local api = require "nvim-tree.api"
+--     if not is_visible then
+--       api.tree.open()
+--     end
+--   end,
+-- })
 
-    local api = require "nvim-tree.api"
-    if not is_visible then
-      api.tree.open()
-    end
-  end,
-})
+-- a.nvim_create_autocmd({ "BufWritePost" }, {
+--   callback = function()
+--     if vim.bo.filetype ~= "git" and not vim.bo.filetype ~= "gitcommit" then
+--       require("session_manager").autosave_session()
+--     end
+--   end,
+-- })
 
 exec "autocmd BufNewFile,BufRead *.md set filetype=markdown"
 exec "autocmd FileType markdown setlocal spell"

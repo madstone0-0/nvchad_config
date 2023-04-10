@@ -241,17 +241,6 @@ return {
 
   ["windwp/nvim-ts-autotag"] = {},
 
-  -- ["rmagatti/auto-session"] = {
-  --   config = function()
-  --     require("auto-session").setup {
-  --       log_level = "info",
-  --       auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/Documents", "~/.config" },
-  --       auto_session_use_git_branch = true,
-  --       auto_save_enabled = true,
-  --     }
-  --   end,
-  -- },
-
   ["nmac427/guess-indent.nvim"] = {
     config = function()
       require("guess-indent").setup {}
@@ -259,12 +248,11 @@ return {
   },
 
   ["gelguy/wilder.nvim"] = {
+    requires = "nixprime/cpsm",
     config = function()
       require "custom.plugins.wilder"
     end,
   },
-
-  ["nixprime/cpsm"] = {},
 
   ["kylechui/nvim-surround"] = {
     config = function()
@@ -300,10 +288,6 @@ return {
     end,
   },
 
-  ["antoinemadec/FixCursorHold.nvim"] = {},
-
-  ["nvim-neotest/neotest-python"] = {},
-
   ["nvim-neotest/neotest"] = {
     requires = {
       "nvim-lua/plenary.nvim",
@@ -321,4 +305,36 @@ return {
       }
     end,
   },
+
+  ["anuvyklack/windows.nvim"] = {
+    cmd = { "WindowsMaximize", "WindowsMaximizeVertically", "WindowsMaximizeHorizontally", "WindowsEqualize" },
+    requires = {
+      "anuvyklack/middleclass",
+      "anuvyklack/animation.nvim",
+    },
+    config = function()
+      vim.o.winwidth = 10
+      vim.o.winminwidth = 10
+      vim.o.equalalways = false
+      require("windows").setup()
+    end,
+  },
+
+  ["folke/persistence.nvim"] = {
+    event = "BufReadPre", -- this will only start session saving when an actual file was opened
+    module = "persistence",
+    config = function()
+      require("persistence").setup()
+    end,
+  },
+
+  -- ["henriquehbr/nvim-startup.lua"] = {
+  --   lazy = false,
+  --   config = function()
+  --     require("nvim-startup").setup {
+  --       startup_file = "/tmp/nvim-startuptime", -- sets startup log path (string),
+  --       message = "Baller",
+  --     }
+  --   end,
+  -- },
 }

@@ -16,6 +16,15 @@ local function compile_cpp()
   end
 end
 
+local function preview()
+  local ft = vim.bo.filetype
+  if ft == "markdown" then
+    vim.cmd "MarkdownPreview"
+  elseif ft == "tex" then
+    vim.cmd "VimtexCompile"
+  end
+end
+
 M.short = {
   n = {
     ["<C-A-c>"] = { "<cmd> qall <CR>", "Close all" },
@@ -29,7 +38,13 @@ M.short = {
 
     ["<leader>ll"] = { require("lsp_lines").toggle, "Toggle lsp_lines" },
     ["<leader>lg"] = { "<cmd> :Legendary <CR>", "Legendary", silent = true },
-    ["<leader>pr"] = { "<Plug>MarkdownPreview", silent = true },
+    ["<leader>pr"] = {
+      function()
+        preview()
+      end,
+      "Preview notes",
+      -- silent = true,
+    },
     ["<leader>ul"] = { "<cmd> :UltiSnipsEdit! <CR>", "Edit snippets", silent = true },
     ["<leader>tc"] = { "<cmd> :Telescope <CR> ", "Telescope window" },
     ["<leader>tt"] = {
@@ -85,11 +100,34 @@ M.short = {
     },
 
     ["<leader>rr"] = { "<cmd> :RunCode<CR>", "Run Code", slient = true },
-    ["<leader>cr"] = { "<cmd> :VimtexCompile <CR>", "Compile latex", silent = true },
 
     ["<leader>un"] = { "<cmd> :UndotreeToggle<CR>", "Toggle undo tree", silent = true },
 
+    ["<leader>ps"] = {
+      function()
+        require("persistence").load()
+      end,
+      "Restore session",
+    },
+    ["<leader>pl"] = {
+      function()
+        require("persistence").load { last = true }
+      end,
+      "Restore last session",
+    },
+    ["<leader>pd"] = {
+      function()
+        require("persistence").stop()
+      end,
+      "Don't restore session",
+    },
+
     ["<F3>"] = { "<cmd> :set spell!<CR>", "Toggle spell check" },
+
+    ["<C-w>z"] = { "<cmd> WindowsMaximize<CR>" },
+    [">C-w>_"] = { "<cmd> WindowsMaximizeVertically<CR>" },
+    ["<C-w>|"] = { "<cmd> WindowsMaximizeHorizontally<CR>" },
+    ["<C-w>="] = { "<cmd> WindowsEqualize<CR>" },
   },
 
   i = {

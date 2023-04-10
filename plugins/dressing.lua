@@ -71,8 +71,8 @@ local options = {
     enabled = true,
 
     -- Priority list of preferred vim.select implementations
-    -- backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
-    backend = { "builtin" },
+    backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
+    -- backend = { "builtin" },
 
     -- Trim trailing `:` from prompt
     trim_prompt = true,
