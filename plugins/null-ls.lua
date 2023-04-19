@@ -16,7 +16,7 @@ local sources = {
 
   -- shell
   b.formatting.shfmt,
-  b.diagnostics.shellcheck,
+  -- b.diagnostics.shellcheck,
 
   -- python
   b.formatting.black,

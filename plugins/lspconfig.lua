@@ -29,10 +29,22 @@ local user_attach = function(client, bufnr)
   -- end
 end
 
+local user_capabilities = function(name)
+  local user_cap = capabilities
+  if name == "cssls" then
+    user_cap.textDocument.completion.completionItem.snippetSupport = true
+  end
+  user_cap.textDocument.foldingRange = {
+    dynamicRegistration = false,
+    lineFoldingOnly = true,
+  }
+  return user_cap
+end
+
 -- local servers = { "html", "cssls", "tsserver", "eslint", "pylsp", "bashls", "sumneko_lua", "jsonls", "yamlls" }
 local servers = {
   "html",
-  "cssls",
+  -- "cssls",
   "tsserver",
   "jsonls",
   "yamlls",
@@ -47,9 +59,14 @@ require("neodev").setup()
 
 local lspconfig = require "lspconfig"
 
+lspconfig.cssls.setup {
+  on_attach = on_attach,
+  capabilities = user_capabilities "cssls",
+}
+
 lspconfig.grammarly.setup {
   on_attach = on_attach,
-  capabilities = capabilities,
+  capabilities = user_capabilities "",
   init_options = {
     clientId = "client_S7ht7UbDxdnrnQ8cs269cG",
   },
@@ -57,13 +74,13 @@ lspconfig.grammarly.setup {
 
 lspconfig.bashls.setup {
   on_attach = on_attach,
-  capabilities = capabilities,
+  capabilities = user_capabilities "",
   single_file_support = true,
 }
 
 lspconfig.ccls.setup {
   on_attach = user_attach,
-  capabilities = capabilities,
+  capabilities = user_capabilities "",
   offset_encoding = "utf-8",
   init_options = {
     highlight = {
@@ -74,7 +91,7 @@ lspconfig.ccls.setup {
 
 lspconfig.ruff_lsp.setup {
   on_attach = user_attach,
-  capabilities = capabilities,
+  capabilities = user_capabilities "",
   init_options = {
     settings = {
       args = { "--line-length 120", "--extend-select I", "--extend-select PL" },
@@ -84,7 +101,7 @@ lspconfig.ruff_lsp.setup {
 
 lspconfig.pyright.setup {
   on_attach = user_attach,
-  capabilities = capabilities,
+  capabilities = user_capabilities "",
   settings = {
     python = {
       analysis = {
@@ -104,7 +121,7 @@ lspconfig.pyright.setup {
 
 lspconfig.pylsp.setup {
   on_attach = user_attach,
-  capabilities = capabilities,
+  capabilities = user_capabilities "",
   settings = {
     pylsp = {
       plugins = {
@@ -119,6 +136,43 @@ lspconfig.pylsp.setup {
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = on_attach,
-    capabilities = capabilities,
+    capabilities = user_capabilities(lsp),
   }
 end
+
+local handler = function(virtText, lnum, endLnum, width, truncate)
+  local newVirtText = {}
+  local suffix = ("  %d "):format(endLnum - lnum)
+  local sufWidth = vim.fn.strdisplaywidth(suffix)
+  local targetWidth = width - sufWidth
+  local curWidth = 0
+  for _, chunk in ipairs(virtText) do
+    local chunkText = chunk[1]
+    local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+    if targetWidth > curWidth + chunkWidth then
+      table.insert(newVirtText, chunk)
+    else
+      chunkText = truncate(chunkText, targetWidth - curWidth)
+      local hlGroup = chunk[2]
+      table.insert(newVirtText, { chunkText, hlGroup })
+      chunkWidth = vim.fn.strdisplaywidth(chunkText)
+      -- str width returned from truncate() may less than 2nd argument, need padding
+      if curWidth + chunkWidth < targetWidth then
+        suffix = suffix .. (" "):rep(targetWidth - curWidth - chunkWidth)
+      end
+      break
+    end
+    curWidth = curWidth + chunkWidth
+  end
+  table.insert(newVirtText, { suffix, "MoreMsg" })
+  return newVirtText
+end
+
+-- global handler
+-- `handler` is the 2nd parameter of `setFoldVirtTextHandler`,
+-- check out `./lua/ufo.lua` and search `setFoldVirtTextHandler` for detail.
+require("ufo").setup {
+  fold_virt_text_handler = handler,
+}
+
+vim.diagnostic.config { virtual_text = false, virtual_lines = { only_current_line = true } }

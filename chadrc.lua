@@ -4,6 +4,9 @@ local M = {}
 
 M.ui = {
   theme = "yoru",
+  statusline = {
+    theme = "minimal",
+  },
 }
 
 M.plugins = require "custom.plugins"

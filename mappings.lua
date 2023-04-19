@@ -25,10 +25,19 @@ local function preview()
   end
 end
 
+local function ink_create()
+  vim.api.nvim_command "exec '.!inkscape-figures create \"'.getline('.').'\" \"'.b:vimtex.root.'/figures/\"'"
+end
+
+local function ink_edit()
+  vim.api.nvim_command "exec '!inkscape-figures edit \"'.b:vimtex.root.'/figures/\" > /dev/null 2>&1 &'"
+  vim.api.nvim_command ":redraw!"
+end
+
 M.short = {
   n = {
     ["<C-A-c>"] = { "<cmd> qall <CR>", "Close all" },
-    ["<leader>rg"] = { "<cmd> :Rg <CR>", "Search with rg", silent = true },
+    ["<leader>rg"] = { "<cmd> :Telescope live_grep<CR>", "Search with rg", silent = true },
     -- ["<leader>s"] = { string.format("<cmd> :source %s<CR>", vim.fn.stdpath "config" .. "/init.lua"), silent = true },
     ["<up>"] = { "<cmd> :resize -2<CR>", noremap = true },
     ["<down>"] = { "<cmd> :resize +2<CR>", noremap = true },
@@ -79,6 +88,36 @@ M.short = {
       end,
       "Test nearest",
     },
+    ["<leader>ta"] = {
+      function()
+        require("neotest").run.run(vim.fn.expand "%")
+      end,
+      "Test current file",
+    },
+    ["<leader>ts"] = {
+      function()
+        require("neotest").run.stop()
+      end,
+      "Stop test",
+    },
+    ["<leader>tp"] = {
+      function()
+        require("neotest").output.open()
+      end,
+      "Show results for nearest",
+    },
+    ["<leader>to"] = {
+      function()
+        require("neotest").output_panel.toggle()
+      end,
+      "Toggle test output panel",
+    },
+    ["<leader>tm"] = {
+      function()
+        require("neotest").summary.toggle()
+      end,
+      "Toggle test summary",
+    },
 
     ["<leader>oj"] = { "<cmd> :FSSplitBelow<CR>", "FSSplitBelow" },
     ["<leader>cv"] = { "<cmd> :Vista!!<CR>", "Vista!!" },
@@ -122,17 +161,52 @@ M.short = {
       "Don't restore session",
     },
 
-    ["<F3>"] = { "<cmd> :set spell!<CR>", "Toggle spell check" },
+    ["<F3>"] = {
+      function()
+        vim.cmd "setlocal spell!"
+        vim.cmd "setlocal complete+=kspell!"
+      end,
+      "Toggle spell check",
+    },
 
     ["<C-w>z"] = { "<cmd> WindowsMaximize<CR>" },
     [">C-w>_"] = { "<cmd> WindowsMaximizeVertically<CR>" },
     ["<C-w>|"] = { "<cmd> WindowsMaximizeHorizontally<CR>" },
     ["<C-w>="] = { "<cmd> WindowsEqualize<CR>" },
+
+    ["<C-f>"] = {
+      function()
+        ink_edit()
+      end,
+      slient = true,
+      noremap = true,
+    },
+
+    ["zR"] = {
+      function()
+        require("ufo").openAllFolds()
+      end,
+    },
+    ["zM"] = {
+      function()
+        require("ufo").closeAllFolds()
+      end,
+    },
   },
 
   i = {
     ["<C-l>"] = { "<c-g>u<Esc>[s1z=`]a<c-g>u", "Spell check" },
+    ["<C-u>"] = { "<c-g>u<c-u>" },
+    ["<C-w>"] = { "<c-g>u<c-w>" },
+
     ["jj"] = { "<Esc>", "Escape" },
+    ["<C-f>"] = {
+      function()
+        ink_create()
+      end,
+      silent = true,
+      noremap = true,
+    },
   },
 }
 

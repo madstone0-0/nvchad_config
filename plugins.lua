@@ -43,7 +43,7 @@ return {
     event = "BufReadPre",
     module = { "dap" },
     requires = {
-      "mfussenegger/nvim-dap-python",
+      { "mfussenegger/nvim-dap-python", module = "dap-python" },
       "theHamsta/nvim-dap-virtual-text",
       "rcarriga/nvim-dap-ui",
       "nvim-telescope/telescope-dap.nvim",
@@ -91,7 +91,7 @@ return {
   },
 
   ["junegunn/fzf.vim"] = {
-    cmd = { "FZF", "FZF!", "Rg" },
+    cmd = { "Fzf", "Fzf!", "Rg" },
   },
 
   ["preservim/vim-markdown"] = {},
@@ -146,7 +146,7 @@ return {
 
   ["ludovicchabant/vim-gutentags"] = {},
 
-  ["jackguo380/vim-lsp-cxx-highlight"] = {},
+  -- ["jackguo380/vim-lsp-cxx-highlight"] = {},
 
   -- ["m-pilia/vim-ccls"] = {},
 
@@ -239,9 +239,8 @@ return {
     cmd = "UndotreeToggle",
   },
 
-  ["windwp/nvim-ts-autotag"] = {},
-
   ["nmac427/guess-indent.nvim"] = {
+    cmd = "GuessIndent",
     config = function()
       require("guess-indent").setup {}
     end,
@@ -289,6 +288,7 @@ return {
   },
 
   ["nvim-neotest/neotest"] = {
+    module = "neotest",
     requires = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
@@ -328,13 +328,37 @@ return {
     end,
   },
 
-  -- ["henriquehbr/nvim-startup.lua"] = {
-  --   lazy = false,
-  --   config = function()
-  --     require("nvim-startup").setup {
-  --       startup_file = "/tmp/nvim-startuptime", -- sets startup log path (string),
-  --       message = "Baller",
-  --     }
-  --   end,
-  -- },
+  ["windwp/nvim-ts-autotag"] = {},
+
+  ["https://github.com/imsnif/kdl.vim"] = {},
+
+  ["tweekmonster/startuptime.vim"] = {
+    cmd = "StartupTime",
+  },
+
+  ["kevinhwang91/nvim-ufo"] = {
+    requires = "kevinhwang91/promise-async",
+    -- config = function()
+    --   require("ufo").setup {
+    --     provider_selector = function(bufnr, filetype, buftype)
+    --       return { "treesitter", "indent" }
+    --     end,
+    --   }
+    -- end,
+  },
+
+  ["sindrets/diffview.nvim"] = {
+    cmd = {
+      "DiffviewOpen",
+      "DiffviewClose",
+      "DiffviewToggleFiles",
+      "DiffviewFocusFiles",
+      "DiffviewRefresh",
+      "DiffviewFileHistory",
+    },
+    requires = "nvim-lua/plenary.nvim",
+    config = function()
+      require("diffview").setup()
+    end,
+  },
 }

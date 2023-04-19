@@ -1,4 +1,5 @@
 local opt = vim.opt
+local o = vim.o
 local g = vim.g
 local a = vim.api
 local exec = vim.api.nvim_command
@@ -15,7 +16,7 @@ opt.tabstop = 4
 opt.grepprg = "rg --vimgrep --smart-case --follow"
 opt.list = true
 opt.listchars:append "eol:↴,tab:>·,trail:~,extends:>,precedes:<,space:·"
-opt.conceallevel = 1
+opt.conceallevel = 2
 opt.thesaurus = "/home/mads/thesaurus/thesaurii.txt"
 opt.termguicolors = true
 opt.timeout = true
@@ -23,16 +24,22 @@ opt.timeoutlen = 500
 opt.tag = "./tags"
 opt.termguicolors = true
 opt.ignorecase = true
-opt.undofile = true
 opt.splitbelow = true
 opt.splitright = true
 opt.smartcase = true
-opt.undofile = true -- undo even when it closes
--- opt.foldmethod = "expr" -- treesiter time
--- opt.foldexpr = "nvim_treesitter#foldexpr()" -- treesiter
+opt.spelllang = "en_gb"
 opt.wildignore:append { ".javac", "node_modules", "*.pyc" }
+opt.undolevels = 5000
+opt.undodir = vim.fn.stdpath "data" .. "/undo_dir"
+opt.undofile = true -- undo even when it closes
+opt.nrformats:append "alpha"
 
-vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+o.fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:⏵]]
+o.foldcolumn = "1"
+o.foldlevel = 99
+o.foldlevelstart = 99
+o.foldenable = true
 
 local enable_providers = {
   "python3_provider",
@@ -88,7 +95,6 @@ exec(
     vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/"
   )
 )
-opt.conceallevel = 2
 
 g.suda_smart_edit = 1
 
@@ -128,8 +134,12 @@ exec "au FileType gitcommit setlocal complete+=kspell"
 
 -- vim.cmd [[highlight IndentBlanklineIndent1 guibg=#1f1f1f gui=nocombine]]
 -- vim.cmd [[highlight IndentBlanklineIndent2 guibg=#1a1a1a gui=nocombine]]
+-- vim.cmd [[hi DiffAdd      gui=none    guifg=NONE          guibg=#bada9f]]
+-- vim.cmd [[hi DiffChange   gui=none    guifg=NONE          guibg=#e5d5ac]]
+-- vim.cmd [[hi DiffDelete   gui=bold    guifg=#ff8080       guibg=#ffb0b0]]
+-- vim.cmd [[hi DiffText     gui=none    guifg=NONE          guibg=#8cbee2]]
 
-local exts = { "js", "py", "ts", "sh", "md", "lua", "yml", "cpp", "h", "tex" }
+local exts = { "js", "py", "ts", "sh", "md", "lua", "yml", "cpp", "h", "tex", "jsx" }
 
 for _, ext in pairs(exts) do
   exec("au BufWritePre *" .. ext .. " lua vim.lsp.buf.format()")
