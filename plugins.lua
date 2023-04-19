@@ -1,168 +1,162 @@
-local overrides = require "custom.plugins.overrides"
+local overrides = require "custom.configs.overrides"
 
-return {
+local plugins = {
   -- Overrides
 
-  ["neovim/nvim-lspconfig"] = {
+  {
+    "neovim/nvim-lspconfig",
+    dependencies = {
+      "jose-elias-alvarez/null-ls.nvim",
+      config = function()
+        require "custom.configs.null-ls"
+      end,
+    },
     config = function()
       require "plugins.configs.lspconfig"
-      require "custom.plugins.lspconfig"
+      require "custom.configs.lspconfig"
     end,
   },
 
-  ["nvim-treesitter/nvim-treesitter"] = {
-    override_options = overrides.treesiter,
+  {
+    "nvim-treesitter/nvim-treesitter",
+    dependencies = {
+      {
+        "andymass/vim-matchup",
+        init = function()
+          vim.g.matchup_matchparen_offscreen = { method = "popup" }
+        end,
+      },
+      "windwp/nvim-ts-autotag",
+      "nvim-treesitter/nvim-treesitter-context",
+      "HiPhish/nvim-ts-rainbow2",
+    },
+    opts = overrides.treesiter,
+    event = "BufRead",
   },
 
-  ["williamboman/mason.nvim"] = {
-    override_options = overrides.mason,
+  {
+    "williamboman/mason.nvim",
+    opts = overrides.mason,
   },
 
-  ["jose-elias-alvarez/null-ls.nvim"] = {
-    after = "nvim-lspconfig",
-    config = function()
-      require "custom.plugins.null-ls"
-    end,
+  {
+    "nvim-tree/nvim-tree.lua",
+    opts = overrides.tree,
   },
 
-  ["nvim-tree/nvim-tree.lua"] = {
-    override_options = overrides.tree,
-  },
-
-  ["folke/which-key.nvim"] = {
-    disable = false,
-  },
-
-  ["goolord/alpha-nvim"] = {
-    disable = false,
-  },
-
-  ["mfussenegger/nvim-dap"] = {
-    disable = false,
-    opt = true,
+  {
+    "mfussenegger/nvim-dap",
+    enabled = true,
+    lazy = true,
     event = "BufReadPre",
     module = { "dap" },
-    requires = {
+    dependencies = {
       { "mfussenegger/nvim-dap-python", module = "dap-python" },
       "theHamsta/nvim-dap-virtual-text",
       "rcarriga/nvim-dap-ui",
       "nvim-telescope/telescope-dap.nvim",
     },
     config = function()
-      require("custom.plugins.dap").setup()
+      require("custom.configs.dap").setup()
     end,
   },
 
-  ["lukas-reineke/indent-blankline.nvim"] = {
-    override_options = overrides.blankline,
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    opts = overrides.blankline,
   },
 
-  ["NvChad/ui"] = {
-    override_options = overrides.ui,
+  {
+    "L3MON4D3/LuaSnip",
+    opts = overrides.luasnip,
   },
 
-  -- ["hrsh7th/nvim-cmp"] = {
-  --   override_options = function()
-  --     require "custom.plugins.cmp"
-  --   end,
-  -- },
-
-  ["L3MON4D3/LuaSnip"] = {
-    override_options = overrides.luasnip,
-  },
-
-  ["nvim-telescope/telescope.nvim"] = {
-    override_options = overrides.telescope,
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = {
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+      },
+    },
+    opts = overrides.telescope,
   },
 
   -- User Plugins
 
-  ["wakatime/vim-wakatime"] = {},
+  { "wakatime/vim-wakatime", lazy = false },
 
-  ["junegunn/fzf"] = {
-    run = ":call fzf#install()",
+  {
+    "junegunn/fzf",
+    build = ":call fzf#install()",
+    lazy = false,
   },
 
-  ["iamcco/markdown-preview.nvim"] = {
-    -- cmd = "MarkdownPreview",
-    run = function()
+  {
+    "iamcco/markdown-preview.nvim",
+    build = function()
       vim.fn["mkdp#util#install"]()
     end,
+    ft = "markdown",
   },
 
-  ["junegunn/fzf.vim"] = {
-    cmd = { "Fzf", "Fzf!", "Rg" },
+  {
+    "junegunn/fzf.vim",
+    lazy = false,
   },
 
-  ["preservim/vim-markdown"] = {},
+  { "preservim/vim-markdown", ft = "markdown" },
 
-  ["sheerun/vim-polyglot"] = {},
+  { url = "https://github.com/sheerun/vim-polyglot", event = "BufReadPre" },
 
-  ["SirVer/ultisnips"] = {},
+  { "SirVer/ultisnips", lazy = false },
 
-  ["honza/vim-snippets"] = {},
+  { "honza/vim-snippets" },
 
-  ["lervag/vimtex"] = {},
+  { "lervag/vimtex", ft = "tex" },
 
-  ["KeitaNakamura/tex-conceal.vim"] = {},
+  { "KeitaNakamura/tex-conceal.vim", ft = "tex" },
 
-  ["github/copilot.vim"] = {},
-  -- ["zbirenbaum/copilot.lua"] = {
-  --   cmd = "Copilot",
-  --   event = "InsertEnter",
-  --   config = function()
-  --     require("copilot").setup {
-  --       suggestion = { enabled = false },
-  --       panel = { enabled = false },
-  --       copilot_node_command = "\\node",
-  --     }
-  --   end,
-  -- },
-  -- ["zbirenbaum/copilot-cmp"] = {
-  --   after = "copilot.lua",
-  --   config = function()
-  --     require("copilot_cmp").setup()
-  --   end,
-  -- },
+  { "github/copilot.vim", event = "BufRead" },
 
-  ["folke/neodev.nvim"] = {
-    library = { plugins = { "nvim-dap-ui", "neotest" }, types = true },
+  {
+    "folke/neodev.nvim",
+    event = "BufReadPre *.lua",
   },
 
-  ["smjonas/snippet-converter.nvim"] = {
+  {
+    "smjonas/snippet-converter.nvim",
     cmd = "ConvertSnippets",
     config = function()
-      require "custom.plugins.snippet_converter"
+      require "custom.configs.snippet_converter"
     end,
   },
 
-  ["derekwyatt/vim-fswitch"] = {
+  {
+    "derekwyatt/vim-fswitch",
     cmd = { "FSSplitBelow" },
   },
 
-  ["liuchengxu/vista.vim"] = {
-    cmd = { "Vista!!", "Vista" },
+  {
+    "liuchengxu/vista.vim",
+    event = "BufReadPost",
   },
 
-  ["ludovicchabant/vim-gutentags"] = {},
+  { "ludovicchabant/vim-gutentags", event = "BufReadPost" },
 
-  -- ["jackguo380/vim-lsp-cxx-highlight"] = {},
-
-  -- ["m-pilia/vim-ccls"] = {},
-
-  ["andymass/vim-matchup"] = {},
-
-  ["folke/trouble.nvim"] = {
+  {
+    "folke/trouble.nvim",
     cmd = { "Trouble", "TroubleToggle" },
-    requires = "nvim-tree/nvim-web-devicons",
+    dependencies = "nvim-tree/nvim-web-devicons",
     config = function()
       require("trouble").setup {}
     end,
   },
 
-  ["wellle/targets.vim"] = {},
+  { "wellle/targets.vim", event = "BufReadPre" },
 
-  ["edluffy/specs.nvim"] = {
+  {
+    "edluffy/specs.nvim",
     config = function()
       require("specs").setup {
         show_jumps = true,
@@ -184,23 +178,22 @@ return {
     end,
   },
 
-  ["max397574/better-escape.nvim"] = {
+  {
+    "max397574/better-escape.nvim",
+    event = "InsertEnter",
     config = function()
       require("better_escape").setup {
         mapping = { "jk", "jj" }, -- a table with mappings to use
         timeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
         clear_empty_lines = false, -- clear line after escaping if there is only whitespace
         keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
-        -- example(recommended)
-        -- keys = function()
-        --   return vim.api.nvim_win_get_cursor(0)[2] > 1 and '<esc>l' or '<esc>'
-        -- end,
       }
     end,
   },
 
-  ["CRAG666/code_runner.nvim"] = {
-    requires = "nvim-lua/plenary.nvim",
+  {
+    "CRAG666/code_runner.nvim",
+    dependencies = "nvim-lua/plenary.nvim",
     cmd = "RunCode",
     config = function()
       require("code_runner").setup {
@@ -211,7 +204,8 @@ return {
     end,
   },
 
-  ["ojroques/nvim-bufdel"] = {
+  {
+    "ojroques/nvim-bufdel",
     cmd = "BufDel",
     config = function()
       require("bufdel").setup {
@@ -220,54 +214,59 @@ return {
     end,
   },
 
-  ["nvim-treesitter/nvim-treesitter-context"] = {},
-
-  ["HiPhish/nvim-ts-rainbow2"] = {},
-
-  ["lambdalisue/suda.vim"] = {},
-
-  ["nvim-telescope/telescope-fzf-native.nvim"] = {
-    cmd = "Telescope",
-    run = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+  {
+    "lambdalisue/suda.vim",
+    lazy = false,
   },
 
-  ["kevinhwang91/nvim-bqf"] = {
+  {
+    "kevinhwang91/nvim-bqf",
     ft = "qf",
   },
 
-  ["mbbill/undotree"] = {
+  {
+    "mbbill/undotree",
     cmd = "UndotreeToggle",
   },
 
-  ["nmac427/guess-indent.nvim"] = {
+  {
+    "nmac427/guess-indent.nvim",
     cmd = "GuessIndent",
     config = function()
       require("guess-indent").setup {}
     end,
   },
 
-  ["gelguy/wilder.nvim"] = {
-    requires = "nixprime/cpsm",
+  {
+    "gelguy/wilder.nvim",
+    dependencies = "nixprime/cpsm",
     config = function()
-      require "custom.plugins.wilder"
+      require "custom.configs.wilder"
     end,
+    lazy = false,
   },
 
-  ["kylechui/nvim-surround"] = {
+  {
+    "kylechui/nvim-surround",
+    -- lazy = false,
+    event = "BufRead",
     config = function()
       require("nvim-surround").setup {}
     end,
   },
 
-  ["stevearc/dressing.nvim"] = {
+  {
+    "stevearc/dressing.nvim",
     config = function()
       require("dressing").setup {
-        require "custom.plugins.dressing",
+        require "custom.configs.dressing",
       }
     end,
+    lazy = false,
   },
 
-  ["mrjones2014/legendary.nvim"] = {
+  {
+    "mrjones2014/legendary.nvim",
     cmd = "Legendary",
     config = function()
       require("legendary").setup {
@@ -281,15 +280,18 @@ return {
     end,
   },
 
-  ["https://git.sr.ht/~whynothugo/lsp_lines.nvim"] = {
+  {
+    url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     config = function()
-      require("lsp_lines").setup {}
+      require("lsp_lines").setup()
     end,
+    event = "BufReadPost",
   },
 
-  ["nvim-neotest/neotest"] = {
+  {
+    "nvim-neotest/neotest",
     module = "neotest",
-    requires = {
+    dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
       "antoinemadec/FixCursorHold.nvim",
@@ -306,9 +308,10 @@ return {
     end,
   },
 
-  ["anuvyklack/windows.nvim"] = {
+  {
+    "anuvyklack/windows.nvim",
     cmd = { "WindowsMaximize", "WindowsMaximizeVertically", "WindowsMaximizeHorizontally", "WindowsEqualize" },
-    requires = {
+    dependencies = {
       "anuvyklack/middleclass",
       "anuvyklack/animation.nvim",
     },
@@ -320,7 +323,8 @@ return {
     end,
   },
 
-  ["folke/persistence.nvim"] = {
+  {
+    "folke/persistence.nvim",
     event = "BufReadPre", -- this will only start session saving when an actual file was opened
     module = "persistence",
     config = function()
@@ -328,26 +332,45 @@ return {
     end,
   },
 
-  ["windwp/nvim-ts-autotag"] = {},
+  { url = "https://github.com/imsnif/kdl.vim", ft = { "kdl" } },
 
-  ["https://github.com/imsnif/kdl.vim"] = {},
-
-  ["tweekmonster/startuptime.vim"] = {
+  {
+    "tweekmonster/startuptime.vim",
     cmd = "StartupTime",
   },
 
-  ["kevinhwang91/nvim-ufo"] = {
-    requires = "kevinhwang91/promise-async",
-    -- config = function()
-    --   require("ufo").setup {
-    --     provider_selector = function(bufnr, filetype, buftype)
-    --       return { "treesitter", "indent" }
-    --     end,
-    --   }
-    -- end,
+  {
+    "kevinhwang91/nvim-ufo",
+    -- lazy = false,
+    dependencies = {
+      "kevinhwang91/promise-async",
+      {
+        "luukvbaal/statuscol.nvim",
+        config = function()
+          local builtin = require "statuscol.builtin"
+          require("statuscol").setup {
+            relculright = true,
+            segments = {
+              { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+              { text = { "%s" }, click = "v:lua.ScSa" },
+              { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
+            },
+          }
+        end,
+      },
+    },
+    event = "BufReadPost",
+    opts = {
+      provider_selector = function(bufnr, filetype, buftype)
+        return { "treesitter", "indent" }
+      end,
+    },
   },
 
-  ["sindrets/diffview.nvim"] = {
+  { "anuvyklack/fold-preview.nvim", dependencies = "anuvyklack/keymap-amend.nvim", config = true },
+
+  {
+    "sindrets/diffview.nvim",
     cmd = {
       "DiffviewOpen",
       "DiffviewClose",
@@ -356,9 +379,11 @@ return {
       "DiffviewRefresh",
       "DiffviewFileHistory",
     },
-    requires = "nvim-lua/plenary.nvim",
+    dependencies = "nvim-lua/plenary.nvim",
     config = function()
       require("diffview").setup()
     end,
   },
 }
+
+return plugins

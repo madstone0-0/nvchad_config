@@ -102,9 +102,9 @@ end
 
 local function configure_debuggers()
   if python_present then
-    require("custom.plugins.python_dap").setup()
+    require("custom.configs.python_dap").setup()
   end
-  require("custom.plugins.cpp_dap").setup()
+  require("custom.configs.cpp_dap").setup()
 end
 
 function M.setup()

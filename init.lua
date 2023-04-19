@@ -2,7 +2,7 @@ local opt = vim.opt
 local o = vim.o
 local g = vim.g
 local a = vim.api
-local exec = vim.api.nvim_command
+local exec = a.nvim_command
 local fn = vim.fn
 HOME = fn.environ()["HOME"]
 
@@ -41,6 +41,8 @@ o.foldlevel = 99
 o.foldlevelstart = 99
 o.foldenable = true
 
+vim.diagnostic.config { virtual_lines = { only_current_line = true } }
+
 local enable_providers = {
   "python3_provider",
   "node_provider",
@@ -51,6 +53,8 @@ for _, plugin in pairs(enable_providers) do
   vim.g["loaded_" .. plugin] = nil
   vim.cmd("runtime " .. plugin)
 end
+
+vim.cmd "runtime! plugin/rplugin.vim"
 
 g.gutentags_ctags_exclude_wildignore = 1
 g.gutentags_ctags_exclude = {
@@ -71,7 +75,7 @@ g.matchup_matchparen_offscreen = { method = "popup" }
 
 g.mkdp_auto_start = 0
 g.vim_markdown_math = 1
-g.vim_markdown_folding_disabled = 1
+g.vim_markdown_folding_disabled = 0
 
 g.UltiSnipsExpandTrigger = "<A-A>"
 g.UltiSnipsJumpForwardTrigger = "<A-A>"
@@ -91,33 +95,12 @@ g.luasnippets_path = {
 exec(
   string.format(
     "let g:UltiSnipsSnippetDirectories=['%s','%s']",
-    vim.fn.stdpath "data" .. "/site/pack/packer/start/vim-snippets/UltiSnips/",
+    vim.fn.stdpath "data" .. "/lazy/vim-snippets/UltiSnips/",
     vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/"
   )
 )
 
 g.suda_smart_edit = 1
-
--- a.nvim_create_autocmd({ "BufEnter" }, {
---   pattern = "NvimTree*",
---   callback = function()
---     local view = require "nvim-tree.view"
---     local is_visible = view.is_visible()
---
---     local api = require "nvim-tree.api"
---     if not is_visible then
---       api.tree.open()
---     end
---   end,
--- })
-
--- a.nvim_create_autocmd({ "BufWritePost" }, {
---   callback = function()
---     if vim.bo.filetype ~= "git" and not vim.bo.filetype ~= "gitcommit" then
---       require("session_manager").autosave_session()
---     end
---   end,
--- })
 
 exec "autocmd BufNewFile,BufRead *.md set filetype=markdown"
 exec "autocmd FileType markdown setlocal spell"
@@ -134,10 +117,6 @@ exec "au FileType gitcommit setlocal complete+=kspell"
 
 -- vim.cmd [[highlight IndentBlanklineIndent1 guibg=#1f1f1f gui=nocombine]]
 -- vim.cmd [[highlight IndentBlanklineIndent2 guibg=#1a1a1a gui=nocombine]]
--- vim.cmd [[hi DiffAdd      gui=none    guifg=NONE          guibg=#bada9f]]
--- vim.cmd [[hi DiffChange   gui=none    guifg=NONE          guibg=#e5d5ac]]
--- vim.cmd [[hi DiffDelete   gui=bold    guifg=#ff8080       guibg=#ffb0b0]]
--- vim.cmd [[hi DiffText     gui=none    guifg=NONE          guibg=#8cbee2]]
 
 local exts = { "js", "py", "ts", "sh", "md", "lua", "yml", "cpp", "h", "tex", "jsx" }
 
@@ -147,5 +126,5 @@ end
 
 exec "au BufEnter *.h let b:fswitchdst ='cpp,c,cc,m'"
 exec "au BufEnter *.cpp let b:fswitchdst ='h,hpp'"
-exec(string.format("au BufWritePost %s :luafile %", vim.fn.stdpath "config" .. "/custom/plugins/dap.lua"))
+-- exec(string.format("au BufWritePost %s :luafile %", vim.fn.stdpath "config" .. "/custom/configs/dap.lua"))
 opt.clipboard = { "unnamed", "unnamedplus" }

@@ -38,14 +38,20 @@ M.short = {
   n = {
     ["<C-A-c>"] = { "<cmd> qall <CR>", "Close all" },
     ["<leader>rg"] = { "<cmd> :Telescope live_grep<CR>", "Search with rg", silent = true },
-    -- ["<leader>s"] = { string.format("<cmd> :source %s<CR>", vim.fn.stdpath "config" .. "/init.lua"), silent = true },
+    ["<leader>tk"] = { "<cmd> :Telescope keymaps<CR>", "Keymaps", silent = true },
+
     ["<up>"] = { "<cmd> :resize -2<CR>", noremap = true },
     ["<down>"] = { "<cmd> :resize +2<CR>", noremap = true },
     ["<left>"] = { "<cmd> :vertical resize -2<CR>", noremap = true },
     ["<right>"] = { "<cmd> :vertical resize +2<CR>", noremap = true },
     [";"] = { ":", "enter cmdline", opts = { nowait = true } },
 
-    ["<leader>ll"] = { require("lsp_lines").toggle, "Toggle lsp_lines" },
+    ["<leader>ll"] = {
+      function()
+        require("lsp_lines").toggle()
+      end,
+      "Toggle lsp_lines",
+    },
     ["<leader>lg"] = { "<cmd> :Legendary <CR>", "Legendary", silent = true },
     ["<leader>pr"] = {
       function()
@@ -131,7 +137,6 @@ M.short = {
       noremap = false,
     },
 
-    -- ["<leader>t"] = { "<cmd> :TroubleToggle<CR>", "TroubleToggle", silent = true, noremap = true },
     ["<leader>q"] = {
       "<cmd> :TroubleToggle workspace_diagnostics<CR>",
       "TroubleToggle",
