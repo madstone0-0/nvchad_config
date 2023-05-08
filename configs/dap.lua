@@ -76,7 +76,7 @@ local function configure_exts()
           elements = {
             {
               id = "repl",
-              size = 0.5,
+              size = 0.3,
             },
             {
               id = "console",

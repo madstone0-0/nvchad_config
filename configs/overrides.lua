@@ -1,5 +1,7 @@
 local M = {}
 
+-- local rainbow = require "ts-rainbow"
+
 M.treesiter = {
   ensure_installed = {
     "lua",
@@ -13,7 +15,11 @@ M.treesiter = {
     "toml",
     "cpp",
     "markdown",
-    "latex",
+  },
+  highlight = {
+    enable = true,
+    disable = { "latex" },
+    additional_vim_regex_highlighting = { "latex", "markdown" },
   },
   matchup = {
     enable = true,
@@ -22,7 +28,7 @@ M.treesiter = {
     enable = true,
     query = "rainbow-parens",
     -- Highlight the entire buffer all at once
-    -- strategy = require "ts-rainbow.lib",
+    -- strategy = rainbow.strategy.global,
   },
   autotag = {
     enable = true,
@@ -128,21 +134,6 @@ M.blankline = {
   -- show_trailing_blankline_indent = false,
 }
 
-M.ui = {
-  statusline = {
-    separator_style = "round",
-    overriden_modules = function()
-      return require "custom.status"
-    end,
-  },
-
-  tabufline = {
-    enabled = true,
-    lazyload = true,
-    overriden_modules = nil,
-  },
-}
-
 M.luasnip = {
   history = true,
   updateevents = "TextChanged,TextChangedI",
@@ -151,6 +142,22 @@ M.luasnip = {
 
 M.telescope = {
   defaults = {
+    file_sorter = require("telescope.sorters").get_fzy_sorter,
+    file_ignore_patterns = { "node_modules", ".git", "venv" },
+    layout_strategy = "horizontal",
+    layout_config = {
+      horizontal = {
+        prompt_position = "bottom",
+        preview_width = 0.55,
+        results_width = 0.8,
+      },
+      vertical = {
+        mirror = false,
+      },
+      width = 0.87,
+      height = 0.80,
+      preview_cutoff = 120,
+    },
     mappings = {
       n = { ["q"] = require("telescope.actions").close },
       i = {
@@ -159,8 +166,56 @@ M.telescope = {
       },
     },
 
-    extensions_list = { "fzf", "themes", "terms" },
+    extensions_list = { "frecency", "fzf", "themes", "terms" },
   },
 }
+
+require("telescope").setup {
+  extensions = {
+    frecency = {
+      ignore_patterns = { "*.git/*", "*/tmp/*", "*/node_modules/*", "*/venv/*" },
+    },
+  },
+}
+
+M.cmp = {
+  sources = {
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+    { name = "buffer" },
+    { name = "nvim_lua" },
+    -- { name = "rg",      keyword_length = 3 },
+    { name = "path" },
+    { name = "git" },
+  },
+}
+
+M.color = {
+  user_default_options = {
+    names = false, -- "Name" codes like Blue or blue
+    RRGGBBAA = true, -- #RRGGBBAA hex codes
+    rgb_fn = true, -- CSS rgb() and rgba() functions
+    hsl_fn = false, -- CSS hsl() and hsla() functions
+    mode = "background", -- Set the display mode.
+    -- parsers can contain values used in |user_default_options|
+  },
+}
+
+-- M.icons = {
+--   override = {
+--     zsh = {
+--       icon = "",
+--       color = "#428840",
+--       cterm_color = "65",
+--       name = "Zsh",
+--     },
+--   },
+--   override_by_filename = {
+--     ["Dockerfile"] = {
+--       icon = "",
+--       name = "Dockerfile",
+--     },
+--   },
+-- }
 
 return M

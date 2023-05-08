@@ -6,10 +6,35 @@ local plugins = {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      "jose-elias-alvarez/null-ls.nvim",
-      config = function()
-        require "custom.configs.null-ls"
-      end,
+      {
+        "jose-elias-alvarez/null-ls.nvim",
+        config = function()
+          require "custom.configs.null-ls"
+        end,
+      },
+      {
+        "glepnir/lspsaga.nvim",
+        event = "LspAttach",
+        dependencies = {
+          { "nvim-tree/nvim-web-devicons" },
+        },
+        config = function()
+          require("lspsaga").setup {
+            symbol_in_winbar = {
+              enable = false,
+            },
+            outline = {
+              keys = {
+                expand_or_jump = "<Enter>",
+              },
+            },
+
+            lightbulb = {
+              enable = false,
+            },
+          }
+        end,
+      },
     },
     config = function()
       require "plugins.configs.lspconfig"
@@ -28,7 +53,7 @@ local plugins = {
       },
       "windwp/nvim-ts-autotag",
       "nvim-treesitter/nvim-treesitter-context",
-      "HiPhish/nvim-ts-rainbow2",
+      { "HiPhish/nvim-ts-rainbow2" },
     },
     opts = overrides.treesiter,
     event = "BufRead",
@@ -78,9 +103,52 @@ local plugins = {
         "nvim-telescope/telescope-fzf-native.nvim",
         build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
       },
+      {
+        "nvim-telescope/telescope-frecency.nvim",
+        dependencies = {
+          "kkharji/sqlite.lua",
+        },
+        keys = { "<leader><leader>" },
+        config = function()
+          require("telescope").load_extension "frecency"
+        end,
+      },
+      {
+        "tsakirist/telescope-lazy.nvim",
+        keys = { "<leader>la" },
+        config = function()
+          require("telescope").load_extension "lazy"
+        end,
+      },
     },
     opts = overrides.telescope,
   },
+
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = {
+      {
+        "petertriho/cmp-git",
+        config = function()
+          require("cmp_git").setup()
+        end,
+      },
+      "lukas-reineke/cmp-rg",
+    },
+    opts = overrides.cmp,
+  },
+
+  {
+    "NvChad/nvim-colorizer.lua",
+    cmd = { "ColorizerToggle" },
+    event = { "BufReadPre", "BufRead" },
+    opts = overrides.color,
+  },
+
+  -- {
+  --   "nvim-tree/nvim-web-devicons",
+  --   opts = overrides.icons,
+  -- },
 
   -- User Plugins
 
@@ -106,18 +174,22 @@ local plugins = {
   },
 
   { "preservim/vim-markdown", ft = "markdown" },
-
   { url = "https://github.com/sheerun/vim-polyglot", event = "BufReadPre" },
-
   { "SirVer/ultisnips", lazy = false },
 
   { "honza/vim-snippets" },
 
   { "lervag/vimtex", ft = "tex" },
-
   { "KeitaNakamura/tex-conceal.vim", ft = "tex" },
+  { "github/copilot.vim", event = "InsertEnter" },
 
-  { "github/copilot.vim", event = "BufRead" },
+  -- {
+  --   "zbirenbaum/copilot.lua",
+  --   event = "BufRead",
+  --   config = function()
+  --     require("copilot").setup {}
+  --   end,
+  -- },
 
   {
     "folke/neodev.nvim",
@@ -137,20 +209,16 @@ local plugins = {
     cmd = { "FSSplitBelow" },
   },
 
-  {
-    "liuchengxu/vista.vim",
-    event = "BufReadPost",
-  },
-
   { "ludovicchabant/vim-gutentags", event = "BufReadPost" },
 
   {
     "folke/trouble.nvim",
     cmd = { "Trouble", "TroubleToggle" },
     dependencies = "nvim-tree/nvim-web-devicons",
-    config = function()
-      require("trouble").setup {}
-    end,
+    -- config = function()
+    --   require("trouble").setup {}
+    -- end,
+    config = true,
   },
 
   { "wellle/targets.vim", event = "BufReadPre" },
@@ -160,7 +228,7 @@ local plugins = {
     config = function()
       require("specs").setup {
         show_jumps = true,
-        min_jump = 30,
+        min_jump = 20,
         popup = {
           delay_ms = 0, -- delay before popup displays
           inc_ms = 10, -- time increments used for fade/resize effects
@@ -367,7 +435,17 @@ local plugins = {
     },
   },
 
-  { "anuvyklack/fold-preview.nvim", dependencies = "anuvyklack/keymap-amend.nvim", config = true },
+  {
+    "anuvyklack/fold-preview.nvim",
+    dependencies = "anuvyklack/keymap-amend.nvim",
+    config = function()
+      require("fold-preview").setup {
+        auto = 800,
+        default_keybindings = false,
+      }
+    end,
+    event = "BufReadPost",
+  },
 
   {
     "sindrets/diffview.nvim",
@@ -384,6 +462,29 @@ local plugins = {
       require("diffview").setup()
     end,
   },
+
+  { "moll/vim-bbye", cmd = { "Bdelete", "Bwipeout" } },
+
+  -- {
+  --   "RRethy/vim-illuminate",
+  --   event = "LspAttach",
+  --   config = function()
+  --     require("illuminate").configure {
+  --       providers = {
+  --         "lsp",
+  --         "treesitter",
+  --         "regex",
+  --       },
+  --       filetypes_denylist = {
+  --         "lazy",
+  --         "TelescopePrompt",
+  --         "mason",
+  --         "NvimTree",
+  --         "sagarename",
+  --       },
+  --     }
+  --   end,
+  -- },
 }
 
 return plugins

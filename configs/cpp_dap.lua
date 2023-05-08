@@ -26,6 +26,7 @@ function M.setup(_)
       request = "launch",
       MIMode = "gdb",
       miDebuggerPath = "/usr/bin/gdb",
+      justMyCode = true,
       -- program = function()
       --   return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/build", "file")
       -- end,

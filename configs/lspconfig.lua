@@ -44,22 +44,34 @@ end
 -- local servers = { "html", "cssls", "tsserver", "eslint", "pylsp", "bashls", "sumneko_lua", "jsonls", "yamlls" }
 local servers = {
   "html",
-  -- "cssls",
   "tsserver",
   "jsonls",
   "yamlls",
   "marksman",
   "texlab",
-  "lua_ls",
   "cmake",
 }
 
 -- Neodev Setup
 require("neodev").setup {
-  library = { plugins = { "nvim-dap-ui", "neotest" }, types = true },
+  library = {
+    plugins = { "dap", "nvim-dap-ui", "neotest", "nvim-treesitter", "plenary.nvim", "telescope.nvim", "lazy.nvim" },
+  },
 }
 
 local lspconfig = require "lspconfig"
+
+lspconfig.lua_ls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    Lua = {
+      completion = {
+        callSnippet = "Replace",
+      },
+    },
+  },
+}
 
 lspconfig.cssls.setup {
   on_attach = on_attach,

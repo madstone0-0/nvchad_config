@@ -34,11 +34,34 @@ local function ink_edit()
   vim.api.nvim_command ":redraw!"
 end
 
+local function lsp_lines()
+  vim.diagnostic.config { virtual_lines = { only_current_line = true } }
+end
+
 M.short = {
   n = {
+    ["<Esc>"] = { ":noh <CR>", "clear highlights", silent = true },
     ["<C-A-c>"] = { "<cmd> qall <CR>", "Close all" },
     ["<leader>rg"] = { "<cmd> :Telescope live_grep<CR>", "Search with rg", silent = true },
     ["<leader>tk"] = { "<cmd> :Telescope keymaps<CR>", "Keymaps", silent = true },
+    ["<leader><leader>"] = { "<cmd> :Telescope frecency workspace=CWD<CR>", "Frecency", silent = true, noremap = false },
+    ["<leader>la"] = { "<cmd> :Telescope lazy<CR>", "Lazy", silent = true, noremap = true },
+    ["<leader>uu"] = { "<cmd> :NvChadUpdate <CR>", "Update NvChad" },
+
+    -- ["<C-l>"] = {
+    --   function()
+    --     require("nvchad_ui.tabufline").move_buf(1)
+    --   end,
+    --   "Move buf to the right",
+    --   noremap = true,
+    -- },
+    -- ["<C-h>"] = {
+    --   function()
+    --     require("nvchad_ui.tabufline").move_buf(-1)
+    --   end,
+    --   "Move buf to the left",
+    --   noremap = true,
+    -- },
 
     ["<up>"] = { "<cmd> :resize -2<CR>", noremap = true },
     ["<down>"] = { "<cmd> :resize +2<CR>", noremap = true },
@@ -46,9 +69,18 @@ M.short = {
     ["<right>"] = { "<cmd> :vertical resize +2<CR>", noremap = true },
     [";"] = { ":", "enter cmdline", opts = { nowait = true } },
 
+    ["gh"] = { "<cmd>Lspsaga lsp_finder<CR>" },
+    ["gr"] = { "<cmd>Lspsaga rename<CR>" },
+    ["gp"] = { "<cmd>Lspsaga peek_definition<CR>" },
+    -- ["gt"] = { "<cmd>Lspsaga peek_type_definition<CR>" },
+    ["<leader>cv"] = { "<cmd>Lspsaga outline<CR>" },
+    ["K"] = { "<cmd>Lspsaga hover_doc ++keep<CR>" },
+    ["<leader>ca"] = { "<cmd>Lspsaga code_action<CR>" },
+
     ["<leader>ll"] = {
       function()
         require("lsp_lines").toggle()
+        lsp_lines()
       end,
       "Toggle lsp_lines",
     },
@@ -68,6 +100,7 @@ M.short = {
       end,
       "toggle transparency",
     },
+    ["<leader>ct"] = { "<cmd> :ColorizerToggle <CR>", "Toggle colorizer", silent = true },
     -- ["<leader>x"] = { "<cmd> :BufDel <CR>", "BufDel", noremap = false },
     ["<F5>"] = { "<cmd> DapContinue <CR>", "Debugger continue" },
     ["<F10>"] = { "<cmd> DapStepOver <CR>", "Debugger step over" },
@@ -80,6 +113,12 @@ M.short = {
         require("dap").run_last()
       end,
       "Debugger run last config",
+    },
+    ["<leader>du"] = {
+      function()
+        require("dapui").toggle()
+      end,
+      "Toggle dap ui",
     },
     ["<leader>dh"] = {
       function()
@@ -126,7 +165,6 @@ M.short = {
     },
 
     ["<leader>oj"] = { "<cmd> :FSSplitBelow<CR>", "FSSplitBelow" },
-    ["<leader>cv"] = { "<cmd> :Vista!!<CR>", "Vista!!" },
 
     ["<leader>co"] = {
       function()
@@ -197,6 +235,10 @@ M.short = {
         require("ufo").closeAllFolds()
       end,
     },
+  },
+
+  v = {
+    ["<leader>ca"] = { "<cmd>Lspsaga code_action<CR>" },
   },
 
   i = {
