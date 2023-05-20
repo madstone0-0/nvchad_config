@@ -23,10 +23,6 @@ local user_attach = function(client, bufnr)
     cs.rename = false
     cs.signatureHelp = false
   end
-
-  -- if cs.documentSymbolProvider then
-  --   navic.attach(client, bufnr)
-  -- end
 end
 
 local user_capabilities = function(name)
@@ -34,6 +30,7 @@ local user_capabilities = function(name)
   if name == "cssls" then
     user_cap.textDocument.completion.completionItem.snippetSupport = true
   end
+  user_cap.offsetEncoding = "utf-16"
   user_cap.textDocument.foldingRange = {
     dynamicRegistration = false,
     lineFoldingOnly = true,
@@ -88,19 +85,23 @@ lspconfig.grammarly.setup {
 
 lspconfig.bashls.setup {
   on_attach = on_attach,
-  capabilities = user_capabilities "",
+  capabilities = user_capabilities "bashls",
   single_file_support = true,
 }
 
-lspconfig.ccls.setup {
-  on_attach = user_attach,
-  capabilities = user_capabilities "",
-  offset_encoding = "utf-8",
-  init_options = {
-    highlight = {
-      lsRanges = true,
-    },
-  },
+-- lspconfig.ccls.setup {
+--   on_attach = user_attach,
+--   capabilities = user_capabilities "ccls",
+--   init_options = {
+--     highlight = {
+--       lsRanges = true,
+--     },
+--   },
+-- }
+
+lspconfig.clangd.setup {
+  on_attach = on_attach,
+  capabilities = user_capabilities "clangd",
 }
 
 lspconfig.ruff_lsp.setup {

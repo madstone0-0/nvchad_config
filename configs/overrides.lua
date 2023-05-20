@@ -15,6 +15,7 @@ M.treesiter = {
     "toml",
     "cpp",
     "markdown",
+    "markdown_inline",
   },
   highlight = {
     enable = true,
@@ -48,6 +49,8 @@ M.mason = {
     "eslint_d",
     "prettier",
     "json-lsp",
+    "yamllint",
+    "yamlfmt",
 
     -- shell
     "shfmt",
@@ -84,7 +87,8 @@ M.tree = {
     custom = { "^.git$", "^node_modules$", "^venv$", "^__pycache__$" },
   },
   git = {
-    enable = false,
+    enable = true,
+    ignore = false,
   },
 
   trash = {
@@ -142,6 +146,43 @@ M.luasnip = {
 
 M.telescope = {
   defaults = {
+    preview = {
+      mime_hook = function(filepath, bufnr, opts)
+        local is_image = function(filepath)
+          local image_extensions = { "png", "jpg" } -- Supported image formats
+          local split_path = vim.split(filepath:lower(), ".", { plain = true })
+          local extension = split_path[#split_path]
+          return vim.tbl_contains(image_extensions, extension)
+        end
+        if is_image(filepath) then
+          local term = vim.api.nvim_open_term(bufnr, {})
+          local function send_output(_, data, _)
+            for _, d in ipairs(data) do
+              vim.api.nvim_chan_send(term, d .. "\r\n")
+            end
+          end
+          vim.fn.jobstart({
+            "catimg",
+            filepath, -- Terminal image viewer command
+          }, { on_stdout = send_output, stdout_buffered = true, pty = true })
+        else
+          require("telescope.previewers.utils").set_preview_message(bufnr, opts.winid, "Binary cannot be previewed")
+        end
+      end,
+    },
+
+    vimgrep_arguments = {
+      "rg",
+      "--hidden",
+      "-L",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--trim",
+    },
     file_sorter = require("telescope.sorters").get_fzy_sorter,
     file_ignore_patterns = { "node_modules", ".git", "venv" },
     layout_strategy = "horizontal",
@@ -165,15 +206,27 @@ M.telescope = {
         ["<C-k>"] = require("telescope.actions").move_selection_previous,
       },
     },
-
-    extensions_list = { "frecency", "fzf", "themes", "terms" },
   },
-}
 
-require("telescope").setup {
+  pickers = {
+    find_files = {
+      find_command = { "fd", "--hidden", "--type", "f", "--strip-cwd-prefix" },
+      -- find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
+    },
+  },
+
+  extensions_list = { "frecency", "fzf", "themes", "terms" },
+
   extensions = {
     frecency = {
       ignore_patterns = { "*.git/*", "*/tmp/*", "*/node_modules/*", "*/venv/*" },
+    },
+
+    fzf = {
+      fuzzy = true,
+      override_generic_sorter = true,
+      override_file_sorter = true,
+      case_mode = "smart_case",
     },
   },
 }
@@ -201,21 +254,12 @@ M.color = {
   },
 }
 
--- M.icons = {
---   override = {
---     zsh = {
---       icon = "",
---       color = "#428840",
---       cterm_color = "65",
---       name = "Zsh",
---     },
---   },
---   override_by_filename = {
---     ["Dockerfile"] = {
---       icon = "",
---       name = "Dockerfile",
---     },
---   },
--- }
+M.key = {
+  plugins = {
+    spelling = {
+      enabled = false,
+    },
+  },
+}
 
 return M

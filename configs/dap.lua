@@ -105,6 +105,7 @@ local function configure_debuggers()
     require("custom.configs.python_dap").setup()
   end
   require("custom.configs.cpp_dap").setup()
+  require("custom.configs.bash_dap").setup()
 end
 
 function M.setup()

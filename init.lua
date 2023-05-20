@@ -6,6 +6,8 @@ local exec = a.nvim_command
 local fn = vim.fn
 HOME = fn.environ()["HOME"]
 
+require "custom.autocmds"
+
 local global_options = {
   encoding = "utf-8",
   hidden = true,
@@ -13,7 +15,7 @@ local global_options = {
   title = true,
   shiftwidth = 4,
   tabstop = 4,
-  grepprg = "rg --vimgrep --smart-case --follow",
+  grepprg = "rg --hidden --iglob '!node_modules/* !.git/*' --vimgrep --smart-case --follow",
   list = true,
   conceallevel = 2,
   thesaurus = "/home/mads/thesaurus/thesaurii.txt",
@@ -46,7 +48,7 @@ local global_options = {
 
 local local_options = {
   sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions",
-  fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:⏵]],
+  fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:⏵,diff:/]],
   foldcolumn = "1",
   foldlevel = 50,
   foldlevelstart = 70,
@@ -60,7 +62,7 @@ local plugin_options = {
   gutentags_ctags_extra_args = { "--fields=+niazS", "--extra=+q", "--c++-kinds=+px", "--c-kinds=+px" },
 
   -- Matchup
-  matchup_matchparen_offscreen = { method = "popup" },
+  matchup_matchparen_offscreen = { method = "status" },
 
   -- Vim Markdown
   mkdp_auto_start = 0,
@@ -75,6 +77,7 @@ local plugin_options = {
 
   -- VimLatex
   tex_flavour = "latex",
+  -- vimtex_compiler_method = "tectonic",
   vimtex_view_method = "zathura",
   vimtex_quickfix_mode = 0,
   tex_conceal = "abdmgs",
@@ -90,10 +93,8 @@ local plugin_options = {
   suda_smart_edit = 1,
 
   -- Python3
-  python3_host_prog = "/home/mads/.pyenv/versions/3.11.2/bin/python3",
+  python3_host_prog = "/home/mads/.pyenv/versions/neovim/bin/python3",
 }
-
-local exts = { "js", "py", "ts", "sh", "md", "lua", "yml", "cpp", "h", "tex", "jsx" }
 
 for k, v in pairs(global_options) do
   opt[k] = v
@@ -135,48 +136,11 @@ exec(
   )
 )
 
-for _, ext in pairs(exts) do
-  exec("au BufWritePre *" .. ext .. " lua vim.lsp.buf.format()")
-end
-
 for i = 1, 9, 1 do
   vim.keymap.set("n", string.format("<A-%s>", i), function()
     vim.api.nvim_set_current_buf(vim.t.bufs[i])
   end)
 end
-
-vim.cmd [[
-augroup _markdown
-autocmd!
-au BufNewFile,BufRead *.md set filetype=markdown
-au FileType markdown setlocal spell
-au FileType markdown set spelllang=en_gb
-au FileType markdown setlocal complete+=kspell
-augroup end
-
-augroup _latex
-autocmd!
-au FileType tex setlocal spell
-au FileType tex set spelllang=en_gb
-au FileType tex setlocal complete+=kspell
-augroup end
-
-augroup _git
-au FileType gitcommit setlocal spell
-au FileType gitcommit set spelllang=en_gb
-au FileType gitcommit setlocal complete+=kspell"
-augroup end
-
-augroup _cpp
-au BufEnter *.h let b:fswitchdst ='cpp,c,cc,m'
-au BufEnter *.cpp let b:fswitchdst ='h,hpp'
-augroup end
-
-augroup RestoreCursorShapeOnExit
-    autocmd!
-    autocmd VimLeave * set guicursor=a:hor20
-augroup END
-]]
 
 exec("au BufWritePost " .. vim.fn.stdpath "config" .. "/custom/configs/dap.lua :luafile %")
 opt.clipboard = { "unnamed", "unnamedplus" }

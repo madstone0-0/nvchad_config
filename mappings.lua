@@ -5,7 +5,7 @@ local function compile_cpp()
   local src_noext = vim.fn.expand "%:t:r"
   local build_path = vim.fn.expand "%:p:h:h:h:~" .. "/build/"
 
-  local _flag = "-g"
+  local _flag = "-g -std=++17"
   local command = string.format("silent exec '!g++ %s %s -o %s >> build.log'", _flag, src_path, build_path .. src_noext)
 
   print(command)
@@ -44,24 +44,32 @@ M.short = {
     ["<C-A-c>"] = { "<cmd> qall <CR>", "Close all" },
     ["<leader>rg"] = { "<cmd> :Telescope live_grep<CR>", "Search with rg", silent = true },
     ["<leader>tk"] = { "<cmd> :Telescope keymaps<CR>", "Keymaps", silent = true },
-    ["<leader><leader>"] = { "<cmd> :Telescope frecency workspace=CWD<CR>", "Frecency", silent = true, noremap = false },
-    ["<leader>la"] = { "<cmd> :Telescope lazy<CR>", "Lazy", silent = true, noremap = true },
+    ["<C-A-m>"] = { "<cmd> :Telescope frecency workspace=CWD<CR>", "Frecency", silent = true },
+    -- ["<leader>la"] = { "<cmd> :Telescope lazy<CR>", "Lazy", silent = true, noremap = true },
     ["<leader>uu"] = { "<cmd> :NvChadUpdate <CR>", "Update NvChad" },
+    ["<leader>ss"] = {
+      function()
+        -- require("lsp_signature").toggle_float_win()
+        vim.lsp.buf.signature_help()
+      end,
+      "Toggle Signature",
+      silent = true,
+    },
 
-    -- ["<C-l>"] = {
-    --   function()
-    --     require("nvchad_ui.tabufline").move_buf(1)
-    --   end,
-    --   "Move buf to the right",
-    --   noremap = true,
-    -- },
-    -- ["<C-h>"] = {
-    --   function()
-    --     require("nvchad_ui.tabufline").move_buf(-1)
-    --   end,
-    --   "Move buf to the left",
-    --   noremap = true,
-    -- },
+    ["<C-A-.>"] = {
+      function()
+        require("nvchad_ui.tabufline").move_buf(1)
+      end,
+      "Move buf to the right",
+      noremap = true,
+    },
+    ["<C-A-,>"] = {
+      function()
+        require("nvchad_ui.tabufline").move_buf(-1)
+      end,
+      "Move buf to the left",
+      noremap = true,
+    },
 
     ["<up>"] = { "<cmd> :resize -2<CR>", noremap = true },
     ["<down>"] = { "<cmd> :resize +2<CR>", noremap = true },
@@ -74,7 +82,7 @@ M.short = {
     ["gp"] = { "<cmd>Lspsaga peek_definition<CR>" },
     -- ["gt"] = { "<cmd>Lspsaga peek_type_definition<CR>" },
     ["<leader>cv"] = { "<cmd>Lspsaga outline<CR>" },
-    ["K"] = { "<cmd>Lspsaga hover_doc ++keep<CR>" },
+    ["K"] = { "<cmd>Lspsaga hover_doc<CR>" },
     ["<leader>ca"] = { "<cmd>Lspsaga code_action<CR>" },
 
     ["<leader>ll"] = {
@@ -84,7 +92,6 @@ M.short = {
       end,
       "Toggle lsp_lines",
     },
-    ["<leader>lg"] = { "<cmd> :Legendary <CR>", "Legendary", silent = true },
     ["<leader>pr"] = {
       function()
         preview()
@@ -106,7 +113,10 @@ M.short = {
     ["<F10>"] = { "<cmd> DapStepOver <CR>", "Debugger step over" },
     ["<F9>"] = { "<cmd> DapStepInto <CR>", "Debugger step into" },
     ["<F12>"] = { "<cmd> DapStepOut <CR>", "Debugger step out" },
-    ["<leader>tb"] = { "<cmd> DapToggleBreakpoint <CR>", "Debugger toggle breakpoint" },
+    -- ["<leader>tb"] = { "<cmd> DapToggleBreakpoint <CR>", "Debugger toggle breakpoint" },
+    ["<leader>tb"] = { "<cmd> PBToggleBreakpoint <CR>", "Debugger toggle breakpoint" },
+    ["<leader>dc"] = { "<cmd> PBSetConditionalBreakpoint <CR>", "Debugger set conditional breakpoint" },
+    ["<leader>da"] = { "<cmd> PBClearAllBreakpoints <CR>", "Debugger clear all breakpoints" },
     ["<leader>dr"] = { "<cmd> DapToggleRepl <CR>", "Debugger toggle repl" },
     ["<leader>dl"] = {
       function()
@@ -174,6 +184,8 @@ M.short = {
       slient = true,
       noremap = false,
     },
+    ["<leader>ob"] = { "<cmd> OverseerRun <CR>", "Run tasks" },
+    ["<leader>ot"] = { "<cmd> OverseerToggle <CR>", "Toggle Overseer" },
 
     ["<leader>q"] = {
       "<cmd> :TroubleToggle workspace_diagnostics<CR>",
@@ -234,6 +246,20 @@ M.short = {
       function()
         require("ufo").closeAllFolds()
       end,
+    },
+
+    ["<leader>go"] = {
+      function()
+        require("neogit").open { kind = "split" }
+      end,
+      "Neogit Open",
+    },
+
+    ["<leader>gc"] = {
+      function()
+        require("neogit").open { "commit" }
+      end,
+      "Neogit Commits",
     },
   },
 

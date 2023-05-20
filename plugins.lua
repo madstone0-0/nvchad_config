@@ -19,20 +19,21 @@ local plugins = {
           { "nvim-tree/nvim-web-devicons" },
         },
         config = function()
-          require("lspsaga").setup {
-            symbol_in_winbar = {
-              enable = false,
-            },
-            outline = {
-              keys = {
-                expand_or_jump = "<Enter>",
-              },
-            },
-
-            lightbulb = {
-              enable = false,
-            },
-          }
+          require("custom.configs.saga").setup()
+        end,
+      },
+      {
+        "ray-x/lsp_signature.nvim",
+        event = "LspAttach",
+        config = function()
+          require("custom.configs.signature").setup()
+        end,
+      },
+      {
+        "VidocqH/lsp-lens.nvim",
+        event = "LspAttach",
+        config = function()
+          require("lsp-lens").setup()
         end,
       },
     },
@@ -56,7 +57,7 @@ local plugins = {
       { "HiPhish/nvim-ts-rainbow2" },
     },
     opts = overrides.treesiter,
-    event = "BufRead",
+    -- event = "BufRead",
   },
 
   {
@@ -80,6 +81,14 @@ local plugins = {
       "theHamsta/nvim-dap-virtual-text",
       "rcarriga/nvim-dap-ui",
       "nvim-telescope/telescope-dap.nvim",
+      {
+        "Weissle/persistent-breakpoints.nvim",
+        config = function()
+          require("persistent-breakpoints").setup {
+            load_breakpoints_event = { "BufReadPost" },
+          }
+        end,
+      },
     },
     config = function()
       require("custom.configs.dap").setup()
@@ -108,18 +117,12 @@ local plugins = {
         dependencies = {
           "kkharji/sqlite.lua",
         },
-        keys = { "<leader><leader>" },
-        config = function()
-          require("telescope").load_extension "frecency"
-        end,
+        keys = { "<C-A-m>" },
       },
-      {
-        "tsakirist/telescope-lazy.nvim",
-        keys = { "<leader>la" },
-        config = function()
-          require("telescope").load_extension "lazy"
-        end,
-      },
+      -- {
+      --   "tsakirist/telescope-lazy.nvim",
+      --   keys = { "<leader>la" },
+      -- },
     },
     opts = overrides.telescope,
   },
@@ -145,10 +148,7 @@ local plugins = {
     opts = overrides.color,
   },
 
-  -- {
-  --   "nvim-tree/nvim-web-devicons",
-  --   opts = overrides.icons,
-  -- },
+  -- { "folke/which-key.nvim", opts = overrides.key },
 
   -- User Plugins
 
@@ -209,7 +209,7 @@ local plugins = {
     cmd = { "FSSplitBelow" },
   },
 
-  { "ludovicchabant/vim-gutentags", event = "BufReadPost" },
+  -- { "ludovicchabant/vim-gutentags", event = "BufReadPost" },
 
   {
     "folke/trouble.nvim",
@@ -307,7 +307,7 @@ local plugins = {
 
   {
     "gelguy/wilder.nvim",
-    dependencies = "nixprime/cpsm",
+    dependencies = { "nixprime/cpsm" },
     config = function()
       require "custom.configs.wilder"
     end,
@@ -334,21 +334,6 @@ local plugins = {
   },
 
   {
-    "mrjones2014/legendary.nvim",
-    cmd = "Legendary",
-    config = function()
-      require("legendary").setup {
-        which_key = {
-          auto_register = true,
-        },
-        extensions = {
-          nvim_tree = true,
-        },
-      }
-    end,
-  },
-
-  {
     url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     config = function()
       require("lsp_lines").setup()
@@ -371,6 +356,9 @@ local plugins = {
           require "neotest-python" {
             dap = { justMyCode = false },
           },
+        },
+        consumers = {
+          overseer = require "neotest.consumers.overseer",
         },
       }
     end,
@@ -465,26 +453,42 @@ local plugins = {
 
   { "moll/vim-bbye", cmd = { "Bdelete", "Bwipeout" } },
 
-  -- {
-  --   "RRethy/vim-illuminate",
-  --   event = "LspAttach",
-  --   config = function()
-  --     require("illuminate").configure {
-  --       providers = {
-  --         "lsp",
-  --         "treesitter",
-  --         "regex",
-  --       },
-  --       filetypes_denylist = {
-  --         "lazy",
-  --         "TelescopePrompt",
-  --         "mason",
-  --         "NvimTree",
-  --         "sagarename",
-  --       },
-  --     }
-  --   end,
-  -- },
+  { "jghauser/mkdir.nvim" },
+
+  {
+    "karb94/neoscroll.nvim",
+    event = "BufReadPre",
+    config = function()
+      require("neoscroll").setup()
+    end,
+  },
+
+  {
+    "stevearc/overseer.nvim",
+    cmd = { "OverseerRun", "OverseerToggle" },
+    config = function()
+      require("overseer").setup()
+    end,
+  },
+
+  {
+    "theHamsta/nvim_rocks",
+    event = "VeryLazy",
+    build = "pip3 install --user hererocks && python3 -mhererocks . -j2.1.0-beta3 -r3.0.0 && cp nvim_rocks.lua lua",
+    config = function()
+      require("custom.configs.rocks").setup()
+    end,
+  },
+
+  {
+    "TimUntersberger/neogit",
+    cmd = { "Neogit" },
+    keys = { "<leader>go" },
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("custom.configs.neo").setup()
+    end,
+  },
 }
 
 return plugins
