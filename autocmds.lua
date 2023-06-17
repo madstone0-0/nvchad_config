@@ -18,6 +18,7 @@ local filetypes = {
 }
 
 au("BufCheck", { clear = true })
+
 -- Restore last cursor position
 cmd("BufReadPost", {
   group = "BufCheck",
@@ -58,6 +59,7 @@ cmd("TextYankPost", {
 
 -- Don't auto commenting new lines
 cmd("BufEnter", {
+  group = "BufCheck",
   pattern = "*",
   command = "set fo-=c fo-=r fo-=o",
 })
@@ -123,4 +125,11 @@ cmd({ "BufNewFile", "BufRead" }, {
   group = "_kdl",
   pattern = { "*.kdl" },
   command = "set filetype=kdl",
+})
+
+au("_snippets", { clear = true })
+cmd({ "BufNewFile", "BufRead" }, {
+  group = "_snippets",
+  pattern = { "*.snippets" },
+  command = "set filetype=snippets",
 })

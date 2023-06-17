@@ -8,7 +8,24 @@ local b = null_ls.builtins
 
 local sources = {
   -- webdev
-  b.formatting.prettier.with {},
+  b.formatting.prettierd.with {
+    -- filetypes = {
+    --   "javascript",
+    --   "javascriptreact",
+    --   "typescript",
+    --   "typescriptreact",
+    --   "vue",
+    --   "css",
+    --   "scss",
+    --   "less",
+    --   "html",
+    --   "json",
+    --   "jsonc",
+    --   "markdown.mdx",
+    --   "graphql",
+    --   "handlebars",
+    -- },
+  },
   b.code_actions.eslint_d,
 
   -- lua
@@ -20,8 +37,9 @@ local sources = {
 
   -- python
   b.formatting.black,
-  b.diagnostics.ruff,
+  -- b.diagnostics.ruff,
   b.formatting.ruff,
+  -- b.diagnostics.mypy,
 
   -- yaml
   b.formatting.yamlfmt,
@@ -36,7 +54,9 @@ local sources = {
   b.diagnostics.cspell.with {
     filetypes = { "markdown" },
   },
-  b.code_actions.cspell,
+  b.code_actions.cspell.with {
+    filetypes = { "markdown" },
+  },
 
   -- latex
   b.formatting.latexindent,

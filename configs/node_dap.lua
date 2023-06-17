@@ -32,7 +32,7 @@ local M = {}
 function M.setup(_)
   require("dap-vscode-js").setup {
     debugger_path = vim.fn.stdpath "data" .. "/mason/packages/js-debug-adapter",
-    debugger_cmd = { "js-debug-adapter", "8080" },
+    debugger_cmd = { "js-debug-adapter", "9090" },
     adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
   }
 
@@ -43,7 +43,7 @@ function M.setup(_)
     dap.configurations[language] = {
       {
         name = "Launch",
-        type = "pwa-node",
+        type = "node-terminal",
         request = "launch",
         program = "${file}",
         rootPath = "${workspaceFolder}",

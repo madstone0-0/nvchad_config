@@ -4,38 +4,33 @@ local plugins = {
   -- Overrides
 
   {
+    "jose-elias-alvarez/null-ls.nvim",
+    event = "LspAttach",
+    config = function()
+      require "custom.configs.null-ls"
+    end,
+  },
+
+  {
     "neovim/nvim-lspconfig",
+    lazy = true,
+    event = { "BufReadPost", "BufNewFile" },
+    cmd = { "LspInfo", "LspInstall", "LspUninstall" },
     dependencies = {
-      {
-        "jose-elias-alvarez/null-ls.nvim",
-        config = function()
-          require "custom.configs.null-ls"
-        end,
-      },
-      {
-        "glepnir/lspsaga.nvim",
-        event = "LspAttach",
-        dependencies = {
-          { "nvim-tree/nvim-web-devicons" },
-        },
-        config = function()
-          require("custom.configs.saga").setup()
-        end,
-      },
-      {
-        "ray-x/lsp_signature.nvim",
-        event = "LspAttach",
-        config = function()
-          require("custom.configs.signature").setup()
-        end,
-      },
-      {
-        "VidocqH/lsp-lens.nvim",
-        event = "LspAttach",
-        config = function()
-          require("lsp-lens").setup()
-        end,
-      },
+      -- {
+      --   "ray-x/lsp_signature.nvim",
+      --   event = "LspAttach",
+      --   config = function()
+      --     require("custom.configs.signature").setup()
+      --   end,
+      -- },
+      -- {
+      --   "VidocqH/lsp-lens.nvim",
+      --   event = "LspAttach",
+      --   config = function()
+      --     require("lsp-lens").setup()
+      --   end,
+      -- },
     },
     config = function()
       require "plugins.configs.lspconfig"
@@ -45,6 +40,7 @@ local plugins = {
 
   {
     "nvim-treesitter/nvim-treesitter",
+    event = "InsertEnter",
     dependencies = {
       {
         "andymass/vim-matchup",
@@ -53,7 +49,14 @@ local plugins = {
         end,
       },
       "windwp/nvim-ts-autotag",
-      "nvim-treesitter/nvim-treesitter-context",
+      {
+        "nvim-treesitter/nvim-treesitter-context",
+        config = function()
+          require("nvim-treesitter.configs").setup {
+            enable = true,
+          }
+        end,
+      },
       { "HiPhish/nvim-ts-rainbow2" },
     },
     opts = overrides.treesiter,
@@ -74,10 +77,10 @@ local plugins = {
     "mfussenegger/nvim-dap",
     enabled = true,
     lazy = true,
-    event = "BufReadPre",
+    -- event = "BufReadPre",
     module = { "dap" },
     dependencies = {
-      { "mfussenegger/nvim-dap-python", module = "dap-python" },
+      { "mfussenegger/nvim-dap-python", ft = { "python" }, module = "dap-python" },
       "theHamsta/nvim-dap-virtual-text",
       "rcarriga/nvim-dap-ui",
       "nvim-telescope/telescope-dap.nvim",
@@ -89,7 +92,12 @@ local plugins = {
           }
         end,
       },
+      "mxsdev/nvim-dap-vscode-js",
     },
+    ft = function()
+      local filetypes = require("custom.configs.dap").available_langs
+      return filetypes
+    end,
     config = function()
       require("custom.configs.dap").setup()
     end,
@@ -136,9 +144,9 @@ local plugins = {
           require("cmp_git").setup()
         end,
       },
-      "lukas-reineke/cmp-rg",
+      { "quangnguyen30192/cmp-nvim-ultisnips" },
     },
-    opts = overrides.cmp,
+    opts = overrides.cmp(),
   },
 
   {
@@ -150,15 +158,36 @@ local plugins = {
 
   -- { "folke/which-key.nvim", opts = overrides.key },
 
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = overrides.signs,
+  },
+
   -- User Plugins
+
+  {
+    "glepnir/lspsaga.nvim",
+    event = "LspAttach",
+    dependencies = {
+      { "nvim-tree/nvim-web-devicons" },
+    },
+    config = function()
+      require("custom.configs.saga").setup()
+    end,
+  },
 
   { "wakatime/vim-wakatime", lazy = false },
 
-  {
-    "junegunn/fzf",
-    build = ":call fzf#install()",
-    lazy = false,
-  },
+  -- {
+  --   "junegunn/fzf",
+  --   build = ":call fzf#install()",
+  --   lazy = false,
+  -- },
+  --
+  --   {
+  --   "junegunn/fzf.vim",
+  --   lazy = false,
+  -- },
 
   {
     "iamcco/markdown-preview.nvim",
@@ -168,32 +197,68 @@ local plugins = {
     ft = "markdown",
   },
 
-  {
-    "junegunn/fzf.vim",
-    lazy = false,
-  },
-
   { "preservim/vim-markdown", ft = "markdown" },
   { url = "https://github.com/sheerun/vim-polyglot", event = "BufReadPre" },
-  { "SirVer/ultisnips", lazy = false },
+
+  { "SirVer/ultisnips", event = { "LspAttach", "InsertEnter" } },
 
   { "honza/vim-snippets" },
 
-  { "lervag/vimtex", ft = "tex" },
+  { "lervag/vimtex", ft = { "tex", "markdown" } },
   { "KeitaNakamura/tex-conceal.vim", ft = "tex" },
-  { "github/copilot.vim", event = "InsertEnter" },
+  -- { "github/copilot.vim", event = "InsertEnter" },
 
-  -- {
-  --   "zbirenbaum/copilot.lua",
-  --   event = "BufRead",
-  --   config = function()
-  --     require("copilot").setup {}
-  --   end,
-  -- },
+  {
+    "zbirenbaum/copilot.lua",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup {
+        suggestion = {
+          enabled = true,
+          auto_trigger = true,
+          debounce = 75,
+          keymap = {
+            accept = "<Tab>",
+            accept_word = false,
+            accept_line = false,
+            next = "<M-]>",
+            prev = "<M-[>",
+            dismiss = "<C-]>",
+          },
+        },
+        filetypes = {
+          yaml = false,
+          help = false,
+          gitcommit = false,
+          gitrebase = false,
+          hgcommit = false,
+          svn = false,
+          cvs = false,
+          ["."] = false,
+        },
+      }
+    end,
+  },
 
   {
     "folke/neodev.nvim",
     event = "BufReadPre *.lua",
+    config = function()
+      -- Neodev Setup
+      require("neodev").setup {
+        library = {
+          plugins = {
+            "dap",
+            "nvim-dap-ui",
+            "neotest",
+            "nvim-treesitter",
+            "plenary.nvim",
+            "telescope.nvim",
+            "lazy.nvim",
+          },
+        },
+      }
+    end,
   },
 
   {
@@ -225,6 +290,7 @@ local plugins = {
 
   {
     "edluffy/specs.nvim",
+    event = "BufReadPre",
     config = function()
       require("specs").setup {
         show_jumps = true,
@@ -235,7 +301,7 @@ local plugins = {
           blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
           width = 10,
           winhl = "PMenu",
-          fader = require("specs").linear_fader,
+          fader = require("specs").pulse_fader,
           resizer = require("specs").shrink_resizer,
         },
         ignore_filetypes = {},
@@ -297,13 +363,13 @@ local plugins = {
     cmd = "UndotreeToggle",
   },
 
-  {
-    "nmac427/guess-indent.nvim",
-    cmd = "GuessIndent",
-    config = function()
-      require("guess-indent").setup {}
-    end,
-  },
+  -- {
+  --   "nmac427/guess-indent.nvim",
+  --   cmd = "GuessIndent",
+  --   config = function()
+  --     require("guess-indent").setup {}
+  --   end,
+  -- },
 
   {
     "gelguy/wilder.nvim",
@@ -338,7 +404,7 @@ local plugins = {
     config = function()
       require("lsp_lines").setup()
     end,
-    event = "BufReadPost",
+    event = "BufReadPre",
   },
 
   {
@@ -389,11 +455,6 @@ local plugins = {
   },
 
   { url = "https://github.com/imsnif/kdl.vim", ft = { "kdl" } },
-
-  {
-    "tweekmonster/startuptime.vim",
-    cmd = "StartupTime",
-  },
 
   {
     "kevinhwang91/nvim-ufo",
@@ -489,6 +550,11 @@ local plugins = {
       require("custom.configs.neo").setup()
     end,
   },
+
+  -- {
+  --   "mg979/vim-visual-multi",
+  --   event = "BufReadPost",
+  -- },
 }
 
 return plugins

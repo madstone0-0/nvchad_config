@@ -5,8 +5,17 @@ local function compile_cpp()
   local src_noext = vim.fn.expand "%:t:r"
   local build_path = vim.fn.expand "%:p:h:h:h:~" .. "/build/"
 
-  local _flag = "-g -std=++17"
-  local command = string.format("silent exec '!g++ %s %s -o %s >> build.log'", _flag, src_path, build_path .. src_noext)
+  local compiler = { "g++", "clang++" }
+  -- local flags = { "-g", "-std=c++17", "-fconcepts", "-std=c++20" }
+  -- local flags = { "-g", "-std=c++20", "-fconcepts", "-fconcepts-diagnostics-depth=2" }
+  local flags = { "-g", "-std=c++20", "-I./src/_includes/" }
+  local command = string.format(
+    "silent exec '!%s %s %s -o %s &> build.log'",
+    compiler[1],
+    table.concat(flags, " "),
+    src_path,
+    build_path .. src_noext
+  )
 
   print(command)
   if vim.fn.expand "%:e" == "cpp" then
@@ -35,6 +44,7 @@ local function ink_edit()
 end
 
 local function lsp_lines()
+  require("lsp_lines").toggle()
   vim.diagnostic.config { virtual_lines = { only_current_line = true } }
 end
 
@@ -75,19 +85,18 @@ M.short = {
     ["<down>"] = { "<cmd> :resize +2<CR>", noremap = true },
     ["<left>"] = { "<cmd> :vertical resize -2<CR>", noremap = true },
     ["<right>"] = { "<cmd> :vertical resize +2<CR>", noremap = true },
-    [";"] = { ":", "enter cmdline", opts = { nowait = true } },
+    -- [";"] ={ ":", "enter cmdline", opts = { nowait = true } },
 
     ["gh"] = { "<cmd>Lspsaga lsp_finder<CR>" },
     ["gr"] = { "<cmd>Lspsaga rename<CR>" },
     ["gp"] = { "<cmd>Lspsaga peek_definition<CR>" },
     -- ["gt"] = { "<cmd>Lspsaga peek_type_definition<CR>" },
     ["<leader>cv"] = { "<cmd>Lspsaga outline<CR>" },
-    ["K"] = { "<cmd>Lspsaga hover_doc<CR>" },
-    ["<leader>ca"] = { "<cmd>Lspsaga code_action<CR>" },
+    -- ["K"] = { "<cmd>Lspsaga hover_doc<CR>" },
+    -- ["<leader>ca"] = { "<cmd>Lspsaga code_action<CR>" },
 
     ["<leader>ll"] = {
       function()
-        require("lsp_lines").toggle()
         lsp_lines()
       end,
       "Toggle lsp_lines",
@@ -110,6 +119,24 @@ M.short = {
     ["<leader>ct"] = { "<cmd> :ColorizerToggle <CR>", "Toggle colorizer", silent = true },
     -- ["<leader>x"] = { "<cmd> :BufDel <CR>", "BufDel", noremap = false },
     ["<F5>"] = { "<cmd> DapContinue <CR>", "Debugger continue" },
+    ["<leader>dR"] = {
+      function()
+        require("dap").run_to_cursor()
+      end,
+      "Debugger run to cursor",
+    },
+    ["<leader>de"] = {
+      function()
+        require("dapui").eval(vim.fn.input "[Expression] > ")
+      end,
+      "Debugger Evaluate Input",
+    },
+    ["<leader>dx"] = {
+      function()
+        require("dap").terminate()
+      end,
+      "Debugger terminate",
+    },
     ["<F10>"] = { "<cmd> DapStepOver <CR>", "Debugger step over" },
     ["<F9>"] = { "<cmd> DapStepInto <CR>", "Debugger step into" },
     ["<F12>"] = { "<cmd> DapStepOut <CR>", "Debugger step out" },
@@ -248,6 +275,7 @@ M.short = {
       end,
     },
 
+    ["<leader>gb"] = { "<cmd> Gitsigns toggle_current_line_blame <CR>", "Toggle git blame", silent = true },
     ["<leader>go"] = {
       function()
         require("neogit").open { kind = "split" }

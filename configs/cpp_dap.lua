@@ -21,7 +21,7 @@ function M.setup(_)
 
   dap.configurations.cpp = {
     {
-      name = "Launch file",
+      name = "Launch file (GDB)",
       type = "cppdbg",
       request = "launch",
       MIMode = "gdb",

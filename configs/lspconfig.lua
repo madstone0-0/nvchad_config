@@ -16,13 +16,27 @@ local user_attach = function(client, bufnr)
   end
 
   if client.name == "ruff_lsp" then
-    cs.hover = false
+    cs.hoverProvider = false
   end
 
   if client.name == "pyright" then
-    cs.rename = false
+    cs.renameProvider = false
     cs.signatureHelp = false
   end
+
+  if client.name == "clangd" then
+    cs.hoverProvider = true
+    -- cs.renameProvider = false
+  end
+
+  if client.name == "ccls" then
+    cs.hoverProvider = false
+    cs.renameProvider = false
+  end
+
+  -- if client.name == "pylsp" then
+  --
+  -- end
 end
 
 local user_capabilities = function(name)
@@ -30,7 +44,8 @@ local user_capabilities = function(name)
   if name == "cssls" then
     user_cap.textDocument.completion.completionItem.snippetSupport = true
   end
-  user_cap.offsetEncoding = "utf-16"
+
+  -- user_cap.offsetEncoding = "utf-16"
   user_cap.textDocument.foldingRange = {
     dynamicRegistration = false,
     lineFoldingOnly = true,
@@ -47,13 +62,6 @@ local servers = {
   "marksman",
   "texlab",
   "cmake",
-}
-
--- Neodev Setup
-require("neodev").setup {
-  library = {
-    plugins = { "dap", "nvim-dap-ui", "neotest", "nvim-treesitter", "plenary.nvim", "telescope.nvim", "lazy.nvim" },
-  },
 }
 
 local lspconfig = require "lspconfig"
@@ -89,24 +97,50 @@ lspconfig.bashls.setup {
   single_file_support = true,
 }
 
--- lspconfig.ccls.setup {
---   on_attach = user_attach,
---   capabilities = user_capabilities "ccls",
---   init_options = {
---     highlight = {
---       lsRanges = true,
---     },
---   },
--- }
+lspconfig.ccls.setup {
+  on_attach = user_attach,
+  capabilities = user_capabilities "ccls",
+  handlers = {
+    ["textDocument/publishDiagnostics"] = function() end,
+  },
+  init_options = {
+    highlight = {
+      lsRanges = true,
+    },
+    compilationDatabaseDirectory = "build",
+    index = {
+      threads = 4,
+    },
+    -- clang = {
+    --   includeArgs = { "-I .src/_includes" },
+    -- },
+  },
+}
 
 lspconfig.clangd.setup {
-  on_attach = on_attach,
+  on_attach = user_attach,
+  cmd = {
+    "clangd",
+    "--background-index",
+    "--pch-storage=memory",
+    "-j=8",
+    "--inlay-hints",
+    "--suggest-missing-includes",
+    "--cross-file-rename",
+    "--completion-style=detailed",
+  },
   capabilities = user_capabilities "clangd",
+  init_options = {
+    clangdFileStatus = true,
+    usePlaceholders = true,
+    completeUnimported = true,
+    semanticHighlighting = true,
+  },
 }
 
 lspconfig.ruff_lsp.setup {
   on_attach = user_attach,
-  capabilities = user_capabilities "",
+  capabilities = user_capabilities "ruff_lsp",
   init_options = {
     settings = {
       args = { "--line-length 120", "--extend-select I", "--extend-select PL" },
@@ -116,7 +150,10 @@ lspconfig.ruff_lsp.setup {
 
 lspconfig.pyright.setup {
   on_attach = user_attach,
-  capabilities = user_capabilities "",
+  capabilities = user_capabilities "pyright",
+  handlers = {
+    ["textDocument/publishDiagnostics"] = function() end,
+  },
   settings = {
     python = {
       analysis = {
@@ -136,7 +173,7 @@ lspconfig.pyright.setup {
 
 lspconfig.pylsp.setup {
   on_attach = user_attach,
-  capabilities = user_capabilities "",
+  capabilities = user_capabilities "pylsp",
   settings = {
     pylsp = {
       plugins = {
@@ -155,4 +192,8 @@ for _, lsp in ipairs(servers) do
   }
 end
 
+-- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+--   virtual_text = false,
+--   virtual_lines = { only_current_line = true },
+-- })
 vim.diagnostic.config { virtual_text = false, virtual_lines = { only_current_line = true } }

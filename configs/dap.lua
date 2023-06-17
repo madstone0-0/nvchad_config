@@ -2,6 +2,7 @@ local M = {}
 
 local python_present, dap_python = pcall(require, "dap-python")
 local dap_present, dap = pcall(require, "dap")
+M.available_langs = { "cpp", "python", "sh", "javascript" }
 
 if not dap_present then
   function M.setup()
@@ -26,7 +27,8 @@ local function configure()
       numhl = "",
     },
     stopped = {
-      text = "⭐️",
+      -- text = "⭐️",
+      text = "->",
       texthl = "LspDiagnosticsSignInformation",
       linehl = "DiagnosticUnderlineInfo",
       numhl = "LspDiagnosticsSignInformation",
@@ -43,6 +45,11 @@ local function configure_exts()
   if dap_virtual_present then
     dap_virtual.setup {
       commented = true,
+      only_first_definition = true,
+      -- all_references = true,
+      all_frames = false,
+      virt_text_win_col = 30,
+      highlight_changed_variables = true,
     }
   end
 
@@ -106,6 +113,7 @@ local function configure_debuggers()
   end
   require("custom.configs.cpp_dap").setup()
   require("custom.configs.bash_dap").setup()
+  require("custom.configs.node_dap").setup()
 end
 
 function M.setup()

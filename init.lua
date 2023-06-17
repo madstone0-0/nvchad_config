@@ -109,7 +109,7 @@ opt.wildignore:append { ".javac", "node_modules", "*.pyc" }
 opt.nrformats:append "alpha"
 opt.iskeyword:append "-" -- hyphenated words recognized by searches
 
-vim.diagnostic.config { virtual_lines = { only_current_line = true } }
+-- vim.diagnostic.config { virtual_lines = { only_current_line = true } }
 
 local enable_providers = {
   "python3_provider",
@@ -137,9 +137,18 @@ exec(
 )
 
 for i = 1, 9, 1 do
-  vim.keymap.set("n", string.format("<A-%s>", i), function()
+  vim.keymap.set("n", string.format("<C-S-%s>", i), function()
     vim.api.nvim_set_current_buf(vim.t.bufs[i])
   end)
+end
+
+local notify = vim.notify
+vim.notify = function(msg, ...)
+  if msg:match "warning: multiple different client offset_encodings" then
+    return
+  end
+
+  notify(msg, ...)
 end
 
 exec("au BufWritePost " .. vim.fn.stdpath "config" .. "/custom/configs/dap.lua :luafile %")
