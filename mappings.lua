@@ -1,27 +1,40 @@
 local M = {}
 
-local function compile_cpp()
+local function make()
   local src_path = vim.fn.expand "%:p:~"
   local src_noext = vim.fn.expand "%:t:r"
-  local build_path = vim.fn.expand "%:p:h:h:h:~" .. "/build/"
+  local root = vim.fn.expand "%:p:h:h:h:~"
+  local build_path = root .. "/build/"
 
   local compiler = { "g++", "clang++" }
   -- local flags = { "-g", "-std=c++17", "-fconcepts", "-std=c++20" }
   -- local flags = { "-g", "-std=c++20", "-fconcepts", "-fconcepts-diagnostics-depth=2" }
-  local flags = { "-g", "-std=c++20", "-I./src/_includes/" }
-  local command = string.format(
-    "silent exec '!%s %s %s -o %s &> build.log'",
-    compiler[1],
-    table.concat(flags, " "),
-    src_path,
-    build_path .. src_noext
-  )
+  local flags = { "-g", "-Wall", "-std=c++20", "-I./src/_includes/", "-I./src/" }
+  -- local command = string.format(
+  --   "silent exec '!%s %s %s -o %s &> build.log &'",
+  --   compiler[1],
+  --   table.concat(flags, " "),
+  --   src_path,
+  --   build_path .. src_noext
+  -- )
+
+  -- local command = string.format(
+  --   "silent call system ('cd %s && (CXX=%s cmake .. && make -j4 &> %s/build.log)&')",
+  --   build_path,
+  --   compiler[1],
+  --   root
+  -- )
+
+  -- local command = "mkdir -p build; CXX=g++ cmake -S . -B build && (make -j4 -C ./build &> ./build.log) &"
+  local command =
+    "mkdir -p build; CXX=clang++ cmake -G 'Ninja' -S . -B build && (ninja -C ./build &> ./build.log && echo Done) &"
 
   print(command)
   if vim.fn.expand "%:e" == "cpp" then
-    vim.api.nvim_command(command)
+    vim.opt.makeprg = command
+    vim.api.nvim_command "make"
   else
-    print "Not C++ source file"
+    vim.api.nvim_command "make"
   end
 end
 
@@ -48,14 +61,35 @@ local function lsp_lines()
   vim.diagnostic.config { virtual_lines = { only_current_line = true } }
 end
 
+M.disabled = {
+  n = {
+    ["<C-c>"] = "",
+  },
+}
+
 M.short = {
   n = {
-    ["<Esc>"] = { ":noh <CR>", "clear highlights", silent = true },
+    -- ["<Esc>"] = { ":noh <CR>", "clear highlights", silent = true },
+    ["<C-A-s>"] = { "<cmd> noautocmd w<CR>", "Save without formatting", silent = true },
     ["<C-A-c>"] = { "<cmd> qall <CR>", "Close all" },
     ["<leader>rg"] = { "<cmd> :Telescope live_grep<CR>", "Search with rg", silent = true },
     ["<leader>tk"] = { "<cmd> :Telescope keymaps<CR>", "Keymaps", silent = true },
-    ["<C-A-m>"] = { "<cmd> :Telescope frecency workspace=CWD<CR>", "Frecency", silent = true },
     -- ["<leader>la"] = { "<cmd> :Telescope lazy<CR>", "Lazy", silent = true, noremap = true },
+    ["<leader>fm"] = {
+      function()
+        require("conform").format { async = true, lsp_fallback = true }
+      end,
+      "Format",
+      silent = true,
+    },
+    ["<leader>x"] = {
+      function()
+        require("nvchad.tabufline").close_buffer()
+      end,
+      "Close buffer",
+      silent = true,
+    },
+    ["<leader>tn"] = { "<cmd> :tabnew <CR>", "New tab" },
     ["<leader>uu"] = { "<cmd> :NvChadUpdate <CR>", "Update NvChad" },
     ["<leader>ss"] = {
       function()
@@ -68,14 +102,14 @@ M.short = {
 
     ["<C-A-.>"] = {
       function()
-        require("nvchad_ui.tabufline").move_buf(1)
+        require("nvchad.tabufline").move_buf(1)
       end,
       "Move buf to the right",
       noremap = true,
     },
     ["<C-A-,>"] = {
       function()
-        require("nvchad_ui.tabufline").move_buf(-1)
+        require("nvchad.tabufline").move_buf(-1)
       end,
       "Move buf to the left",
       noremap = true,
@@ -87,8 +121,26 @@ M.short = {
     ["<right>"] = { "<cmd> :vertical resize +2<CR>", noremap = true },
     -- [";"] ={ ":", "enter cmdline", opts = { nowait = true } },
 
+    ["<leader>ra"] = {
+      function()
+        vim.lsp.buf.rename()
+      end,
+      "Rename",
+    },
+    ["gd"] = {
+      function()
+        vim.lsp.buf.definition()
+      end,
+      "Goto definition",
+    },
+    ["<leader>ws"] = {
+      function()
+        vim.lsp.buf.workspace_symbol ""
+      end,
+      "Workspace symbol",
+    },
+
     ["gh"] = { "<cmd>Lspsaga lsp_finder<CR>" },
-    ["gr"] = { "<cmd>Lspsaga rename<CR>" },
     ["gp"] = { "<cmd>Lspsaga peek_definition<CR>" },
     -- ["gt"] = { "<cmd>Lspsaga peek_type_definition<CR>" },
     ["<leader>cv"] = { "<cmd>Lspsaga outline<CR>" },
@@ -136,6 +188,11 @@ M.short = {
         require("dap").terminate()
       end,
       "Debugger terminate",
+    },
+    ["<leader>dj"] = {
+      function()
+        require("dap").load_launchjs()
+      end,
     },
     ["<F10>"] = { "<cmd> DapStepOver <CR>", "Debugger step over" },
     ["<F9>"] = { "<cmd> DapStepInto <CR>", "Debugger step into" },
@@ -205,9 +262,9 @@ M.short = {
 
     ["<leader>co"] = {
       function()
-        compile_cpp()
+        make()
       end,
-      "Compile cpp",
+      "Make",
       slient = true,
       noremap = false,
     },
@@ -215,7 +272,12 @@ M.short = {
     ["<leader>ot"] = { "<cmd> OverseerToggle <CR>", "Toggle Overseer" },
 
     ["<leader>q"] = {
-      "<cmd> :TroubleToggle workspace_diagnostics<CR>",
+      "<cmd> :TroubleToggle document_diagnostics<CR>",
+      "TroubleToggle",
+      silent = true,
+    },
+    ["<leader>qf"] = {
+      "<cmd> :TroubleToggle quickfix<CR>",
       "TroubleToggle",
       silent = true,
     },

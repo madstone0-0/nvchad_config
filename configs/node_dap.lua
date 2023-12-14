@@ -30,57 +30,61 @@ local M = {}
 --   end
 -- end
 function M.setup(_)
-  require("dap-vscode-js").setup {
-    debugger_path = vim.fn.stdpath "data" .. "/mason/packages/js-debug-adapter",
-    debugger_cmd = { "js-debug-adapter", "9090" },
-    adapters = { "pwa-node", "pwa-chrome", "pwa-msedge", "node-terminal", "pwa-extensionHost" },
-  }
+  -- require("dap-vscode-js").setup {
+  --   debugger_path = vim.fn.stdpath "data" .. "/mason/packages/js-debug-adapter",
+  --   adapters = { "pwa-node" },
+  -- }
 
   local dap = require "dap"
+
+  dap.adapters["pwa-node"] = {
+    type = "server",
+    host = "localhost",
+    port = "${port}",
+    executable = {
+      command = "node",
+      args = { vim.fn.stdpath "data" .. "/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js", "${port}" },
+    },
+  }
 
   -- language config
   for _, language in ipairs { "typescript", "javascript" } do
     dap.configurations[language] = {
       {
-        name = "Launch",
-        type = "node-terminal",
+        name = "Launch (Node)",
+        type = "pwa-node",
         request = "launch",
         program = "${file}",
         rootPath = "${workspaceFolder}",
         cwd = "${workspaceFolder}",
-        sourceMaps = true,
-        skipFiles = { "<node_internals>/**" },
-        protocol = "inspector",
-        console = "integratedTerminal",
+        -- sourceMaps = true,
+        -- skipFiles = { "<node_internals>/**" },
+        -- protocol = "inspector",
+        -- console = "integratedTerminal",
       },
+
+      {
+        name = "Launch (Deno)",
+        type = "pwa-node",
+        request = "launch",
+        runtimeExecutable = "deno",
+        runtimeArgs = {
+          "run",
+          "--inspect-wait",
+          "--allow-all",
+        },
+        program = "${file}",
+        rootPath = "${workspaceFolder}",
+        cwd = "${workspaceFolder}",
+        attachSimplePort = 9229,
+      },
+
       {
         name = "Attach to node process",
         type = "pwa-node",
         request = "attach",
         rootPath = "${workspaceFolder}",
         processId = require("dap.utils").pick_process,
-      },
-      {
-        name = "Debug Main Process (Electron)",
-        type = "pwa-node",
-        request = "launch",
-        program = "${workspaceFolder}/node_modules/.bin/electron",
-        args = {
-          "${workspaceFolder}/dist/index.js",
-        },
-        outFiles = {
-          "${workspaceFolder}/dist/*.js",
-        },
-        resolveSourceMapLocations = {
-          "${workspaceFolder}/dist/**/*.js",
-          "${workspaceFolder}/dist/*.js",
-        },
-        rootPath = "${workspaceFolder}",
-        cwd = "${workspaceFolder}",
-        sourceMaps = true,
-        skipFiles = { "<node_internals>/**" },
-        protocol = "inspector",
-        console = "integratedTerminal",
       },
     }
   end

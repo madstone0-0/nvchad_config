@@ -13,11 +13,12 @@ function M.setup()
 
     symbol_in_winbar = {
       enable = false,
+      show_file = false,
     },
 
     outline = {
       keys = {
-        expand_or_jump = "<Enter>",
+        expand_or_jump = "<enter>",
       },
     },
 

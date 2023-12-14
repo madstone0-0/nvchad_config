@@ -15,9 +15,37 @@ local filetypes = {
   "tex",
   "javascriptreact",
   "typescriptreact",
+  "html",
+  "json",
+  "zig",
+  "haskell",
 }
 
 au("BufCheck", { clear = true })
+au("remember_folds", { clear = true })
+au("lint", { clear = true })
+
+--Lint
+cmd({ "BufWritePost", "InsertLeave", "TextChanged" }, {
+  group = "lint",
+  pattern = "*",
+  callback = function()
+    require("lint").try_lint()
+  end,
+})
+
+-- Remember Folds
+cmd("BufWinLeave", {
+  group = "remember_folds",
+  pattern = "*",
+  command = "silent! mkview",
+})
+
+cmd("BufWinEnter", {
+  group = "remember_folds",
+  pattern = "*",
+  command = "silent! loadview",
+})
 
 -- Restore last cursor position
 cmd("BufReadPost", {
@@ -40,13 +68,13 @@ cmd("FileType", {
 })
 
 -- Sync Clipboards
-cmd("TextYankPost", {
-  group = "BufCheck",
-  pattern = "*",
-  callback = function()
-    fn.setreg("+", fn.getreg "*")
-  end,
-})
+-- cmd("TextYankPost", {
+--   group = "BufCheck",
+--   pattern = "*",
+--   callback = function()
+--     fn.setreg("+", fn.getreg "*")
+--   end,
+-- })
 
 -- Highlight on yank
 au("YankHighlight", { clear = true })
@@ -101,6 +129,21 @@ cmd({ "Filetype" }, {
   command = "setlocal spell spelllang=en_gb complete+=kspell",
 })
 
+-- Compile latex on save
+-- cmd("BufWritePost", {
+--   group = "_latex",
+--   pattern = { "*.tex" },
+--   callback = function()
+--     -- local path = "/home/mads/projects/C++/Learning"
+--     -- -- local currPath = vim.fn.expand "%:h:h:h"
+--     -- local currPath = vim.fn.getcwd()
+--     -- if currPath == path then
+--     -- vim.fn.feedkeys(" co", "n")
+--     vim.cmd ":call feedkeys(' pr')"
+--     -- end
+--   end,
+-- })
+
 au("_git", { clear = true })
 cmd({ "Filetype" }, {
   group = "_git",
@@ -118,6 +161,21 @@ cmd({ "BufEnter" }, {
   group = "_cpp",
   pattern = { "*.cpp" },
   command = "let b:fswitchdst ='h,hpp'",
+})
+
+-- Cmake on cpp save
+cmd("BufWritePost", {
+  group = "_cpp",
+  pattern = { "*.cpp" },
+  callback = function()
+    local path = "/home/mads/projects/C++/Learning"
+    -- local currPath = vim.fn.expand "%:h:h:h"
+    local currPath = vim.fn.getcwd()
+    if currPath == path then
+      -- vim.fn.feedkeys(" co", "n")
+      vim.cmd ":call feedkeys(' co')"
+    end
+  end,
 })
 
 au("_kdl", { clear = true })

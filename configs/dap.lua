@@ -1,16 +1,16 @@
 local M = {}
 
 local python_present, dap_python = pcall(require, "dap-python")
-local dap_present, dap = pcall(require, "dap")
-M.available_langs = { "cpp", "python", "sh", "javascript" }
+-- local dap_present, dap = pcall(require, "dap")
+M.available_langs = { "cpp", "python", "sh", "javascript", "typescript", "java" }
 
-if not dap_present then
-  function M.setup()
-    print "DAP not loaded"
-  end
-
-  return M
-end
+-- if not dap_present then
+--   function M.setup()
+--     print "DAP not loaded"
+--   end
+--
+--   return M
+-- end
 
 local function configure()
   local dap_breakpoint = {
@@ -38,9 +38,12 @@ local function configure()
   vim.fn.sign_define("DapBreakpoint", dap_breakpoint.error)
   vim.fn.sign_define("DapStopped", dap_breakpoint.stopped)
   vim.fn.sign_define("DapBreakpointRejected", dap_breakpoint.rejected)
+
+  require("dap.ext.vscode").json_decode = require("json5").parse
 end
 
 local function configure_exts()
+  local dap = require "dap"
   local dap_virtual_present, dap_virtual = pcall(require, "nvim-dap-virtual-text")
   if dap_virtual_present then
     dap_virtual.setup {
@@ -114,6 +117,7 @@ local function configure_debuggers()
   require("custom.configs.cpp_dap").setup()
   require("custom.configs.bash_dap").setup()
   require("custom.configs.node_dap").setup()
+  require("custom.configs.java_dap").setup()
 end
 
 function M.setup()
@@ -123,6 +127,6 @@ function M.setup()
   -- end
 end
 
-configure_debuggers()
+-- configure_debuggers()
 
 return M

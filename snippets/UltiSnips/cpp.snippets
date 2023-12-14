@@ -5,11 +5,69 @@ int main() {
 }
 endsnippet
 
+snippet blk "Block comment" b
+/* $1 */$2
+endsnippet
+
+
 snippet skel "SkeleTON" b
 #include <cstdio>
 
+/* $1 */
+
 int main() {
-	$1
+	$2
 	return 0;
+}
+
+/* $1 */
+endsnippet
+
+snippet sec "Section" b
+
+/* $1 */
+
+int main() {
+	$2
+	return 0;
+}
+
+/* $1 */
+endsnippet
+
+
+snippet test "Test Section" b
+/* $1 */
+
+TEST_CASE("$2") {
+	$3
+}
+
+/* $1 */
+endsnippet
+
+snippet cskel "Catch skeleton" b
+#define CATCH_CONFIG_MAIN
+#include <catch2/catch.hpp>
+endsnippet
+
+snippet advent "Advent skeleton" b
+#include <cstdio>
+#include <iostream>
+#include "utils.hpp"
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <ranges>
+
+using namespace std;
+using namespace utils;
+namespace rg = std::ranges;
+
+int main() {
+    string inputPath{"/home/mads/projects/Advent/D$1/input.txt"};
+    auto file = open(inputPath);
+	$2
+    return 0;
 }
 endsnippet

@@ -939,3 +939,68 @@ snippet \\ "newline" iA
 \\\ $1
 endsnippet
 
+context "math()"
+snippet thed "mathrm d" iA
+\enspace  \mathrm{d}$1
+endsnippet
+
+context "math()"
+snippet and "conjunction ^" iA
+\wedge $1
+endsnippet
+
+context "math()"
+snippet dis "disjunction v" iA
+\vee $1
+endsnippet
+
+context "math()"
+snippet xor "exclusive or" iA
+\oplus $1
+endsnippet
+
+context "math()"
+snippet neg "negation" iA
+\neg $1
+endsnippet
+
+snippet INT "True" iA
+$T$ $1
+endsnippet
+
+snippet INF "False" iA
+$F$ $1
+endsnippet
+
+snippet INP "p" iA
+$p$
+endsnippet
+
+snippet INQ "q" iA
+$q$
+endsnippet
+
+snippet NP "~p" iwA
+$\neg p$
+endsnippet
+
+snippet NQ "~q" iwA
+$\neg q$
+endsnippet
+
+snippet truthT "truth table" iwA
+\begin{table}[h!]
+	\caption{$1}\label{tab:$2}
+	\begin{center}
+		\begin{tabular}{|c c|c|$3}
+			\hline
+			$4 \\\ [0.5ex]
+			\hline
+			\hline
+			$5
+			\hline
+		\end{tabular}
+	\end{center}
+\end{table}
+endsnippet
+

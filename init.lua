@@ -44,6 +44,14 @@ local global_options = {
   scrolloff = 8, -- minimal number of screen lines to keep above and below the cursor
   sidescrolloff = 8,
   whichwrap = "bs<>[]hl",
+  history = 5000,
+  textwidth = 120,
+  autoindent = true,
+  -- makeprg = "CXX=g++ cmake -S . -B build && (make -j4 -C ./build &> ./build.log) &",
+}
+
+g.markdown_fenced_languages = {
+  "ts=typescript",
 }
 
 local local_options = {
@@ -77,7 +85,7 @@ local plugin_options = {
 
   -- VimLatex
   tex_flavour = "latex",
-  -- vimtex_compiler_method = "tectonic",
+  -- vimtex_compiler_method = "latexrun",
   vimtex_view_method = "zathura",
   vimtex_quickfix_mode = 0,
   tex_conceal = "abdmgs",
@@ -94,6 +102,17 @@ local plugin_options = {
 
   -- Python3
   python3_host_prog = "/home/mads/.pyenv/versions/neovim/bin/python3",
+
+  -- Node.js
+  node_host_prog = "/home/mads/.nvm/versions/node/v20.4.0/lib/node_modules/neovim/bin/cli.js",
+
+  -- zip
+  loaded_zipPlugin = 0,
+  loaded_zip = 0,
+
+  -- cmake
+  cmake_build_dir_location = "./build",
+  cmake_generate_options = "Ninja",
 }
 
 for k, v in pairs(global_options) do
@@ -144,6 +163,10 @@ end
 
 local notify = vim.notify
 vim.notify = function(msg, ...)
+  if msg:match "E5108" then
+    return
+  end
+
   if msg:match "warning: multiple different client offset_encodings" then
     return
   end

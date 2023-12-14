@@ -12,9 +12,30 @@ local plugins = {
   },
 
   {
+    "mfussenegger/nvim-lint",
+    event = { "BufEnter", "InsertEnter", "TextChanged" },
+    config = function()
+      require("custom.configs.lint").setup()
+    end,
+  },
+
+  {
+    "stevearc/conform.nvim",
+    event = { "BufWritePre" },
+    cmd = { "ConformInfo" },
+    config = function()
+      require("custom.configs.conform").setup()
+    end,
+    init = function()
+      vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
+    end,
+  },
+
+  {
     "neovim/nvim-lspconfig",
     lazy = true,
-    event = { "BufReadPost", "BufNewFile" },
+    -- event = { "BufReadPost", "BufNewFile" },
+    event = { "LspAttach" },
     cmd = { "LspInfo", "LspInstall", "LspUninstall" },
     dependencies = {
       -- {
@@ -31,9 +52,13 @@ local plugins = {
       --     require("lsp-lens").setup()
       --   end,
       -- },
+      -- {
+      --   "VonHeikemen/lsp-zero.nvim",
+      --   branch = "v3.x",
+      -- },
     },
     config = function()
-      require "plugins.configs.lspconfig"
+      -- require "plugins.configs.lspconfig"
       require "custom.configs.lspconfig"
     end,
   },
@@ -49,17 +74,17 @@ local plugins = {
         end,
       },
       "windwp/nvim-ts-autotag",
-      {
-        "nvim-treesitter/nvim-treesitter-context",
-        config = function()
-          require("nvim-treesitter.configs").setup {
-            enable = true,
-          }
-        end,
-      },
-      { "HiPhish/nvim-ts-rainbow2" },
+      -- {
+      --   "nvim-treesitter/nvim-treesitter-context",
+      --   config = function()
+      --     require("nvim-treesitter.configs").setup {
+      --       enable = true,
+      --     }
+      --   end,
+      -- },
+      { url = "https://git.sr.ht/~p00f/nvim-ts-rainbow" },
     },
-    opts = overrides.treesiter,
+    opts = overrides.treesitter,
     -- event = "BufRead",
   },
 
@@ -70,29 +95,31 @@ local plugins = {
 
   {
     "nvim-tree/nvim-tree.lua",
+    lazy = true,
+    cmd = { "NvimTreeToggle", "NvimTreeOpen", "NvimTreeClose", "NvimTreeRefresh", "NvimTreeFindFile" },
     opts = overrides.tree,
   },
 
   {
     "mfussenegger/nvim-dap",
     enabled = true,
-    lazy = true,
     -- event = "BufReadPre",
     module = { "dap" },
     dependencies = {
+      { "Joakker/lua-json5", build = "./install.sh" },
       { "mfussenegger/nvim-dap-python", ft = { "python" }, module = "dap-python" },
       "theHamsta/nvim-dap-virtual-text",
       "rcarriga/nvim-dap-ui",
       "nvim-telescope/telescope-dap.nvim",
+      "mfussenegger/nvim-jdtls",
       {
         "Weissle/persistent-breakpoints.nvim",
         config = function()
           require("persistent-breakpoints").setup {
-            load_breakpoints_event = { "BufReadPost" },
+            load_breakpoints_event = { "BufReadPre" },
           }
         end,
       },
-      "mxsdev/nvim-dap-vscode-js",
     },
     ft = function()
       local filetypes = require("custom.configs.dap").available_langs
@@ -103,8 +130,11 @@ local plugins = {
     end,
   },
 
+  { "mxsdev/nvim-dap-vscode-js", ft = { "javascript", "typescript" } },
+
   {
     "lukas-reineke/indent-blankline.nvim",
+    event = { "BufReadPre" },
     opts = overrides.blankline,
   },
 
@@ -120,13 +150,6 @@ local plugins = {
         "nvim-telescope/telescope-fzf-native.nvim",
         build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
       },
-      {
-        "nvim-telescope/telescope-frecency.nvim",
-        dependencies = {
-          "kkharji/sqlite.lua",
-        },
-        keys = { "<C-A-m>" },
-      },
       -- {
       --   "tsakirist/telescope-lazy.nvim",
       --   keys = { "<leader>la" },
@@ -138,12 +161,6 @@ local plugins = {
   {
     "hrsh7th/nvim-cmp",
     dependencies = {
-      {
-        "petertriho/cmp-git",
-        config = function()
-          require("cmp_git").setup()
-        end,
-      },
       { "quangnguyen30192/cmp-nvim-ultisnips" },
     },
     opts = overrides.cmp(),
@@ -261,13 +278,13 @@ local plugins = {
     end,
   },
 
-  {
-    "smjonas/snippet-converter.nvim",
-    cmd = "ConvertSnippets",
-    config = function()
-      require "custom.configs.snippet_converter"
-    end,
-  },
+  -- {
+  --   "smjonas/snippet-converter.nvim",
+  --   cmd = "ConvertSnippets",
+  --   config = function()
+  --     require "custom.configs.snippet_converter"
+  --   end,
+  -- },
 
   {
     "derekwyatt/vim-fswitch",
@@ -283,34 +300,38 @@ local plugins = {
     -- config = function()
     --   require("trouble").setup {}
     -- end,
-    config = true,
+    config = function()
+      require("trouble").setup {
+        icons = false,
+      }
+    end,
   },
 
   { "wellle/targets.vim", event = "BufReadPre" },
 
-  {
-    "edluffy/specs.nvim",
-    event = "BufReadPre",
-    config = function()
-      require("specs").setup {
-        show_jumps = true,
-        min_jump = 20,
-        popup = {
-          delay_ms = 0, -- delay before popup displays
-          inc_ms = 10, -- time increments used for fade/resize effects
-          blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
-          width = 10,
-          winhl = "PMenu",
-          fader = require("specs").pulse_fader,
-          resizer = require("specs").shrink_resizer,
-        },
-        ignore_filetypes = {},
-        ignore_buftypes = {
-          nofile = true,
-        },
-      }
-    end,
-  },
+  -- {
+  --   "edluffy/specs.nvim",
+  --   event = "BufReadPre",
+  --   config = function()
+  --     require("specs").setup {
+  --       show_jumps = true,
+  --       min_jump = 20,
+  --       popup = {
+  --         delay_ms = 0, -- delay before popup displays
+  --         inc_ms = 10, -- time increments used for fade/resize effects
+  --         blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
+  --         width = 10,
+  --         winhl = "PMenu",
+  --         fader = require("specs").pulse_fader,
+  --         resizer = require("specs").shrink_resizer,
+  --       },
+  --       ignore_filetypes = {},
+  --       ignore_buftypes = {
+  --         nofile = true,
+  --       },
+  --     }
+  --   end,
+  -- },
 
   {
     "max397574/better-escape.nvim",
@@ -333,20 +354,23 @@ local plugins = {
       require("code_runner").setup {
         filetype = {
           python = "python3 -u",
+          zig = "zig run",
+          haskell = "runghc",
+          lhaskell = "runghc",
         },
       }
     end,
   },
 
-  {
-    "ojroques/nvim-bufdel",
-    cmd = "BufDel",
-    config = function()
-      require("bufdel").setup {
-        quit = false,
-      }
-    end,
-  },
+  -- {
+  --   "ojroques/nvim-bufdel",
+  --   cmd = "BufDel",
+  --   config = function()
+  --     require("bufdel").setup {
+  --       quit = false,
+  --     }
+  --   end,
+  -- },
 
   {
     "lambdalisue/suda.vim",
@@ -377,7 +401,9 @@ local plugins = {
     config = function()
       require "custom.configs.wilder"
     end,
-    lazy = false,
+    -- event = "BufEnter",
+    keys = { "/", ":", "?" },
+    -- lazy = false,
   },
 
   {
@@ -396,7 +422,7 @@ local plugins = {
         require "custom.configs.dressing",
       }
     end,
-    lazy = false,
+    event = "BufEnter",
   },
 
   {
@@ -423,9 +449,6 @@ local plugins = {
             dap = { justMyCode = false },
           },
         },
-        consumers = {
-          overseer = require "neotest.consumers.overseer",
-        },
       }
     end,
   },
@@ -450,11 +473,13 @@ local plugins = {
     event = "BufReadPre", -- this will only start session saving when an actual file was opened
     module = "persistence",
     config = function()
-      require("persistence").setup()
+      require("persistence").setup {
+        options = { "buffers", "curdir", "tabpages", "winsize", "folds" },
+      }
     end,
   },
 
-  { url = "https://github.com/imsnif/kdl.vim", ft = { "kdl" } },
+  -- { url = "https://github.com/imsnif/kdl.vim", ft = { "kdl" } },
 
   {
     "kevinhwang91/nvim-ufo",
@@ -484,17 +509,17 @@ local plugins = {
     },
   },
 
-  {
-    "anuvyklack/fold-preview.nvim",
-    dependencies = "anuvyklack/keymap-amend.nvim",
-    config = function()
-      require("fold-preview").setup {
-        auto = 800,
-        default_keybindings = false,
-      }
-    end,
-    event = "BufReadPost",
-  },
+  -- {
+  --   "anuvyklack/fold-preview.nvim",
+  --   dependencies = "anuvyklack/keymap-amend.nvim",
+  --   config = function()
+  --     require("fold-preview").setup {
+  --       auto = 800,
+  --       default_keybindings = false,
+  --     }
+  --   end,
+  --   event = "BufReadPost",
+  -- },
 
   {
     "sindrets/diffview.nvim",
@@ -512,25 +537,25 @@ local plugins = {
     end,
   },
 
-  { "moll/vim-bbye", cmd = { "Bdelete", "Bwipeout" } },
+  -- { "moll/vim-bbye", cmd = { "Bdelete", "Bwipeout" } },
 
   { "jghauser/mkdir.nvim" },
 
-  {
-    "karb94/neoscroll.nvim",
-    event = "BufReadPre",
-    config = function()
-      require("neoscroll").setup()
-    end,
-  },
+  -- {
+  --   "karb94/neoscroll.nvim",
+  --   event = "BufReadPre",
+  --   config = function()
+  --     require("neoscroll").setup()
+  --   end,
+  -- },
 
-  {
-    "stevearc/overseer.nvim",
-    cmd = { "OverseerRun", "OverseerToggle" },
-    config = function()
-      require("overseer").setup()
-    end,
-  },
+  -- {
+  --   "stevearc/overseer.nvim",
+  --   cmd = { "OverseerRun", "OverseerToggle" },
+  --   config = function()
+  --     require("overseer").setup()
+  --   end,
+  -- },
 
   {
     "theHamsta/nvim_rocks",
@@ -546,15 +571,23 @@ local plugins = {
     cmd = { "Neogit" },
     keys = { "<leader>go" },
     dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("custom.configs.neo").setup()
-    end,
+    -- config = function()
+    --   require("custom.configs.neo").setup()
+    -- end,
+    config = true,
   },
 
   -- {
   --   "mg979/vim-visual-multi",
   --   event = "BufReadPost",
   -- },
+  { url = "https://github.com/lbrayner/vim-rzip", event = "LspAttach" },
+
+  -- { url = "https://github.com/bfrg/vim-cpp-modern", ft = { "cpp" } },
+
+  -- { "cdelledonne/vim-cmake", ft = { "cpp" } },
+
+  { "ziglang/zig.vim", ft = { "zig" } },
 }
 
 return plugins

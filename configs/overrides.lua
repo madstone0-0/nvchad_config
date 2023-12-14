@@ -2,8 +2,11 @@ local M = {}
 
 -- local rainbow = require "ts-rainbow"
 
-M.treesiter = {
+M.treesitter = {
   ensure_installed = {
+    "c",
+    "vim",
+    "vimdoc",
     "lua",
     "bash",
     "css",
@@ -16,23 +19,48 @@ M.treesiter = {
     "cpp",
     "markdown",
     "markdown_inline",
+    "typescript",
+    "tsx",
   },
   highlight = {
     enable = true,
     disable = { "latex" },
-    additional_vim_regex_highlighting = { "latex", "markdown" },
+    additional_vim_regex_highlighting = false,
   },
   matchup = {
     enable = true,
   },
   rainbow = {
-    enable = true,
+    enable = false,
     query = "rainbow-parens",
     -- Highlight the entire buffer all at once
     -- strategy = rainbow.strategy.global,
+    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+    max_file_lines = 5000, -- Do not enable for files with more than n lines, int
   },
   autotag = {
     enable = true,
+    enable_rename = true,
+    enable_close = true,
+    enable_close_on_slash = true,
+  },
+  playground = {
+    enable = true,
+    disable = {},
+    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+    persist_queries = false, -- Whether the query persists across vim sessions
+    keybindings = {
+      toggle_query_editor = "o",
+      toggle_hl_groups = "i",
+      toggle_injected_languages = "t",
+      toggle_anonymous_nodes = "a",
+      toggle_language_display = "I",
+      focus_language = "f",
+      unfocus_language = "F",
+      update = "R",
+      goto_node = "<cr>",
+      show_help = "?",
+    },
   },
 }
 
@@ -160,9 +188,9 @@ M.tree = {
     cmd = "trash",
   },
 
-  view = {
-    hide_root_folder = false,
-  },
+  -- view = {
+  --   hide_root_folder = false,
+  -- },
 
   renderer = {
     -- highlight_git = true,
@@ -280,13 +308,9 @@ M.telescope = {
     },
   },
 
-  extensions_list = { "frecency", "fzf", "themes", "terms" },
+  extensions_list = { "fzf", "themes", "terms" },
 
   extensions = {
-    frecency = {
-      ignore_patterns = { "*.git/*", "*/tmp/*", "*/node_modules/*", "*/venv/*" },
-    },
-
     fzf = {
       fuzzy = true,
       override_generic_sorter = true,
@@ -352,7 +376,7 @@ function M.cmp(_)
       { name = "nvim_lua" },
       -- { name = "rg",      keyword_length = 3 },
       { name = "path" },
-      { name = "git" },
+      -- { name = "git" },
       { name = "ultisnips" },
     },
   }
