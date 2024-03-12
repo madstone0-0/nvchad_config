@@ -112,12 +112,12 @@ end
 
 local function configure_debuggers()
   if python_present then
-    require("custom.configs.python_dap").setup()
+    require("configs.python_dap").setup()
   end
-  require("custom.configs.cpp_dap").setup()
-  require("custom.configs.bash_dap").setup()
-  require("custom.configs.node_dap").setup()
-  require("custom.configs.java_dap").setup()
+  require("configs.cpp_dap").setup()
+  require("configs.bash_dap").setup()
+  require("configs.node_dap").setup()
+  require("configs.java_dap").setup()
 end
 
 function M.setup()

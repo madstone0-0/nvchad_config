@@ -1,3 +1,4 @@
+require "nvchad.autocmds"
 local au = vim.api.nvim_create_augroup
 local cmd = vim.api.nvim_create_autocmd
 local fn = vim.fn
