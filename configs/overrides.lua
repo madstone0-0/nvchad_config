@@ -25,7 +25,10 @@ M.treesitter = {
   highlight = {
     enable = true,
     disable = { "latex" },
-    additional_vim_regex_highlighting = false,
+    use_languagetree = true,
+    additional_vim_regex_highlighting = {
+      "haskell",
+    },
   },
   matchup = {
     enable = true,

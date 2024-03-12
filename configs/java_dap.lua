@@ -12,7 +12,7 @@ function M.setup(_)
       request = "launch",
       name = "Debug (Attach)",
       stopOnEntry = true,
-      console = "internalConsole",
+      console = "integratedTerminal",
       hostName = "localhost",
       port = 5005,
     },

@@ -1,5 +1,14 @@
 local M = {}
 
+local function quickfix()
+  local ft = vim.bo.filetype
+  if ft == "qf" then
+    vim.cmd "cclose"
+  else
+    vim.cmd "copen"
+  end
+end
+
 local function make()
   local src_path = vim.fn.expand "%:p:~"
   local src_noext = vim.fn.expand "%:t:r"
@@ -32,10 +41,9 @@ local function make()
   print(command)
   if vim.fn.expand "%:e" == "cpp" then
     vim.opt.makeprg = command
-    vim.api.nvim_command "make"
-  else
-    vim.api.nvim_command "make"
   end
+
+  vim.api.nvim_command("AsyncRun -cwd=<root> " .. vim.opt.makeprg.get(vim.opt.makeprg))
 end
 
 local function preview()
@@ -146,6 +154,17 @@ M.short = {
     ["<leader>cv"] = { "<cmd>Lspsaga outline<CR>" },
     -- ["K"] = { "<cmd>Lspsaga hover_doc<CR>" },
     -- ["<leader>ca"] = { "<cmd>Lspsaga code_action<CR>" },
+    ["<leader>cf"] = {
+      function()
+        quickfix()
+        -- if vim.fn.getwininfo().quickfix == 0 then
+        --   vim.cmd "cclose"
+        -- else
+        --   vim.cmd "copen"
+        -- end
+      end,
+      "Toggle quickfix",
+    },
 
     ["<leader>ll"] = {
       function()

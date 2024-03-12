@@ -221,15 +221,10 @@ function M.setup(_)
           ignoreFailures = false,
         },
       },
-      -- customLaunchSetupCommands = {
-      --   {
-      --     text = "-target-attach",
-      --     description = "attach to gdbserver",
-      --     ignoreFailures = false,
-      --   },
-      -- },
     },
   }
+
+  dap.configurations.c = dap.configurations.cpp
 end
 
 return M

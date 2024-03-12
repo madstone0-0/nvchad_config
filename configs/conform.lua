@@ -28,7 +28,7 @@ function M.setup()
         end
       end
 
-      return { timeout_ms = 200, lsp_fallback = true }, on_format
+      return { timeout_ms = 2000, lsp_fallback = true }, on_format
     end,
 
     format_after_save = function(bufnr)
@@ -52,15 +52,17 @@ function M.setup()
       html = { "prettierd" },
       json = { "prettierd" },
       jsonc = { "prettierd" },
-      javascript = { { "prettierd", "prettier" } },
-      typescript = { { "prettierd", "prettier" } },
-      typescriptreact = { { "prettierd", "prettier" }, "rustywind" },
-      javascriptreact = { { "prettierd", "prettier" }, "rustywind" },
+      javascript = { "prettierd" },
+      typescript = { "prettierd" },
+      typescriptreact = { "prettierd", "rustywind" },
+      javascriptreact = { "prettierd", "rustywind" },
       sh = { "shfmt" },
       xml = { "xmlformat" },
 
+      r = { "styler" },
+
       yaml = { "yamlfmt" },
-      markdown = { "remark", "cbfmt", "codespell" },
+      markdown = { "cbfmt", "codespell" },
       tex = { "latexindent" },
       cpp = { "clang_format" },
       java = { "clang_format" },

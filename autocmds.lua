@@ -19,11 +19,20 @@ local filetypes = {
   "json",
   "zig",
   "haskell",
+  "r",
 }
 
 au("BufCheck", { clear = true })
 au("remember_folds", { clear = true })
 au("lint", { clear = true })
+
+-- Literate Haskell
+-- au("_lhaskell", { clear = true })
+-- cmd({ "BufNewFile", "BufRead" }, {
+--   group = "_lhaskell",
+--   pattern = { "*.lhs" },
+--   command = "set filetype=tex",
+-- })
 
 --Lint
 cmd({ "BufWritePost", "InsertLeave", "TextChanged" }, {
@@ -92,23 +101,23 @@ cmd("BufEnter", {
   command = "set fo-=c fo-=r fo-=o",
 })
 
-au("_formatting", { clear = true })
-cmd({ "BufWritePre" }, {
-  group = "_formatting",
-  pattern = "*",
-  callback = function()
-    local contains = false
-    for _, filetype in ipairs(filetypes) do
-      if filetype == vim.bo.filetype then
-        contains = true
-      end
-    end
-
-    if contains then
-      vim.lsp.buf.format()
-    end
-  end,
-})
+-- au("_formatting", { clear = true })
+-- cmd({ "BufWritePre" }, {
+--   group = "_formatting",
+--   pattern = "*",
+--   callback = function()
+--     local contains = false
+--     for _, filetype in ipairs(filetypes) do
+--       if filetype == vim.bo.filetype then
+--         contains = true
+--       end
+--     end
+--
+--     if contains then
+--       vim.lsp.buf.format()
+--     end
+--   end,
+-- })
 
 au("_markdown", { clear = true })
 cmd({ "BufNewFile", "BufRead" }, {
@@ -127,6 +136,15 @@ cmd({ "Filetype" }, {
   group = "_latex",
   pattern = { "tex" },
   command = "setlocal spell spelllang=en_gb complete+=kspell",
+})
+
+cmd({ "Filetype" }, {
+  group = "_latex",
+  pattern = { "tex" },
+  callback = function()
+    vim.cmd "setlocal nocursorline"
+    vim.cmd "NoMatchParen"
+  end,
 })
 
 -- Compile latex on save

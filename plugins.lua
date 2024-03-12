@@ -3,13 +3,13 @@ local overrides = require "custom.configs.overrides"
 local plugins = {
   -- Overrides
 
-  {
-    "jose-elias-alvarez/null-ls.nvim",
-    event = "LspAttach",
-    config = function()
-      require "custom.configs.null-ls"
-    end,
-  },
+  -- {
+  --   "jose-elias-alvarez/null-ls.nvim",
+  --   event = "LspAttach",
+  --   config = function()
+  --     require "custom.configs.null-ls"
+  --   end,
+  -- },
 
   {
     "mfussenegger/nvim-lint",
@@ -67,12 +67,12 @@ local plugins = {
     "nvim-treesitter/nvim-treesitter",
     event = "InsertEnter",
     dependencies = {
-      {
-        "andymass/vim-matchup",
-        init = function()
-          vim.g.matchup_matchparen_offscreen = { method = "popup" }
-        end,
-      },
+      -- {
+      --   "andymass/vim-matchup",
+      --   init = function()
+      --     vim.g.matchup_matchparen_offscreen = { method = "popup" }
+      --   end,
+      -- },
       "windwp/nvim-ts-autotag",
       -- {
       --   "nvim-treesitter/nvim-treesitter-context",
@@ -221,7 +221,7 @@ local plugins = {
 
   { "honza/vim-snippets" },
 
-  { "lervag/vimtex", ft = { "tex", "markdown" } },
+  { "lervag/vimtex", ft = { "tex", "markdown", "lhaskell" } },
   { "KeitaNakamura/tex-conceal.vim", ft = "tex" },
   -- { "github/copilot.vim", event = "InsertEnter" },
 
@@ -357,6 +357,7 @@ local plugins = {
           zig = "zig run",
           haskell = "runghc",
           lhaskell = "runghc",
+          r = "\\R -f",
         },
       }
     end,
@@ -588,6 +589,25 @@ local plugins = {
   -- { "cdelledonne/vim-cmake", ft = { "cpp" } },
 
   { "ziglang/zig.vim", ft = { "zig" } },
+
+  {
+    "skywind3000/asyncrun.vim",
+    cmd = { "AsyncRun", "AsyncStop", "AsyncTask" },
+  },
+
+  -- {
+  --   "MrcJkb/haskell-tools.nvim",
+  --   ft = { "haskell", "lhaskell" },
+  -- },
+  {
+    "enomsg/vim-haskellConcealPlus",
+    ft = { "haskell", "lhaskell" },
+  },
+
+  {
+    "lark-parser/vim-lark-syntax",
+    ft = { "lark" },
+  },
 }
 
 return plugins

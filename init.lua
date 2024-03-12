@@ -47,6 +47,7 @@ local global_options = {
   history = 5000,
   textwidth = 120,
   autoindent = true,
+  cursorline = false,
   -- makeprg = "CXX=g++ cmake -S . -B build && (make -j4 -C ./build &> ./build.log) &",
 }
 
@@ -113,6 +114,9 @@ local plugin_options = {
   -- cmake
   cmake_build_dir_location = "./build",
   cmake_generate_options = "Ninja",
+
+  -- AsyncRun
+  asyncrun_open = 6,
 }
 
 for k, v in pairs(global_options) do

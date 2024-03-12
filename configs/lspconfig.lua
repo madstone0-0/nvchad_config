@@ -57,7 +57,10 @@ local user_attach = function(client, bufnr)
 
   -- Java
   if client.name == "jdtls" then
-    require("jdtls").setup_dap { hotcodereplace = "auto" }
+    local jdtls = require "jdtls"
+    jdtls.setup.add_commands()
+    jdtls.setup_dap { hotcodereplace = "auto" }
+    jdtls.dap.setup_dap_main_class_configs()
   end
   -- Java
 
@@ -86,7 +89,6 @@ local servers = {
   "texlab",
   "cmake",
   "svelte",
-  "hls",
   "zls",
   "sqlls",
   "lemminx",
@@ -101,6 +103,30 @@ local lspconfig = require "lspconfig"
 --   cmd = { "java-language-server" },
 -- }
 
+lspconfig.hls.setup {
+  on_attach = on_attach,
+  capabilities = user_capabilities "hls",
+  settings = {
+    haskell = {
+      formattingProvider = "fourmolu",
+    },
+  },
+}
+
+lspconfig.r_language_server.setup {
+  on_attach = on_attach,
+  capabilities = user_capabilities "r",
+  root_dir = lspconfig.util.root_pattern("DESCRIPTION", "DESCRIPTION.in", "R", ".git", ".lintr"),
+}
+
+local JDTLS_LOCATION = vim.fn.stdpath "data" .. "/mason/packages/jdtls"
+
+local HOME = os.getenv "HOME"
+local WORKSPACE_PATH = HOME .. "/workspace/java/"
+
+local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
+local workspace_dir = WORKSPACE_PATH .. project_name
+
 lspconfig.jdtls.setup {
   on_attach = user_attach,
   capabilities = user_capabilities "jdtls",
@@ -112,7 +138,29 @@ lspconfig.jdtls.setup {
   settings = {
     java = {
       signatureHelp = { enabled = true },
-      contentProvider = { preferred = "fernflower" },
+      -- contentProvider = { preferred = "fernflower" },
+      cmd = {
+        "java",
+        "-Declipse.application=org.eclipse.jdt.ls.core.id1",
+        "-Dosgi.bundles.defaultStartLevel=4",
+        "-Declipse.product=org.eclipse.jdt.ls.core.product",
+        "-Dlog.protocol=true",
+        "-Dlog.level=ALL",
+        "-Xms1g",
+        "-Xmx1G",
+        "-noverify",
+        "--add-modules=ALL-SYSTEM",
+        "--add-opens",
+        "java.base/java.util=ALL-UNNAMED",
+        "--add-opens",
+        "java.base/java.lang=ALL-UNNAMED",
+        "-jar",
+        vim.fn.glob(JDTLS_LOCATION .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
+        "-configuration",
+        JDTLS_LOCATION .. "/config_linux",
+        "-data",
+        workspace_dir,
+      },
       completion = {
         favoriteStaticMembers = {
           "org.hamcrest.MatcherAssert.assertThat",
@@ -125,7 +173,15 @@ lspconfig.jdtls.setup {
           "org.mockito.ArgumentMatchers.*",
           "org.mockito.Answers.RETURNS_DEEP_STUBS",
         },
+        filteredTypes = {
+          "com.sun.*",
+          "io.micrometer.shaded.*",
+          "java.awt.*",
+          "jdk.*",
+          "sun.*",
+        },
       },
+
       sources = {
         organizeImports = {
           starThreshold = 9999,
@@ -137,6 +193,8 @@ lspconfig.jdtls.setup {
           template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
         },
       },
+      import = { enabled = true },
+      rename = { enabled = true },
       configuration = {
         runtimes = {
           {
@@ -185,11 +243,13 @@ lspconfig.cssls.setup {
   capabilities = user_capabilities "cssls",
 }
 
-lspconfig.grammarly.setup {
+lspconfig.ltex.setup {
   on_attach = on_attach,
   capabilities = user_capabilities "",
-  init_options = {
-    clientId = "client_S7ht7UbDxdnrnQ8cs269cG",
+  settings = {
+    ltex = {
+      language = "en-GB",
+    },
   },
 }
 
