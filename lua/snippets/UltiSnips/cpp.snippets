@@ -11,7 +11,10 @@ endsnippet
 
 
 snippet skel "SkeleTON" b
-#include <cstdio>
+#include <iostream>
+#include <string>
+
+using std::cout, std::endl, std::string;
 
 /* $1 */
 
@@ -22,6 +25,23 @@ int main() {
 
 /* $1 */
 endsnippet
+
+snippet Tskel "Thread SkeleTON" b
+#include <iostream>
+#include <thread>
+
+using std::cout, std::endl, std::thread;
+
+/* $1 */
+
+int main() {
+	$2
+	return 0;
+}
+
+/* $1 */
+endsnippet
+
 
 snippet sec "Section" b
 

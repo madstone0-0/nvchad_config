@@ -68,6 +68,10 @@ M.treesitter = {
 }
 
 M.mason = {
+    registries = {
+        "github:nvim-java/mason-registry",
+        "github:mason-org/mason-registry",
+    },
     ensure_installed = {
         -- lua
         "lua-language-server",
@@ -113,6 +117,9 @@ M.mason = {
         -- c++
         "clang-format",
         "cpptools",
+
+        --rust
+        "rust-analyzer",
     },
 }
 
@@ -233,20 +240,6 @@ M.blankline = {
         highlight = { "Function", "Label" },
         priority = 500,
     },
-    -- show_current_context = true,
-    -- show_current_context_start = true,
-    -- show_end_of_line = true,
-    -- space_char_blankline = " ",
-    -- char = "",
-    -- char_highlight_list = {
-    --   "IndentBlanklineIndent1",
-    --   "IndentBlanklineIndent2",
-    -- },
-    -- space_char_highlight_list = {
-    --   "IndentBlanklineIndent1",
-    --   "IndentBlanklineIndent2",
-    -- },
-    -- show_trailing_blankline_indent = false,
 }
 
 M.luasnip = {
@@ -432,6 +425,10 @@ M.signs = {
         delay = 1000,
         ignore_whitespace = false,
     },
+}
+
+M.pairs = {
+    enable_check_bracket_line = false,
 }
 
 return M

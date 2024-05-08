@@ -102,6 +102,12 @@ local plugins = {
     },
 
     {
+        "windwp/nvim-autopairs",
+        event = "InsertEnter",
+        opts = overrides.autopairs,
+    },
+
+    {
         "mfussenegger/nvim-dap",
         enabled = true,
         -- event = "BufReadPre",
@@ -120,6 +126,9 @@ local plugins = {
                         load_breakpoints_event = { "BufReadPre" },
                     }
                 end,
+            },
+            {
+                "nvim-neotest/nvim-nio",
             },
         },
         ft = function()
@@ -251,6 +260,7 @@ local plugins = {
                     gitcommit = false,
                     gitrebase = false,
                     hgcommit = false,
+                    markdown = true,
                     svn = false,
                     cvs = false,
                     ["."] = false,
@@ -477,7 +487,7 @@ local plugins = {
         module = "persistence",
         config = function()
             require("persistence").setup {
-                options = { "buffers", "curdir", "tabpages", "winsize", "folds" },
+                options = { "buffers", "tabpages", "winsize", "folds" },
             }
         end,
     },
@@ -560,14 +570,14 @@ local plugins = {
     --   end,
     -- },
 
-    -- {
-    -- 	"theHamsta/nvim_rocks",
-    -- 	event = "VeryLazy",
-    -- 	build = "pip3 install --user hererocks && python3 -mhererocks . -j2.1.0-beta3 -r3.0.0 && cp nvim_rocks.lua lua",
-    -- 	config = function()
-    -- 		require("configs.rocks").setup()
-    -- 	end,
-    -- },
+    {
+        "theHamsta/nvim_rocks",
+        event = "VeryLazy",
+        build = "pyenv exec hererocks . -j2.1.0-beta3 -r3.0.0 && cp nvim_rocks.lua lua",
+        config = function()
+            require("configs.rocks").setup()
+        end,
+    },
 
     {
         "TimUntersberger/neogit",
@@ -610,6 +620,42 @@ local plugins = {
         "lark-parser/vim-lark-syntax",
         ft = { "lark" },
     },
+    {
+        "HiPhish/rainbow-delimiters.nvim",
+        event = "BufReadPre",
+    },
+    {
+        "rust-lang/rust.vim",
+        ft = { "rust" },
+    },
+    {
+        "mrcjkb/rustaceanvim",
+        version = "^4", -- Recommended
+        event = "BufReadPre",
+        ft = { "rust" },
+        init = function()
+            require("configs.rustacean").setup()
+        end,
+    },
+
+    -- {
+    --     "nvim-java/nvim-java",
+    --     ft = "java",
+    --     event = "BufReadPre",
+    --     dependencies = {
+    --         "nvim-java/lua-async-await",
+    --         "nvim-java/nvim-java-refactor",
+    --         "nvim-java/nvim-java-core",
+    --         "nvim-java/nvim-java-test",
+    --         "nvim-java/nvim-java-dap",
+    --         "MunifTanjim/nui.nvim",
+    --         "neovim/nvim-lspconfig",
+    --         "mfussenegger/nvim-dap",
+    --     },
+    --     init = function()
+    --         -- require("java").setup()
+    --     end,
+    -- },
 }
 
 return plugins

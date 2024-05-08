@@ -36,8 +36,9 @@ local function make()
     -- )
 
     -- local command = "mkdir -p build; CXX=g++ cmake -S . -B build && (make -j4 -C ./build &> ./build.log) &"
-    local command =
-        "mkdir -p build; CXX=clang++ cmake -G 'Ninja' -S . -B build && (ninja -C ./build &> ./build.log && echo Done) &"
+    -- local command =
+    --     "mkdir -p build; CXX=clang++ cmake -G 'Ninja' -S . -B build && (ninja -C ./build &> ./build.log && echo Done) &"
+    local command = "./build.sh"
 
     print(command)
     if vim.fn.expand "%:e" == "cpp" then
@@ -85,7 +86,7 @@ map("n", "<leader>x", function()
     require("nvchad.tabufline").close_buffer()
 end, { desc = "Close buffer", silent = true })
 map("n", "<leader>tn", "<cmd> :tabnew <CR>", { desc = "New tab" })
-map("n", "<leader>uu", "<cmd> :NvChadUpdate <CR>", { desc = "Update NvChad" })
+map("n", "<leader>uu", "<cmd> :Lazy  sync <CR>", { desc = "Update" })
 map("n", "<leader>ss", function()
     vim.lsp.buf.signature_help()
 end, { desc = "Toggle Signature", silent = true })
@@ -119,7 +120,9 @@ map("n", "gp", "<cmd>Lspsaga peek_definition<CR>")
 map("n", "<leader>cv", "<cmd>Lspsaga outline<CR>")
 -- map("n", "K", "<cmd>Lspsaga hover_doc<CR>")
 -- map("n", "<leader>ca", "<cmd>Lspsaga code_action<CR>")
-map("n", "<leader>cf", function() end, { desc = "Toggle quickfix" })
+map("n", "<leader>cf", function()
+    quickfix()
+end, { desc = "Toggle quickfix" })
 
 map("n", "<leader>ll", function()
     lsp_lines()
@@ -238,6 +241,14 @@ end, { desc = "Neogit Open" })
 map("n", "<leader>gc", function()
     require("neogit").open { "commit" }
 end, { desc = "Neogit Commits" })
+
+map("n", "<leader>rd", function()
+    require("nvchad.term").runner {
+        pos = "sp",
+        cmd = "./build.sh debug",
+        id = "debug",
+    }
+end, { desc = "Run build script" })
 
 map("v", "<leader>ca", "<cmd>Lspsaga code_action<CR>")
 

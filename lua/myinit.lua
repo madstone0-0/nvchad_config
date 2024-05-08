@@ -4,6 +4,7 @@ local g = vim.g
 local a = vim.api
 local exec = a.nvim_command
 local fn = vim.fn
+local rainbow_delimiters = require "rainbow-delimiters"
 HOME = fn.environ()["HOME"]
 
 require "autocmds"
@@ -83,6 +84,7 @@ local plugin_options = {
     UltiSnipsJumpForwardTrigger = "<A-A>",
     UltiSnipsJumpBackwardTrigger = "<A-B>",
     UltiSnipsEditSplit = "horizontal",
+    -- UltiSnipsSnippetDirectories
 
     -- VimLatex
     tex_flavour = "latex",
@@ -117,6 +119,31 @@ local plugin_options = {
 
     -- AsyncRun
     asyncrun_open = 6,
+
+    -- Rainbow Delims
+    rainbow_delimiters = {
+        strategy = {
+            [""] = rainbow_delimiters.strategy["global"],
+            vim = rainbow_delimiters.strategy["local"],
+        },
+        query = {
+            [""] = "rainbow-delimiters",
+            lua = "rainbow-blocks",
+        },
+        priority = {
+            [""] = 110,
+            lua = 210,
+        },
+        highlight = {
+            "RainbowDelimiterRed",
+            "RainbowDelimiterYellow",
+            "RainbowDelimiterBlue",
+            "RainbowDelimiterOrange",
+            "RainbowDelimiterGreen",
+            "RainbowDelimiterViolet",
+            "RainbowDelimiterCyan",
+        },
+    },
 }
 
 for k, v in pairs(global_options) do
@@ -155,7 +182,7 @@ exec(
     string.format(
         "let g:UltiSnipsSnippetDirectories=['%s','%s']",
         vim.fn.stdpath "data" .. "/lazy/vim-snippets/UltiSnips/",
-        vim.fn.stdpath "config" .. "/lua/custom/snippets/UltiSnips/"
+        vim.fn.stdpath "config" .. "/lua/snippets/UltiSnips/"
     )
 )
 

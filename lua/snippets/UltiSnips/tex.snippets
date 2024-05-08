@@ -1147,7 +1147,7 @@ $z$
 endsnippet
 
 snippet nind "noindent" iwA
-\noindent
+\noindent 
 endsnippet
 
 snippet \\ "newline" iwA
@@ -1257,4 +1257,44 @@ endsnippet
 context "math()"
 snippet poS "Power set" iwA
 \mathcal{P}($1)
+endsnippet
+
+snippet bsT "Basis Step" iwA
+\\noindent \\underline{Basis Step} \\\
+\\\
+endsnippet
+
+snippet isT "Induction Step" iwA
+\\noindent \\underline{Induction  Step} \\\
+\\\
+endsnippet
+
+snippet grA "Graph" iwA
+\\begin{figure}[htpb]
+\\centering
+\\begin{tikzpicture}[node distance={3cm},thick,main/.style = {draw, circle}]
+$1
+
+\\path
+$2
+\\end{tikzpicture}
+\\caption{$3}
+\\end{figure}
+endsnippet
+
+priority 10
+context "math()"
+snippet "bld" "Math Bold" riA
+\mathbf{$1}$0
+endsnippet
+
+priority 100
+context "math()"
+snippet "([a-zA-Z])bld" "Math bold" riA
+\mathbf{`!p snip.rv=match.group(1)`}
+endsnippet
+
+context "math"
+snippet vB "Bold v" iwA
+\mathbf{v}
 endsnippet
