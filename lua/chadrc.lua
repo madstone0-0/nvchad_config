@@ -5,7 +5,7 @@ local M = {}
 local highlights = require "highlights"
 
 M.ui = {
-    theme = "jellybeans",
+    theme = "everforest",
     statusline = {
         theme = "vscode_colored",
     },

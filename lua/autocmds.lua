@@ -1,7 +1,9 @@
 require "nvchad.autocmds"
+local utils = require "utils"
 local au = vim.api.nvim_create_augroup
 local cmd = vim.api.nvim_create_autocmd
 local fn = vim.fn
+local paths = utils.Set { "/home/mads/projects/C++/Learning", "/home/mads/projects/C++/live" }
 
 local exts = { "*.js", "*.py", "*.ts", "*.sh", "*.md", "*.lua", "*.yml", "*.cpp", "*.h", "*.tex", "*.jsx" }
 local filetypes = {
@@ -28,14 +30,6 @@ local filetypes = {
 au("BufCheck", { clear = true })
 au("remember_folds", { clear = true })
 au("lint", { clear = true })
-
--- Literate Haskell
--- au("_lhaskell", { clear = true })
--- cmd({ "BufNewFile", "BufRead" }, {
---   group = "_lhaskell",
---   pattern = { "*.lhs" },
---   command = "set filetype=tex",
--- })
 
 --Lint
 cmd({ "BufWritePost", "InsertLeave", "TextChanged" }, {
@@ -187,12 +181,11 @@ cmd({ "BufEnter" }, {
 -- Cmake on cpp save
 cmd("BufWritePost", {
     group = "_cpp",
-    pattern = { "*.cpp" },
+    pattern = { "*.cpp", "*.h", "*.hpp" },
     callback = function()
-        local path = "/home/mads/projects/C++/Learning"
         -- local currPath = vim.fn.expand "%:h:h:h"
         local currPath = vim.fn.getcwd()
-        if currPath == path then
+        if paths[currPath] then
             -- vim.fn.feedkeys(" co", "n")
             vim.cmd ":call feedkeys(' co')"
         end

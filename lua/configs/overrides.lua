@@ -68,10 +68,10 @@ M.treesitter = {
 }
 
 M.mason = {
-    registries = {
-        "github:nvim-java/mason-registry",
-        "github:mason-org/mason-registry",
-    },
+    -- registries = {
+    --     "github:nvim-java/mason-registry",
+    --     "github:mason-org/mason-registry",
+    -- },
     ensure_installed = {
         -- lua
         "lua-language-server",

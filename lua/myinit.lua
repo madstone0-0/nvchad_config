@@ -57,12 +57,13 @@ g.markdown_fenced_languages = {
 }
 
 local local_options = {
-    sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions",
+    sessionoptions = "blank,buffers,folds,help,tabpages,winsize,winpos,terminal",
     fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:⏵,diff:/]],
     foldcolumn = "1",
     foldlevel = 50,
     foldlevelstart = 70,
     foldenable = true,
+    autochdir = false,
 }
 
 local plugin_options = {
@@ -81,14 +82,27 @@ local plugin_options = {
 
     -- UltiSnips
     UltiSnipsExpandTrigger = "<A-A>",
-    UltiSnipsJumpForwardTrigger = "<A-A>",
-    UltiSnipsJumpBackwardTrigger = "<A-B>",
+    UltiSnipsJumpForwardTrigger = "<tab>",
+    UltiSnipsJumpBackwardTrigger = "<s-tab>",
     UltiSnipsEditSplit = "horizontal",
     -- UltiSnipsSnippetDirectories
 
     -- VimLatex
     tex_flavour = "latex",
     -- vimtex_compiler_method = "latexrun",
+    vimtex_compiler_latexmk_engines = {
+        _ = "-xelatex",
+    },
+    vimtex_compiler_latexmk = {
+        options = {
+            "-xelatex",
+            -- "-pdf",
+            "-interaction=nonstopmode",
+            "-synctex=1",
+            "-file-line-error",
+            "-shell-escape",
+        },
+    },
     vimtex_view_method = "zathura",
     vimtex_quickfix_mode = 0,
     tex_conceal = "abdmgs",
@@ -205,5 +219,6 @@ vim.notify = function(msg, ...)
     notify(msg, ...)
 end
 
+require("base46").toggle_transparency(true)
 exec("au BufWritePost " .. vim.fn.stdpath "config" .. "/custom/configs/dap.lua :luafile %")
 opt.clipboard = { "unnamed", "unnamedplus" }

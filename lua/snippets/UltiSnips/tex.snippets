@@ -227,6 +227,15 @@ snippet bmat "bmat" iA
 \begin{bmatrix} $1 \end{bmatrix} $0
 endsnippet
 
+snippet vmat "vmat" iA
+\begin{vmatrix} $1 \end{vmatrix} $0
+endsnippet
+
+context "math()"
+snippet det  "det" iA
+\det
+endsnippet
+
 context "math()"
 snippet () "left( right)" iA
 \left( ${1:${VISUAL}} \right) $0
@@ -552,8 +561,9 @@ snippet OO "emptyset" iA
 \O
 endsnippet
 
+context "math()"
 snippet RR "real" iA
-\R
+\mathbb{R}
 endsnippet
 
 snippet QQ "Q" iA
@@ -568,9 +578,9 @@ snippet <! "normal" iA
 \triangleleft 
 endsnippet
 
-snippet <> "hokje" iA
-\diamond 
-endsnippet
+# snippet <> "hokje" iA
+# \diamond 
+# endsnippet
 
 
 context "math()"
@@ -590,6 +600,7 @@ snippet case "cases" wA
 \end{cases}
 endsnippet
 
+context "math()"
 snippet SI "SI" iA
 \SI{$1}{$2}
 endsnippet
@@ -638,6 +649,7 @@ snippet HH "H" iA
 \mathbb{H}
 endsnippet
 
+context "math()"
 snippet DD "D" iA
 \mathbb{D}
 endsnippet
@@ -852,7 +864,7 @@ snippet root "square root" iA
 endsnippet
 
 context "math()"
-snippet ~ "prime" iA
+snippet ~^ "prime" iA
 ^{\prime}
 endsnippet
 
@@ -902,6 +914,21 @@ snippet teta "Theta" iA
 endsnippet
 
 context "math()"
+snippet Teta "Theta" iA
+\Theta
+endsnippet
+
+context "math()"
+snippet omg "Omega" iA
+\omega
+endsnippet
+
+context "math()"
+snippet Omg "Omega" iA
+\Omega
+endsnippet
+
+context "math()"
 snippet alp "Alpha" iwA
 \alpha
 endsnippet
@@ -910,6 +937,8 @@ context "math()"
 snippet beta "Beta" iwA
 \beta
 endsnippet
+
+
 
 context "math()"
 snippet txt "text" iA
@@ -940,6 +969,11 @@ endsnippet
 context "math()"
 snippet pi "Pie" iwA
 \pi $1
+endsnippet
+
+context "math()"
+snippet Pi "Pi" iwA
+\Pi
 endsnippet
 
 
@@ -1109,11 +1143,6 @@ $2
 endsnippet
 
 
-snippet algo "algorithm" iwA
-\begin{algorithm}[H]
-	$1
-\end{algorithm}
-endsnippet
 
 snippet nt "note" iwA
 \nt{
@@ -1124,11 +1153,6 @@ endsnippet
 snippet DU "Domain of Discourse" iwA
 \mathbb{U}
 endsnippet
-
-snippet RE "Real" iwA
-\mathbb{R}
-endsnippet
-
 
 snippet PP "Probability" iwA
 \mathbb{P}
@@ -1202,7 +1226,7 @@ snippet nin "not in" iwA
 endsnippet
 
 context "math()"
-snippet bmath "bold math" iwA
+snippet bbm "bold math" iwA
 \mathbb{${1:${VISUAL}}}
 endsnippet
 
@@ -1282,19 +1306,147 @@ $2
 \\end{figure}
 endsnippet
 
-priority 10
+priority 1
 context "math()"
-snippet "bld" "Math Bold" riA
-\mathbf{$1}$0
+snippet "BB" "Math Bold" riA
+\mbold{$1}$0
 endsnippet
 
 priority 100
 context "math()"
-snippet "([a-zA-Z])bld" "Math bold" riA
-\mathbf{`!p snip.rv=match.group(1)`}
+snippet "([a-zA-Z])B" "Math bold" riA
+\mbold{`!p snip.rv=match.group(1)`}
 endsnippet
 
+
+
+# context "math"
+# snippet vB "Bold v" iwA
+# \mathbf{v}
+# endsnippet
+#
+# context "math"
+# snippet aB "Bold a" iwA
+# \mathbf{a}_$1
+# endsnippet
+#
+# context "math"
+# snippet bB "Bold b" iwA
+# \mathbf{b}
+# endsnippet
+#
+# context "math"
+# snippet xB "Bold x" iwA
+# \mathbf{x}
+# endsnippet
+
 context "math"
-snippet vB "Bold v" iwA
-\mathbf{v}
+snippet splt "Split env" iwA
+\begin{split}
+$1
+\end{split}
 endsnippet
+
+snippet cenv "Code env" iwA
+\begin{lstlisting}[language=$1]
+$2
+\end{lstlisting}
+endsnippet
+
+snippet cinl "Code inline" iwA
+\lstinline{$1}
+endsnippet
+
+snippet cdm "Code display" iwA
+\begin{center}
+	\lstinline{$1}
+\end{center}
+endsnippet
+
+snippet aenv "algorithm" ibA
+\begin{algorithm}[H]
+\caption{$1}
+\begin{algorithmic}[1]
+	$2
+\end{algorithmic}
+\end{algorithm}
+endsnippet
+
+context "env('algorithmic')"
+snippet if "if" iwA
+\If{$1}
+$2
+\EndIf
+endsnippet
+
+context "env('algorithmic')"
+snippet els "else" iwA
+\Else
+endsnippet
+
+
+context "env('algorithmic')"
+snippet elif "else if" iwA
+\ElsIf{$1}
+endsnippet
+
+context "env('algorithmic')"
+snippet for "for" iwA
+\For{$1}
+$2
+\EndFor
+endsnippet
+
+context "env('algorithmic')"
+snippet while "while" iwA
+\While{$1}
+$2
+\EndWhile
+endsnippet
+
+context "env('algorithmic')"
+snippet ret "return" iwA
+\State \Return $1
+endsnippet
+
+context "env('algorithmic')"
+snippet func "function" iwA
+\Function{$1}{$2}
+$3
+\EndFunction
+endsnippet
+
+context "env('algorithmic')"
+snippet cmt "comment" iwA
+\Comment{$1}
+endsnippet
+
+context "env('algorithmic')"
+snippet stt "state" iwA
+\State $1
+endsnippet
+
+
+snippet graP "Graph" iwA
+\begin{tikzpicture}
+  \begin{axis}[
+      xlabel=$n$,
+      ylabel=$y$,
+      xmin = 0, xmax = 30,
+      xtick distance = 2,
+      grid = both,
+      minor tick num = 1,
+      width = \textwidth,
+      height = 0.5\textwidth,
+	        legend cell align = {left},
+      legend pos = north west
+
+    ]
+    $1
+	\legend{
+$2
+	}
+  \end{axis}
+\end{tikzpicture}
+endsnippet
+

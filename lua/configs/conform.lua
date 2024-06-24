@@ -65,10 +65,15 @@ function M.setup()
             yaml = { "yamlfmt" },
             markdown = { "cbfmt", "codespell" },
             tex = { "latexindent" },
+
             cpp = { "clang_format" },
+            c = { "clang_format" },
+            cmake = { "gersemi" },
+
             java = { "clang_format" },
             ardunio = { "clang_format" },
             zig = { "zigfmt" },
+            sql = { "sql_formatter" },
         },
     }
 end

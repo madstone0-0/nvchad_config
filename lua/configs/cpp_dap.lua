@@ -56,7 +56,6 @@ function M.setup(_)
                     .. "/build/src/"
                     .. vim.fn.expand "%:h:h:t"
                     .. "/"
-                    .. vim.fn.expand "%:h:t"
                     .. "/${fileBasenameNoExtension}"
             end,
             miDebuggerPath = "/usr/bin/gdb",
@@ -86,7 +85,13 @@ function M.setup(_)
             -- program = function()
             --   return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/build", "file")
             -- end,
-            program = vim.fn.getcwd() .. "/build" .. "/${fileBasenameNoExtension}",
+            program = function()
+                return vim.fn.getcwd()
+                    .. "/build_debug/src/"
+                    .. "/"
+                    .. vim.fn.expand "%:h:t"
+                    .. "/${fileBasenameNoExtension}"
+            end,
             cwd = "${workspaceFolder}",
             stopAtEntry = false,
             setupCommands = {

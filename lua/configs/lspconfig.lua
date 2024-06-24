@@ -42,7 +42,7 @@ local user_attach = function(client, bufnr)
         -- cs.completionProvider.triggerCharacters = { ".", "<", ">", ":", '"', "/", "*" }
         cs.implementationProvider = true
         cs.signatureProvider = true
-        cs.textDocument.semanticHighlightingCapabilities.semanticHighlighting = false
+        -- cs.textDocument.semanticHighlightingCapabilities.semanticHighlighting = false
     end
 
     if client.name == "ccls" then
@@ -88,10 +88,11 @@ local servers = {
     "jsonls",
     "marksman",
     "texlab",
-    "cmake",
+    -- "cmake",
+    "neocmake",
     "svelte",
     "zls",
-    "sqlls",
+    -- "sqlls",
     "lemminx",
 }
 
@@ -136,93 +137,10 @@ lspconfig.r_language_server.setup {
     root_dir = lspconfig.util.root_pattern("DESCRIPTION", "DESCRIPTION.in", "R", ".git", ".lintr"),
 }
 
-local JDTLS_LOCATION = vim.fn.stdpath "data" .. "/mason/packages/jdtls"
-
-local HOME = os.getenv "HOME"
-local WORKSPACE_PATH = HOME .. "/workspace/java/"
-
-local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ":p:h:t")
-local workspace_dir = WORKSPACE_PATH .. project_name
-
-lspconfig.jdtls.setup {
-    on_attach = user_attach,
-    capabilities = user_capabilities "jdtls",
-    init_options = {
-        bundles = {
-            vim.fn.glob "/home/mads/.local/share/nvim/mason/share/java-debug-adapter/com.microsoft.java.debug.plugin-*.jar",
-        },
-    },
-    settings = {
-        --     java = {
-        --         signatureHelp = { enabled = true },
-        --         contentProvider = { preferred = "fernflower" },
-        --         cmd = {
-        --             "java",
-        --             "-Declipse.application=org.eclipse.jdt.ls.core.id1",
-        --             "-Dosgi.bundles.defaultStartLevel=4",
-        --             "-Declipse.product=org.eclipse.jdt.ls.core.product",
-        --             "-Dlog.protocol=true",
-        --             "-Dlog.level=ALL",
-        --             "-Xms1g",
-        --             "-Xmx1G",
-        --             "-noverify",
-        --             "--add-modules=ALL-SYSTEM",
-        --             "--add-opens",
-        --             "java.base/java.util=ALL-UNNAMED",
-        --             "--add-opens",
-        --             "java.base/java.lang=ALL-UNNAMED",
-        --             "-jar",
-        --             vim.fn.glob(JDTLS_LOCATION .. "/plugins/org.eclipse.equinox.launcher_*.jar"),
-        --             "-configuration",
-        --             JDTLS_LOCATION .. "/config_linux",
-        --             "-data",
-        --             workspace_dir,
-        --         },
-        --         completion = {
-        --             favoriteStaticMembers = {
-        --                 "org.hamcrest.MatcherAssert.assertThat",
-        --                 "org.hamcrest.Matchers.*",
-        --                 "org.hamcrest.CoreMatchers.*",
-        --                 "org.junit.jupiter.api.Assertions.*",
-        --                 "java.util.Objects.requireNonNull",
-        --                 "java.util.Objects.requireNonNullElse",
-        --                 "org.mockito.Mockito.*",
-        --                 "org.mockito.ArgumentMatchers.*",
-        --                 "org.mockito.Answers.RETURNS_DEEP_STUBS",
-        --             },
-        --             filteredTypes = {
-        --                 "com.sun.*",
-        --                 "io.micrometer.shaded.*",
-        --                 "java.awt.*",
-        --                 "jdk.*",
-        --                 "sun.*",
-        --             },
-        --         },
-        --
-        --         sources = {
-        --             organizeImports = {
-        --                 starThreshold = 9999,
-        --                 staticStarThreshold = 9999,
-        --             },
-        --         },
-        --         codeGeneration = {
-        --             toString = {
-        --                 template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
-        --             },
-        --         },
-        --         import = { enabled = true },
-        --         rename = { enabled = true },
-        configuration = {
-            runtimes = {
-                {
-                    name = "JavaSE-21",
-                    path = "/usr/lib/jvm/java-21-openjdk/",
-                },
-            },
-        },
-        --     },
-    },
-}
+-- lspconfig.jdtls.setup {
+--     on_attach = user_attach,
+--     capabilities = user_capabilities "jdtls",
+-- }
 
 lspconfig.lua_ls.setup {
     on_attach = on_attach,

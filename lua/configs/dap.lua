@@ -2,7 +2,7 @@ local M = {}
 
 local python_present, dap_python = pcall(require, "dap-python")
 -- local dap_present, dap = pcall(require, "dap")
-M.available_langs = { "cpp", "python", "sh", "javascript", "typescript", "java", "c", "rust" }
+M.available_langs = { "cpp", "python", "sh", "javascript", "typescript", "java", "c", "rust", "lua" }
 
 -- if not dap_present then
 --   function M.setup()

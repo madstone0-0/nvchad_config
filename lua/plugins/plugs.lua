@@ -118,7 +118,10 @@ local plugins = {
             "theHamsta/nvim-dap-virtual-text",
             "rcarriga/nvim-dap-ui",
             "nvim-telescope/telescope-dap.nvim",
-            "mfussenegger/nvim-jdtls",
+            {
+                "mfussenegger/nvim-jdtls",
+                ft = { "java" },
+            },
             {
                 "Weissle/persistent-breakpoints.nvim",
                 config = function()
@@ -246,7 +249,7 @@ local plugins = {
                     auto_trigger = true,
                     debounce = 75,
                     keymap = {
-                        accept = "<Tab>",
+                        accept = "<M-Space>",
                         accept_word = false,
                         accept_line = false,
                         next = "<M-]>",
@@ -307,14 +310,14 @@ local plugins = {
 
     {
         "folke/trouble.nvim",
-        cmd = { "Trouble", "TroubleToggle" },
+        cmd = { "Trouble" },
         dependencies = "nvim-tree/nvim-web-devicons",
         -- config = function()
         --   require("trouble").setup {}
         -- end,
         config = function()
             require("trouble").setup {
-                icons = false,
+                -- icons = false,
             }
         end,
     },
@@ -481,13 +484,25 @@ local plugins = {
         end,
     },
 
+    -- {
+    --     "folke/persistence.nvim",
+    --     event = "BufReadPre", -- this will only start session saving when an actual file was opened
+    --     module = "persistence",
+    --     config = function()
+    --         require("persistence").setup {
+    --             options = { "buffers", "currdir", "winsize", "folds" },
+    --         }
+    --     end,
+    -- },
+
     {
-        "folke/persistence.nvim",
-        event = "BufReadPre", -- this will only start session saving when an actual file was opened
-        module = "persistence",
+        "rmagatti/auto-session",
+        event = "BufEnter",
         config = function()
-            require("persistence").setup {
-                options = { "buffers", "tabpages", "winsize", "folds" },
+            require("auto-session").setup {
+                log_level = "error",
+                auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+                auto_restore_enabled = false,
             }
         end,
     },
@@ -637,25 +652,6 @@ local plugins = {
             require("configs.rustacean").setup()
         end,
     },
-
-    -- {
-    --     "nvim-java/nvim-java",
-    --     ft = "java",
-    --     event = "BufReadPre",
-    --     dependencies = {
-    --         "nvim-java/lua-async-await",
-    --         "nvim-java/nvim-java-refactor",
-    --         "nvim-java/nvim-java-core",
-    --         "nvim-java/nvim-java-test",
-    --         "nvim-java/nvim-java-dap",
-    --         "MunifTanjim/nui.nvim",
-    --         "neovim/nvim-lspconfig",
-    --         "mfussenegger/nvim-dap",
-    --     },
-    --     init = function()
-    --         -- require("java").setup()
-    --     end,
-    -- },
 }
 
 return plugins

@@ -10,7 +10,7 @@ local function quickfix()
     end
 end
 
-local function make()
+local function make(silent)
     local src_path = vim.fn.expand "%:p:~"
     local src_noext = vim.fn.expand "%:t:r"
     local root = vim.fn.expand "%:p:h:h:h:~"
@@ -45,7 +45,14 @@ local function make()
         vim.opt.makeprg = command
     end
 
-    vim.api.nvim_command("AsyncRun -cwd=<root> " .. vim.opt.makeprg.get(vim.opt.makeprg))
+    -- local old = vim.g.autochdir
+    -- vim.g.autochdir = false
+    if silent == false then
+        vim.api.nvim_command("AsyncRun " .. vim.opt.makeprg.get(vim.opt.makeprg))
+    else
+        vim.api.nvim_command("AsyncRun -silent " .. vim.opt.makeprg.get(vim.opt.makeprg))
+    end
+    -- vim.g.autochdir = old
 end
 
 local function preview()
@@ -125,7 +132,8 @@ map("n", "<leader>cf", function()
 end, { desc = "Toggle quickfix" })
 
 map("n", "<leader>ll", function()
-    lsp_lines()
+    require("lsp_lines").toggle()
+    vim.diagnostic.config { virtual_lines = { only_current_line = true } }
 end, { desc = "Toggle lsp_lines" })
 map("n", "<leader>pr", function()
     preview()
@@ -190,26 +198,31 @@ end, { desc = "Toggle test summary" })
 map("n", "<leader>oj", "<cmd> :FSSplitBelow<CR>", { desc = "FSSplitBelow" })
 
 map("n", "<leader>co", function()
-    make()
+    make(false)
+end, { desc = "Make", silent = true, noremap = false })
+map("n", "<leader>cos", function()
+    make(true)
 end, { desc = "Make", silent = true, noremap = false })
 map("n", "<leader>ob", "<cmd> OverseerRun <CR>", { desc = "Run tasks" })
 map("n", "<leader>ot", "<cmd> OverseerToggle <CR>", { desc = "Toggle Overseer" })
 
-map("n", "<leader>q", "<cmd> :TroubleToggle document_diagnostics<CR>", { desc = "TroubleToggle", silent = true })
-map("n", "<leader>qf", "<cmd> :TroubleToggle quickfix<CR>", { desc = "TroubleToggle", silent = true })
+map("n", "<leader>q", "<cmd> :Trouble diagnostics toggle<CR>", { desc = "TroubleToggle", silent = true })
+map("n", "<leader>qf", "<cmd> :Trouble qflist toggle<CR>", { desc = "TroubleToggle", silent = true })
 
 map("n", "<leader>rr", "<cmd> :RunCode<CR>", { desc = "Run Code", silent = true })
 
 map("n", "<leader>un", "<cmd> :UndotreeToggle<CR>", { desc = "Toggle undo tree", silent = true })
 
 map("n", "<leader>ps", function()
-    require("persistence").load()
+    -- require("persistence").load()
+    vim.cmd ":SessionRestore"
 end, { desc = "Restore session" })
 map("n", "<leader>pl", function()
     require("persistence").load { last = true }
 end, { desc = "Restore last session" })
 map("n", "<leader>pd", function()
-    require("persistence").stop()
+    -- require("persistence").stop()
+    vim.cmd ":SessionDelete"
 end, { desc = "Don't restore session" })
 
 map("n", "<F3>", function()
@@ -260,3 +273,237 @@ map("i", "jj", "<Esc>", { desc = "Escape" })
 map("i", "<C-f>", function()
     ink_create()
 end, { silent = true, noremap = true })
+
+-- Molten
+-- map({ "v", "n" }, "<leader>mR", "<Cmd>MoltenEvaluateVisual<CR>")
+-- map("n", "<leader>mi", ":MoltenInit<CR>", { desc = "Initialize Molten", silent = true })
+-- map("n", "<leader>mp", function()
+--     local venv = os.getenv "VIRTUAL_ENV"
+--     if venv ~= nil then
+--         -- in the form of /home/benlubas/.virtualenvs/VENV_NAME
+--         venv = string.match(venv, "/.+/(.+)")
+--         vim.cmd(("MoltenInit %s"):format(venv))
+--     else
+--         vim.cmd "MoltenInit python3"
+--     end
+-- end, { desc = "Initialize Molten for python3", silent = true, noremap = true })
+--
+-- local r = require "quarto.runner"
+-- map("n", "<leader>mrc", r.run_cell, { desc = "run cell", silent = true })
+-- map("n", "<leader>mra", r.run_above, { desc = "run cell and above", silent = true })
+-- map("n", "<leader>mrb", r.run_below, { desc = "run cell and below", silent = true })
+-- map("n", "<leader>mrl", r.run_line, { desc = "run line", silent = true })
+-- map("n", "<leader>mrA", r.run_all, { desc = "run all cells", silent = true })
+--
+-- map("n", "<leader>me", ":MoltenEvaluateOperator<CR>", { desc = "evaluate operator", silent = true })
+-- map("n", "<leader>mrr", ":MoltenReevaluateCell<CR>", { desc = "re-eval cell", silent = true })
+-- map("v", "<leader>mr", ":<C-u>MoltenEvaluateVisual<CR>gv", { desc = "execute visual selection", silent = true })
+-- map("n", "<leader>mos", ":noautocmd MoltenEnterOutput<CR>", { desc = "open output window", silent = true })
+-- map("n", "<leader>moh", ":MoltenHideOutput<CR>", { desc = "close output window", silent = true })
+-- map("n", "<leader>md", ":MoltenDelete<CR>", { desc = "delete Molten cell", silent = true })
+-- local open = false
+-- map("n", "<leader>mot", function()
+--     open = not open
+--     vim.fn.MoltenUpdateOption("auto_open_output", open)
+-- end)
+
+-- local opts = { noremap = true, silent = true }
+--
+-- map(
+--     "n",
+--     "<leader>jos",
+--     ":call jukit#splits#output()<CR>",
+--     { noremap = true, silent = true, desc = "Open new output window" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jts",
+--     ":call jukit#splits#term()<CR>",
+--     { noremap = true, silent = true, desc = "Open new output window" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jhs",
+--     ":call jukit#splits#history()<CR>",
+--     { noremap = true, silent = true, desc = "Open output-history window" }
+-- )
+-- map(
+--     "n",
+--     "<leader>johs",
+--     ":call jukit#splits#output_and_history()<CR>",
+--     { noremap = true, silent = true, desc = "Open output and history" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jhd",
+--     ":call jukit#splits#close_history()<CR>",
+--     { noremap = true, silent = true, desc = "Close output-history window" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jod",
+--     ":call jukit#splits#close_output_split()<CR>",
+--     { noremap = true, silent = true, desc = "Close output window" }
+-- )
+-- map(
+--     "n",
+--     "<leader>johd",
+--     ":call jukit#splits#close_output_and_history(1)<CR>",
+--     { noremap = true, silent = true, desc = "Close both windows" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jso",
+--     ":call jukit#splits#show_last_cell_output(1)<CR>",
+--     { noremap = true, silent = true, desc = "Show current cell output" }
+-- )
+-- map(
+--     "n",
+--     "<leader>j",
+--     ":call jukit#splits#out_hist_scroll(1)<CR>",
+--     { noremap = true, silent = true, desc = "Scroll down in output-history" }
+-- )
+-- map(
+--     "n",
+--     "<leader>k",
+--     ":call jukit#splits#out_hist_scroll(0)<CR>",
+--     { noremap = true, silent = true, desc = "Scroll up in output-history" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jah",
+--     ":call jukit#splits#toggle_auto_hist()<CR>",
+--     { noremap = true, silent = true, desc = "Toggle auto display of saved output" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jsl",
+--     ":call jukit#layouts#set_layout()<CR>",
+--     { noremap = true, silent = true, desc = "Apply layout to current splits" }
+-- )
+--
+-- map(
+--     "n",
+--     "<leader>j<space>",
+--     ":call jukit#send#section(0)<CR>",
+--     { noremap = true, silent = true, desc = "Send current cell code to output split" }
+-- )
+-- map(
+--     "n",
+--     "<CR>",
+--     ":call jukit#send#line()<CR>",
+--     { noremap = true, silent = true, desc = "Send current line to output split" }
+-- )
+-- map(
+--     "v",
+--     "<CR>",
+--     ":<C-U>call jukit#send#selection()<CR>",
+--     { noremap = true, silent = true, desc = "Send visually selected code to output split" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jcc",
+--     ":call jukit#send#until_current_section()<CR>",
+--     { noremap = true, silent = true, desc = "Execute all cells until the current cell" }
+-- )
+-- map("n", "<leader>jall", ":call jukit#send#all()<CR>", { noremap = true, silent = true, desc = "Execute all cells" })
+--
+-- map(
+--     "n",
+--     "<leader>jco",
+--     ":call jukit#cells#create_below(0)<CR>",
+--     { noremap = true, silent = true, desc = "New code cell below" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jcO",
+--     ":call jukit#cells#create_above(0)<CR>",
+--     { noremap = true, silent = true, desc = "New code cell above" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jct", ":call jukit#cells#create_below(1)<CR>",
+--     { noremap = true, silent = true, desc = "New text cell below" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jcT",
+--     ":call jukit#cells#create_above(1)<CR>",
+--     { noremap = true, silent = true, desc = "New text cell above" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jcd",
+--     ":call jukit#cells#delete()<CR>",
+--     { noremap = true, silent = true, desc = "Delete current cell" }
+-- )
+-- map("n", "<leader>jcs", ":call jukit#cells#split()<CR>", { noremap = true, silent = true, desc = "Split current cell" })
+-- map(
+--     "n",
+--     "<leader>jcM",
+--     ":call jukit#cells#merge_above()<CR>",
+--     { noremap = true, silent = true, desc = "Merge with cell above" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jcm",
+--     ":call jukit#cells#merge_below()<CR>",
+--     { noremap = true, silent = true, desc = "Merge with cell below" }
+-- )
+-- map("n", "<leader>jck", ":call jukit#cells#move_up()<CR>", { noremap = true, silent = true, desc = "Move cell up" })
+-- map("n", "<leader>jcj", ":call jukit#cells#move_down()<CR>", { noremap = true, silent = true, desc = "Move cell down" })
+-- map(
+--     "n",
+--     "<leader>jJ",
+--     ":call jukit#cells#jump_to_next_cell()<CR>",
+--     { noremap = true, silent = true, desc = "Jump to next cell" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jK",
+--     ":call jukit#cells#jump_to_previous_cell()<CR>",
+--     { noremap = true, silent = true, desc = "Jump to previous cell" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jddo",
+--     ":call jukit#cells#delete_outputs(0)<CR>",
+--     { noremap = true, silent = true, desc = "Delete output of current cell" }
+-- )
+-- map(
+--     "n",
+--     "<leader>jdda",
+--     ":call jukit#cells#delete_outputs(1)<CR>",
+--     { noremap = true, silent = true, desc = "Delete outputs of all cells" }
+-- )
+--
+-- map(
+--     "n",
+--     "<leader>np",
+--     ':call jukit#convert#notebook_convert("jupyter-notebook")<CR>',
+--     { noremap = true, silent = true, desc = "Convert from ipynb to py or vice versa" }
+-- )
+-- map(
+--     "n",
+--     "<leader>ht",
+--     ':call jukit#convert#save_nb_to_file(0,1,"html")<CR>',
+--     { noremap = true, silent = true, desc = "Convert file to html and open it" }
+-- )
+-- map(
+--     "n",
+--     "<leader>rht",
+--     ':call jukit#convert#save_nb_to_file(1,1,"html")<CR>',
+--     { noremap = true, silent = true, desc = "Convert file to html (re-run all cells) and open it" }
+-- )
+-- map(
+--     "n",
+--     "<leader>pd",
+--     ':call jukit#convert#save_nb_to_file(0,1,"pdf")<CR>',
+--     { noremap = true, silent = true, desc = "Convert file to pdf and open it" }
+-- )
+-- map(
+--     "n",
+--     "<leader>rpd",
+--     ':call jukit#convert#save_nb_to_file(1,1,"pdf")<CR>',
+--     { noremap = true, silent = true, desc = "Convert file to pdf (re-run all cells) and open it" }
+-- )
