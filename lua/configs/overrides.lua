@@ -107,7 +107,6 @@ M.mason = {
         "cbfmt",
         "cspell",
         "marksman",
-        "grammarly-languageserver",
 
         -- latex
         "texlab",

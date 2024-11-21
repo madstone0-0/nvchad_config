@@ -45,17 +45,18 @@ function M.setup()
         },
 
         formatters_by_ft = {
+            php = { "pint" },
             lua = { "stylua" },
             python = { "ruff_format", "ruff_fix" },
 
-            css = { "prettierd" },
-            html = { "prettierd" },
-            json = { "prettierd" },
-            jsonc = { "prettierd" },
-            javascript = { "prettierd" },
-            typescript = { "prettierd" },
-            typescriptreact = { "prettierd", "rustywind" },
-            javascriptreact = { "prettierd", "rustywind" },
+            css = { "biome" },
+            html = { "biome" },
+            json = { "biome" },
+            jsonc = { "biome" },
+            javascript = { "biome" },
+            typescript = { "biome" },
+            typescriptreact = { "biome", "rustywind" },
+            javascriptreact = { "biome", "rustywind" },
             sh = { "shfmt" },
             xml = { "xmlformat" },
 

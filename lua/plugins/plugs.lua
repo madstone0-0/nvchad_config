@@ -352,12 +352,7 @@ local plugins = {
         "max397574/better-escape.nvim",
         event = "InsertEnter",
         config = function()
-            require("better_escape").setup {
-                mapping = { "jk", "jj" }, -- a table with mappings to use
-                timeout = vim.o.timeoutlen, -- the time in which the keys must be hit in ms. Use option timeoutlen by default
-                clear_empty_lines = false, -- clear line after escaping if there is only whitespace
-                keys = "<Esc>", -- keys used for escaping, if it is a function will use the result everytime
-            }
+            require("configs.better_escape").setup()
         end,
     },
 
@@ -652,6 +647,33 @@ local plugins = {
             require("configs.rustacean").setup()
         end,
     },
+
+    -- {
+    --     "pmizio/typescript-tools.nvim",
+    --     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+    --     opts = {},
+    --     config = function()
+    --         local lspconfig = require "lspconfig"
+    --         local configs = require "nvchad.configs.lspconfig"
+    --         local on_attach = configs.on_attach
+    --
+    --         return require("typescript-tools").setup {
+    --             on_attach = on_attach,
+    --             settings = {
+    --                 single_file_support = true,
+    --                 root_dir = lspconfig.util.root_pattern "package.json",
+    --                 filetypes = {
+    --                     "javascript",
+    --                     "javascriptreact",
+    --                     "javascript.jsx",
+    --                     "typescript",
+    --                     "typescriptreact",
+    --                     "typescript.tsx",
+    --                 },
+    --             },
+    --         }
+    --     end,
+    -- },
 }
 
 return plugins

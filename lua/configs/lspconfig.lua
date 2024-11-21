@@ -94,6 +94,8 @@ local servers = {
     "zls",
     -- "sqlls",
     "lemminx",
+    "asm_lsp",
+    "intelephense",
 }
 
 local lspconfig = require "lspconfig"
@@ -171,16 +173,16 @@ lspconfig.eslint.setup {
     packageManager = "yarn",
 }
 
-lspconfig.denols.setup {
-    on_attach = on_attach,
-    capabilities = user_capabilities "denols",
-    root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
-}
+-- lspconfig.denols.setup {
+--     on_attach = on_attach,
+--     capabilities = user_capabilities "denols",
+--     root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+-- }
 
-lspconfig.tsserver.setup {
+lspconfig.ts_ls.setup {
     on_attach = on_attach,
     root_dir = lspconfig.util.root_pattern "package.json",
-    single_file_support = false,
+    single_file_support = true,
     filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
 }
 
@@ -262,9 +264,9 @@ lspconfig.clangd.setup {
     },
 }
 
-lspconfig.ruff_lsp.setup {
+lspconfig.ruff.setup {
     on_attach = user_attach,
-    capabilities = user_capabilities "ruff_lsp",
+    capabilities = user_capabilities "ruff",
     init_options = {
         settings = {
             args = { "--line-length 120", "--extend-select I", "--extend-select PL" },

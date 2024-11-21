@@ -219,6 +219,6 @@ vim.notify = function(msg, ...)
     notify(msg, ...)
 end
 
-require("base46").toggle_transparency(true)
+-- require("base46").toggle_transparency(true)
 exec("au BufWritePost " .. vim.fn.stdpath "config" .. "/custom/configs/dap.lua :luafile %")
 opt.clipboard = { "unnamed", "unnamedplus" }

@@ -5,7 +5,6 @@ local M = {}
 local highlights = require "highlights"
 
 M.ui = {
-    theme = "everforest",
     statusline = {
         theme = "vscode_colored",
     },
@@ -13,36 +12,62 @@ M.ui = {
     tabufline = {
         lazyload = true,
     },
-    hl_override = highlights.override,
-    hl_add = highlights.add,
+
+    cmp = {
+        lspkind_text = true,
+        style = "atom", -- default/flat_light/flat_dark/atom/atom_colored
+    },
+
+    telescope = { style = "borderless" }, -- borderless / bordered
 
     nvdash = {
         load_on_startup = true,
 
         header = {
-            "           ▄ ▄                   ",
-            "       ▄   ▄▄▄     ▄ ▄▄▄ ▄ ▄     ",
-            "       █ ▄ █▄█ ▄▄▄ █ █▄█ █ █     ",
-            "    ▄▄ █▄█▄▄▄█ █▄█▄█▄▄█▄▄█ █     ",
-            "  ▄ █▄▄█ ▄ ▄▄ ▄█ ▄▄▄▄▄▄▄▄▄▄▄▄▄▄  ",
-            "  █▄▄▄▄ ▄▄▄ █ ▄ ▄▄▄ ▄ ▄▄▄ ▄ ▄ █ ▄",
-            "▄ █ █▄█ █▄█ █ █ █▄█ █ █▄█ ▄▄▄ █ █",
-            "█▄█ ▄ █▄▄█▄▄█ █ ▄▄█ █ ▄ █ █▄█▄█ █",
-            "    █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█ █▄█▄▄▄█    ",
+            "                            ",
+            "     ▄▄         ▄ ▄▄▄▄▄▄▄   ",
+            "   ▄▀███▄     ▄██ █████▀    ",
+            "   ██▄▀███▄   ███           ",
+            "   ███  ▀███▄ ███           ",
+            "   ███    ▀██ ███           ",
+            "   ███      ▀ ███           ",
+            "   ▀██ █████▄▀█▀▄██████▄    ",
+            "     ▀ ▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀   ",
+            "                            ",
+            "     Powered By  eovim    ",
+            "                            ",
         },
 
         buttons = {
-            { "  Find File", "Spc f f", "Telescope find_files" },
-            { "󰈚  Recent Files", "Spc f o", "Telescope oldfiles" },
-            { "󰈭  Find Word", "Spc f w", "Telescope live_grep" },
-            { "  Bookmarks", "Spc m a", "Telescope marks" },
-            { "  Themes", "Spc t h", "Telescope themes" },
-            { "  Mappings", "Spc c h", "NvCheatsheet" },
+            { txt = "  Find File", keys = "Spc f f", cmd = "Telescope find_files" },
+            { txt = "󰈚  Recent Files", keys = "Spc f o", cmd = "Telescope oldfiles" },
+            { txt = "󰈭  Find Word", keys = "Spc f w", cmd = "Telescope live_grep" },
+            { txt = "  Bookmarks", keys = "Spc m a", cmd = "Telescope marks" },
+            { txt = "  Themes", keys = "Spc t h", cmd = "Telescope themes" },
+            { txt = "  Mappings", keys = "Spc c h", cmd = "NvCheatsheet" },
         },
     },
+
+    term = {
+        winopts = { number = false },
+        sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },
+        float = {
+            relative = "editor",
+            row = 0.3,
+            col = 0.25,
+            width = 1,
+            height = 1,
+            border = "single",
+        },
+    },
+
+    lsp = { signature = true },
 }
 
 M.base46 = {
+    theme = "mountain",
+    hl_override = highlights.override,
+    hl_add = highlights.add,
     integrations = {
         "blankline",
         "cmp",
@@ -52,7 +77,6 @@ M.base46 = {
         "lsp",
         "mason",
         "nvcheatsheet",
-        "nvdash",
         "nvimtree",
         "statusline",
         "syntax",
@@ -61,6 +85,7 @@ M.base46 = {
         "telescope",
         "whichkey",
     },
+    transparency = false,
 }
 
 -- M.plugins = "plugins"

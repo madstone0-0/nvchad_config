@@ -116,6 +116,13 @@ cmd("BufEnter", {
 --   end,
 -- })
 
+au("_asm", { clear = true })
+cmd({ "BufNewFile", "BufRead" }, {
+    group = "_asm",
+    pattern = { "*.asm" },
+    command = "set filetype=asm",
+})
+
 au("_markdown", { clear = true })
 cmd({ "BufNewFile", "BufRead" }, {
     group = "_markdown",
