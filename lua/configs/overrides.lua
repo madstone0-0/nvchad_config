@@ -22,6 +22,7 @@ M.treesitter = {
         "typescript",
         "tsx",
     },
+
     highlight = {
         enable = true,
         disable = { "latex" },
@@ -30,9 +31,11 @@ M.treesitter = {
             "haskell",
         },
     },
+
     matchup = {
         enable = true,
     },
+
     rainbow = {
         enable = false,
         query = "rainbow-parens",
@@ -41,6 +44,7 @@ M.treesitter = {
         extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
         max_file_lines = 5000, -- Do not enable for files with more than n lines, int
     },
+
     playground = {
         enable = true,
         disable = {},

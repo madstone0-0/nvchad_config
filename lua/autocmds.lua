@@ -52,17 +52,17 @@ cmd({ "BufLeave" }, {
 })
 
 -- Remember Folds
--- cmd("BufWinLeave", {
---     group = "remember_folds",
---     pattern = "*",
---     command = "silent! mkview",
--- })
---
--- cmd("BufWinEnter", {
---     group = "remember_folds",
---     pattern = "*",
---     command = "silent! loadview",
--- })
+cmd("BufWinLeave", {
+    group = "remember_folds",
+    pattern = "*",
+    command = "silent! mkview",
+})
+
+cmd("BufWinEnter", {
+    group = "remember_folds",
+    pattern = "*",
+    command = "silent! loadview",
+})
 
 -- Restore last cursor position
 cmd("BufReadPost", {

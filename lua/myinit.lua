@@ -61,7 +61,7 @@ g.markdown_fenced_languages = {
 }
 
 local local_options = {
-    sessionoptions = "blank,buffers,folds,help,tabpages,winsize,winpos,terminal",
+    sessionoptions = "blank,buffers,folds,help,tabpages,winsize,winpos,terminal,localoptions",
     fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:⏵,diff:/]],
     foldcolumn = "1",
     foldlevel = 50,
@@ -224,5 +224,4 @@ vim.notify = function(msg, ...)
 end
 
 -- require("base46").toggle_transparency(true)
--- exec("au BufWritePost " .. vim.fn.stdpath "config" .. "/custom/configs/dap.lua :luafile %")
 opt.clipboard = { "unnamed", "unnamedplus" }

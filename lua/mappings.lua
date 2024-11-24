@@ -253,6 +253,9 @@ map("n", "<leader>gb", "<cmd> Gitsigns toggle_current_line_blame <CR>", { desc =
 map("n", "<leader>go", function()
     require("neogit").open { kind = "split" }
 end, { desc = "Neogit Open" })
+map("n", "<leader>la", function()
+    require("nvchad.term").toggle { pos = "float", id = "fa", cmd = "lazygit && exit" }
+end, { desc = "Lazygit open" })
 
 map("n", "<leader>gc", function()
     require("neogit").open { "commit" }

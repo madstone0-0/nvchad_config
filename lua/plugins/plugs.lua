@@ -2,15 +2,6 @@ local overrides = require "configs.overrides"
 
 local plugins = {
     -- Overrides
-
-    -- {
-    --   "jose-elias-alvarez/null-ls.nvim",
-    --   event = "LspAttach",
-    --   config = function()
-    --     require "configs.null-ls"
-    --   end,
-    -- },
-
     {
         "mfussenegger/nvim-lint",
         event = { "BufEnter", "InsertEnter", "TextChanged" },
@@ -98,7 +89,6 @@ local plugins = {
             { url = "https://git.sr.ht/~p00f/nvim-ts-rainbow" },
         },
         opts = overrides.treesitter,
-        -- event = "BufRead",
     },
 
     {
@@ -122,7 +112,6 @@ local plugins = {
     {
         "mfussenegger/nvim-dap",
         enabled = true,
-        -- event = "BufReadPre",
         module = { "dap" },
         dependencies = {
             { "Joakker/lua-json5", build = "./install.sh" },
@@ -176,10 +165,6 @@ local plugins = {
                 "nvim-telescope/telescope-fzf-native.nvim",
                 build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
             },
-            -- {
-            --   "tsakirist/telescope-lazy.nvim",
-            --   keys = { "<leader>la" },
-            -- },
         },
         opts = overrides.telescope,
     },
@@ -221,17 +206,6 @@ local plugins = {
 
     { "wakatime/vim-wakatime", lazy = false },
 
-    -- {
-    --   "junegunn/fzf",
-    --   build = ":call fzf#install()",
-    --   lazy = false,
-    -- },
-    --
-    --   {
-    --   "junegunn/fzf.vim",
-    --   lazy = false,
-    -- },
-
     {
         "iamcco/markdown-preview.nvim",
         build = function()
@@ -249,7 +223,6 @@ local plugins = {
 
     { "lervag/vimtex", ft = { "tex", "markdown", "lhaskell" } },
     { "KeitaNakamura/tex-conceal.vim", ft = "tex" },
-    -- { "github/copilot.vim", event = "InsertEnter" },
 
     {
         "zbirenbaum/copilot.lua",
@@ -341,30 +314,6 @@ local plugins = {
     },
 
     { "wellle/targets.vim", event = "BufReadPre" },
-
-    -- {
-    --   "edluffy/specs.nvim",
-    --   event = "BufReadPre",
-    --   config = function()
-    --     require("specs").setup {
-    --       show_jumps = true,
-    --       min_jump = 20,
-    --       popup = {
-    --         delay_ms = 0, -- delay before popup displays
-    --         inc_ms = 10, -- time increments used for fade/resize effects
-    --         blend = 10, -- starting blend, between 0-100 (fully transparent), see :h winblend
-    --         width = 10,
-    --         winhl = "PMenu",
-    --         fader = require("specs").pulse_fader,
-    --         resizer = require("specs").shrink_resizer,
-    --       },
-    --       ignore_filetypes = {},
-    --       ignore_buftypes = {
-    --         nofile = true,
-    --       },
-    --     }
-    --   end,
-    -- },
 
     {
         "max397574/better-escape.nvim",
@@ -510,11 +459,13 @@ local plugins = {
 
     {
         "rmagatti/auto-session",
-        event = "BufEnter",
+        even = "BufReadPre",
+        cmd = { "SessionSave", "SessionRestore" },
+        -- lazy = false,
         config = function()
             require("auto-session").setup {
                 log_level = "error",
-                auto_session_suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+                suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
                 auto_restore_enabled = false,
             }
         end,
@@ -550,18 +501,6 @@ local plugins = {
         },
     },
 
-    -- {
-    --   "anuvyklack/fold-preview.nvim",
-    --   dependencies = "anuvyklack/keymap-amend.nvim",
-    --   config = function()
-    --     require("fold-preview").setup {
-    --       auto = 800,
-    --       default_keybindings = false,
-    --     }
-    --   end,
-    --   event = "BufReadPost",
-    -- },
-
     {
         "sindrets/diffview.nvim",
         cmd = {
@@ -577,8 +516,6 @@ local plugins = {
             require("diffview").setup()
         end,
     },
-
-    -- { "moll/vim-bbye", cmd = { "Bdelete", "Bwipeout" } },
 
     { "jghauser/mkdir.nvim" },
 
@@ -618,15 +555,7 @@ local plugins = {
         config = true,
     },
 
-    -- {
-    --   "mg979/vim-visual-multi",
-    --   event = "BufReadPost",
-    -- },
     { url = "https://github.com/lbrayner/vim-rzip", event = "LspAttach" },
-
-    -- { url = "https://github.com/bfrg/vim-cpp-modern", ft = { "cpp" } },
-
-    -- { "cdelledonne/vim-cmake", ft = { "cpp" } },
 
     { "ziglang/zig.vim", ft = { "zig" } },
 
@@ -639,6 +568,7 @@ local plugins = {
     --   "MrcJkb/haskell-tools.nvim",
     --   ft = { "haskell", "lhaskell" },
     -- },
+
     {
         "enomsg/vim-haskellConcealPlus",
         ft = { "haskell", "lhaskell" },
@@ -666,32 +596,40 @@ local plugins = {
         end,
     },
 
-    -- {
-    --     "pmizio/typescript-tools.nvim",
-    --     dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-    --     opts = {},
-    --     config = function()
-    --         local lspconfig = require "lspconfig"
-    --         local configs = require "nvchad.configs.lspconfig"
-    --         local on_attach = configs.on_attach
-    --
-    --         return require("typescript-tools").setup {
-    --             on_attach = on_attach,
-    --             settings = {
-    --                 single_file_support = true,
-    --                 root_dir = lspconfig.util.root_pattern "package.json",
-    --                 filetypes = {
-    --                     "javascript",
-    --                     "javascriptreact",
-    --                     "javascript.jsx",
-    --                     "typescript",
-    --                     "typescriptreact",
-    --                     "typescript.tsx",
-    --                 },
-    --             },
-    --         }
-    --     end,
-    -- },
+    {
+        "pmizio/typescript-tools.nvim",
+        ft = {
+            "typescript",
+            "typescriptreact",
+            "typescript.tsx",
+            "javascript",
+            "javascriptreact",
+            "javascript.jsx",
+        },
+        dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+        opts = {},
+        config = function()
+            local lspconfig = require "lspconfig"
+            local configs = require "nvchad.configs.lspconfig"
+            local on_attach = configs.on_attach
+
+            return require("typescript-tools").setup {
+                on_attach = on_attach,
+                settings = {
+                    single_file_support = true,
+                    root_dir = lspconfig.util.root_pattern "package.json",
+                    filetypes = {
+                        "javascript",
+                        "javascriptreact",
+                        "javascript.jsx",
+                        "typescript",
+                        "typescriptreact",
+                        "typescript.tsx",
+                    },
+                },
+            }
+        end,
+    },
 }
 
 return plugins
