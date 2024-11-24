@@ -65,6 +65,26 @@ local user_attach = function(client, bufnr)
     end
     -- Java
 
+    -- PHP
+    if client.name == "intelephense" then
+        cs.hoverProvider = true
+        cs.documentHighlightProvider = true
+        cs.renameProvider = false
+        cs.completionProvider.resolveProvider = true
+        cs.implementationProvider = true
+        cs.signatureProvider = true
+    end
+
+    if client.name == "phpactor" then
+        cs.hoverProvider = false
+        cs.documentHighlightProvider = false
+        cs.renameProvider = true
+        cs.completionProvider.resolveProvider = false
+        cs.implementationProvider = false
+        cs.signatureProvider = false
+    end
+    -- PHP
+
     on_attach(client, bufnr)
 end
 
@@ -95,7 +115,6 @@ local servers = {
     -- "sqlls",
     "lemminx",
     "asm_lsp",
-    "intelephense",
 }
 
 local lspconfig = require "lspconfig"
@@ -122,6 +141,16 @@ local lspconfig = require "lspconfig"
 --         },
 --     },
 -- }
+
+lspconfig.intelephense.setup {
+    on_attach = on_attach,
+    capabilities = user_capabilities "intelephense",
+}
+
+lspconfig.phpactor.setup {
+    on_attach = on_attach,
+    capabilities = user_capabilities "phpactor",
+}
 
 lspconfig.hls.setup {
     on_attach = on_attach,

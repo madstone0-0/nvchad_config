@@ -49,7 +49,11 @@ local global_options = {
     textwidth = 120,
     autoindent = true,
     cursorline = false,
-    -- makeprg = "CXX=g++ cmake -S . -B build && (make -j4 -C ./build &> ./build.log) &",
+    guifont = "CaskaydiaCove Nerd Font Mono:h11",
+    number = true,
+    mouse = "a",
+    signcolumn = "yes",
+    inccommand = "split",
 }
 
 g.markdown_fenced_languages = {
@@ -220,5 +224,5 @@ vim.notify = function(msg, ...)
 end
 
 -- require("base46").toggle_transparency(true)
-exec("au BufWritePost " .. vim.fn.stdpath "config" .. "/custom/configs/dap.lua :luafile %")
+-- exec("au BufWritePost " .. vim.fn.stdpath "config" .. "/custom/configs/dap.lua :luafile %")
 opt.clipboard = { "unnamed", "unnamedplus" }

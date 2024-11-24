@@ -4,6 +4,7 @@ local conform = require "conform"
 function M.setup()
     local slow_format_filetypes = {
         "lua",
+        "html",
         "python",
         "javascript",
         "typescript",
@@ -16,6 +17,7 @@ function M.setup()
         "cpp",
         "zig",
     }
+
     conform.setup {
 
         format_on_save = function(bufnr)
@@ -49,8 +51,8 @@ function M.setup()
             lua = { "stylua" },
             python = { "ruff_format", "ruff_fix" },
 
-            css = { "biome" },
-            html = { "biome" },
+            css = { "prettierd" },
+            html = { "prettierd" },
             json = { "biome" },
             jsonc = { "biome" },
             javascript = { "biome" },

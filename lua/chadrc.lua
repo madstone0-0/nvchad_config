@@ -52,9 +52,8 @@ M.ui = {
         winopts = { number = false },
         sizes = { sp = 0.3, vsp = 0.2, ["bo sp"] = 0.3, ["bo vsp"] = 0.2 },
         float = {
-            relative = "editor",
-            row = 0.3,
-            col = 0.25,
+            row = 1,
+            col = 1,
             width = 1,
             height = 1,
             border = "single",

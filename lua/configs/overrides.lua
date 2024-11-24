@@ -41,12 +41,6 @@ M.treesitter = {
         extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
         max_file_lines = 5000, -- Do not enable for files with more than n lines, int
     },
-    autotag = {
-        enable = true,
-        enable_rename = true,
-        enable_close = true,
-        enable_close_on_slash = true,
-    },
     playground = {
         enable = true,
         disable = {},

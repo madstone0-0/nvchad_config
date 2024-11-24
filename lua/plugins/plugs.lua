@@ -74,7 +74,19 @@ local plugins = {
             --     vim.g.matchup_matchparen_offscreen = { method = "popup" }
             --   end,
             -- },
-            "windwp/nvim-ts-autotag",
+            {
+                "windwp/nvim-ts-autotag",
+                config = function()
+                    require("nvim-ts-autotag").setup {
+                        opts = {
+                            -- Defaults
+                            enable_close = true, -- Auto close tags
+                            enable_rename = true, -- Auto rename pairs of tags
+                            enable_close_on_slash = false, -- Auto close on trailing </
+                        },
+                    }
+                end,
+            },
             -- {
             --   "nvim-treesitter/nvim-treesitter-context",
             --   config = function()
@@ -269,6 +281,7 @@ local plugins = {
                     ["."] = false,
                 },
             }
+            vim.cmd "Copilot disable"
         end,
     },
 
@@ -310,14 +323,19 @@ local plugins = {
 
     {
         "folke/trouble.nvim",
+        event = "BufReadPre",
         cmd = { "Trouble" },
         dependencies = "nvim-tree/nvim-web-devicons",
-        -- config = function()
-        --   require("trouble").setup {}
-        -- end,
         config = function()
             require("trouble").setup {
-                -- icons = false,
+                {
+                    modes = {
+                        diagnostics_buffer = {
+                            mode = "diagnostics", -- inherit from diagnostics mode
+                            filter = { buf = 0 }, -- filter diagnostics to the current buffer
+                        },
+                    },
+                },
             }
         end,
     },

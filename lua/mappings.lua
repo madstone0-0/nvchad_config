@@ -82,7 +82,10 @@ map("n", "<C-c>", "")
 
 -- map("n", "<Esc>", ":noh <CR>", {desc = "clear highlights" , silent = true })
 map("n", "<C-A-s>", "<cmd> noautocmd w<CR>", { desc = "Save without formatting", silent = true })
-map("n", "<C-A-c>", "<cmd> qall <CR>", { desc = "Close all" })
+map("n", "<C-A-c>", function()
+    vim.cmd "SessionSave"
+    vim.cmd "qall"
+end, { desc = "Close all" })
 map("n", "<leader>rg", "<cmd> :Telescope live_grep<CR>", { desc = "Search with rg", silent = true })
 map("n", "<leader>tk", "<cmd> :Telescope keymaps<CR>", { desc = "Keymaps", silent = true })
 -- map("n", "<leader>la", "<cmd> :Telescope lazy<CR>", {desc = "Lazy" , silent = true, noremap = true })

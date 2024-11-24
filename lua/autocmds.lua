@@ -40,18 +40,29 @@ cmd({ "BufWritePost", "InsertLeave", "TextChanged" }, {
     end,
 })
 
--- Remember Folds
-cmd("BufWinLeave", {
-    group = "remember_folds",
+au("autosave", { clear = true })
+cmd({ "BufLeave" }, {
+    group = "autosave",
     pattern = "*",
-    command = "silent! mkview",
+    callback = function()
+        if vim.bo.buftype == "" and vim.bo.modified then
+            vim.cmd "silent! w"
+        end
+    end,
 })
 
-cmd("BufWinEnter", {
-    group = "remember_folds",
-    pattern = "*",
-    command = "silent! loadview",
-})
+-- Remember Folds
+-- cmd("BufWinLeave", {
+--     group = "remember_folds",
+--     pattern = "*",
+--     command = "silent! mkview",
+-- })
+--
+-- cmd("BufWinEnter", {
+--     group = "remember_folds",
+--     pattern = "*",
+--     command = "silent! loadview",
+-- })
 
 -- Restore last cursor position
 cmd("BufReadPost", {
