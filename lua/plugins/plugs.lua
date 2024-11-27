@@ -116,6 +116,7 @@ local plugins = {
         dependencies = {
             { "Joakker/lua-json5", build = "./install.sh" },
             { "mfussenegger/nvim-dap-python", ft = { "python" }, module = "dap-python" },
+            { "leoluz/nvim-dap-go", ft = { "go" }, module = "dap-go" },
             "theHamsta/nvim-dap-virtual-text",
             "rcarriga/nvim-dap-ui",
             "nvim-telescope/telescope-dap.nvim",
@@ -513,7 +514,7 @@ local plugins = {
         },
         dependencies = "nvim-lua/plenary.nvim",
         config = function()
-            require("diffview").setup()
+            require("configs.diffview").setup()
         end,
     },
 
@@ -629,6 +630,12 @@ local plugins = {
                 },
             }
         end,
+    },
+
+    {
+        "danymat/neogen",
+        event = "BufReadPre",
+        config = true,
     },
 }
 

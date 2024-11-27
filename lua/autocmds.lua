@@ -3,7 +3,11 @@ local utils = require "utils"
 local au = vim.api.nvim_create_augroup
 local cmd = vim.api.nvim_create_autocmd
 local fn = vim.fn
-local paths = utils.Set { "/home/mads/projects/C++/Learning", "/home/mads/projects/C++/live" }
+local paths = utils.Set {
+    "/home/mads/projects/C++/Learning",
+    "/home/mads/projects/C++/live",
+    "/mnt/windows/Users/HP/Programming/C++/school",
+}
 
 local exts = { "*.js", "*.py", "*.ts", "*.sh", "*.md", "*.lua", "*.yml", "*.cpp", "*.h", "*.tex", "*.jsx" }
 local filetypes = {
@@ -30,6 +34,36 @@ local filetypes = {
 au("BufCheck", { clear = true })
 au("remember_folds", { clear = true })
 au("lint", { clear = true })
+au("defaults", { clear = true })
+
+-- Auto create directories
+cmd("BufWritePre", {
+    group = "defaults",
+    callback = function(event)
+        if event.match:match "^%w%w+://" then
+            return
+        end
+        local file = vim.loop.fs_realpath(event.match) or event.match
+        vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+    end,
+})
+
+-- Auto close certain windows with 'q'
+cmd("FileType", {
+    group = "defaults",
+    pattern = {
+        "help",
+        "startuptime",
+        "qf",
+        "lspinfo",
+        "man",
+        "checkhealth",
+    },
+    callback = function(event)
+        vim.bo[event.buf].buflisted = false
+        vim.keymap.set("n", "q", ":close<CR>", { buffer = event.buf, silent = true })
+    end,
+})
 
 --Lint
 cmd({ "BufWritePost", "InsertLeave", "TextChanged" }, {

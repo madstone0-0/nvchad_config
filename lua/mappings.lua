@@ -249,6 +249,10 @@ map("n", "zM", function()
     require("ufo").closeAllFolds()
 end)
 
+map("n", "<leader>dmo", "<cmd> DiffviewOpen <CR>", { desc = "Open diffview" })
+map("n", "<leader>dmc", "<cmd> DiffviewClose <CR>", { desc = "Close diffview" })
+map("n", "<leader>dmf", "<cmd> DiffviewToggleFiles <CR>", { desc = "Toggle files" })
+
 map("n", "<leader>gb", "<cmd> Gitsigns toggle_current_line_blame <CR>", { desc = "Toggle git blame", silent = true })
 map("n", "<leader>go", function()
     require("neogit").open { kind = "split" }
@@ -279,6 +283,8 @@ map("i", "jj", "<Esc>", { desc = "Escape" })
 map("i", "<C-f>", function()
     ink_create()
 end, { silent = true, noremap = true })
+
+map("n", "<leader>gn", "<cmd> Neogen<CR>", { desc = "Generate doc comment" })
 
 -- Molten
 -- map({ "v", "n" }, "<leader>mR", "<Cmd>MoltenEvaluateVisual<CR>")

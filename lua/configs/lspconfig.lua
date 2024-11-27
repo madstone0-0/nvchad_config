@@ -354,6 +354,19 @@ local servers = {
             },
         },
     },
+
+    -- Go
+    gopls = {
+        settings = {
+            gopls = {
+                analyses = {
+                    unusedparams = true,
+                    shadow = true,
+                },
+                staticcheck = true,
+            },
+        },
+    },
 }
 
 for lsp, opts in pairs(servers) do
