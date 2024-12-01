@@ -225,3 +225,5 @@ end
 
 -- require("base46").toggle_transparency(true)
 opt.clipboard = { "unnamed", "unnamedplus" }
+
+os.execute "python ~/.config/nvim/pywal/chadwal.py &> /dev/null &"

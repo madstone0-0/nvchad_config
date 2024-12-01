@@ -257,3 +257,10 @@ cmd({ "BufNewFile", "BufRead" }, {
     pattern = { "*.snippets" },
     command = "set filetype=snippets",
 })
+
+cmd("Signal", {
+    pattern = "SIGUSR1",
+    callback = function()
+        require("nvchad.utils").reload()
+    end,
+})
