@@ -16,6 +16,7 @@ function M.setup()
         "latex",
         "cpp",
         "zig",
+        "go",
     }
 
     conform.setup {
@@ -47,12 +48,11 @@ function M.setup()
         },
 
         formatters_by_ft = {
-            php = { "pint" },
             lua = { "stylua" },
             python = { "ruff_format", "ruff_fix" },
+            go = { "gofmt" },
+            haskell = { "fourmolu" },
 
-            css = { "prettierd" },
-            html = { "prettierd" },
             json = { "biome" },
             jsonc = { "biome" },
             javascript = { "biome" },
@@ -60,7 +60,6 @@ function M.setup()
             typescriptreact = { "biome", "rustywind" },
             javascriptreact = { "biome", "rustywind" },
             sh = { "shfmt" },
-            xml = { "xmlformat" },
 
             r = { "styler" },
             rust = { "rustfmt" },
@@ -73,10 +72,7 @@ function M.setup()
             c = { "clang_format" },
             cmake = { "gersemi" },
 
-            java = { "clang_format" },
-            ardunio = { "clang_format" },
             zig = { "zigfmt" },
-            sql = { "sql_formatter" },
         },
     }
 end

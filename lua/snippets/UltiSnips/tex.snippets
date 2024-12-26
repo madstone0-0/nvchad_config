@@ -84,6 +84,10 @@ snippet item "Itemize" bA
 \end{itemize}
 endsnippet
 
+snippet itm "Item" bA
+\item $0
+endsnippet
+
 snippet desc "Description" b
 \begin{description}
 	\item[$1] $0
@@ -181,8 +185,15 @@ from sympy import *
 x, y, z, t = symbols('x y z t')
 k, m, n = symbols('k m n', integer=True)
 f, g, h = symbols('f g h', cls=Function)
-init_printing()
-snip.rv = eval('latex(' + match.group(1).replace('\\', '').replace('^', '**').replace('{', '(').replace('}', ')') + ')')
+init_prioting()
+snip.rv = eval('latex(' + match.group(1)
+               .replace('\\left(', '(').replace('\\right)', ')')
+               .replace('\\left[', '[').replace('\\right]', ']')
+               .replace('\\left\\{', '{').replace('\\right\\}', '}')
+               .replace('\\', '')
+               .replace('^', '**')
+               .replace('{', '(')
+               .replace('}', ')') + ')')
 `
 endsnippet
 
@@ -296,6 +307,12 @@ endsnippet
 
 snippet part "d/dx" w
 \frac{\partial ${1:V}}{\partial ${2:x}} $0
+endsnippet
+
+
+context "math()"
+snippet parti "partial derivative" w
+\partial
 endsnippet
 
 context "math()"
@@ -528,6 +545,7 @@ snippet cc "subset" Ai
 \subset 
 endsnippet
 
+context "math()"
 snippet notin "not in " iA
 \not\in 
 endsnippet
@@ -537,28 +555,34 @@ snippet inn "in " iA
 \in 
 endsnippet
 
+context "math()"
 snippet NN "n" iA
 \mathbb{N}
 endsnippet
 
+context "math()"
 snippet Nn "cap" iA
 \cap 
 endsnippet
 
+context "math()"
 snippet UU "cup" iA
 \cup 
 endsnippet
 
+context "math()"
 snippet uuu "bigcup" iA
 \bigcup_{${1:i \in ${2: I}}} $0
 endsnippet
 
+context "math()"
 snippet nnn "bigcap" iA
 \bigcap_{${1:i \in ${2: I}}} $0
 endsnippet
 
+context "math()"
 snippet OO "emptyset" iA
-\O
+\emptyset
 endsnippet
 
 context "math()"
@@ -566,14 +590,17 @@ snippet RR "real" iA
 \mathbb{R}
 endsnippet
 
+context "math()"
 snippet QQ "Q" iA
 \Q
 endsnippet
 
+context "math()"
 snippet ZZ "Z" iA
 \mathbb{Z}
 endsnippet
 
+context "math()"
 snippet <! "normal" iA
 \triangleleft 
 endsnippet
@@ -934,10 +961,19 @@ snippet alp "Alpha" iwA
 endsnippet
 
 context "math()"
-snippet beta "Beta" iwA
-\beta
+snippet phi "Phi" iwA
+\phi
 endsnippet
 
+context "math()"
+snippet eta "Eta" iwA
+\eta
+endsnippet
+
+context "math()"
+snippet beta "beta" iwA
+\beta
+endsnippet
 
 
 context "math()"
@@ -1079,6 +1115,23 @@ snippet truthT "truth table" iwA
 \end{table}
 endsnippet
 
+snippet stateT "state table" iwA
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{*{$1}{wc{7mm}}} \toprule
+      \multicolumn{$2}{c}{$3} &
+      \multicolumn{$4}{c}{$5}                                                       \\\\
+	  $6
+      \cmidrule(lr){1-4}\cmidrule(lr){5-8}
+$7 \\\\
+	  $8
+	  \midrule
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+endsnippet
+
 
 context "math()"
 snippet sigma "sigma" iwA
@@ -1093,6 +1146,11 @@ endsnippet
 context "math()"
 snippet mu "mu" iwA
 \mu $1
+endsnippet
+
+context "math()"
+snippet lam "lambda" iwA
+\lambda $1
 endsnippet
 
 context "math()"
@@ -1142,13 +1200,6 @@ $2
 \end{myproof}
 endsnippet
 
-
-
-snippet nt "note" iwA
-\nt{
-$1
-}
-endsnippet
 
 snippet DU "Domain of Discourse" iwA
 \mathbb{U}
@@ -1306,17 +1357,17 @@ $2
 \\end{figure}
 endsnippet
 
-priority 1
-context "math()"
-snippet "BB" "Math Bold" riA
-\mbold{$1}$0
-endsnippet
+# priority 1
+# context "math()"
+# snippet "BB" "Math Bold" riA
+# \mbold{$1}$0
+# endsnippet
 
-priority 100
-context "math()"
-snippet "([a-zA-Z])B" "Math bold" riA
-\mbold{`!p snip.rv=match.group(1)`}
-endsnippet
+# priority 100
+# context "math()"
+# snippet "([ac-zAC-Z])B" "Math bold" riA
+# \mbold{`!p snip.rv=match.group(1)`}
+# endsnippet
 
 
 
@@ -1366,8 +1417,12 @@ endsnippet
 snippet aenv "algorithm" ibA
 \begin{algorithm}[H]
 \caption{$1}
+  \Comment{}\\\\
+  \Comment{$2} \\\\
+  \Comment{Input: $3} \\\\
+  \Comment{Output: $4} \\\\
 \begin{algorithmic}[1]
-	$2
+	$5
 \end{algorithmic}
 \end{algorithm}
 endsnippet
@@ -1395,6 +1450,11 @@ snippet for "for" iwA
 \For{$1}
 $2
 \EndFor
+endsnippet
+
+context "env('algorithmic')"
+snippet call "call function" iwA
+\Call{$1}{$2}
 endsnippet
 
 context "env('algorithmic')"
@@ -1450,3 +1510,55 @@ $2
 \end{tikzpicture}
 endsnippet
 
+
+snippet thm "Theorem" iwA
+\thm{$1}{
+$2
+}
+endsnippet
+
+
+context "math()"
+snippet abs "Absolute" iwA
+\left| $1 \right|
+endsnippet
+
+context "math()"
+snippet mod "Modulus" iwA
+\bmod
+endsnippet
+
+context "math()"
+snippet <- "gets" iwA
+\gets
+endsnippet
+
+context "math()"
+snippet trans "transpose" iwA
+^T
+endsnippet
+
+snippet karn "Karnaugh" iwA
+\\begin{figure}[htpb]
+\\centering
+\\begin{karnaugh-map}[2][2]
+\\autoterms[-]
+\\end{karnaugh-map}
+\\end{figure}
+endsnippet
+
+snippet circDi "Circuit Diagram" iwA
+\\begin{figure}[h]
+\\begin{circuitikz}
+\\draw
+${1}
+;
+
+\\end{circuitikz}
+\\end{figure}
+endsnippet
+
+context "math()"
+snippet lfa "Fancy L" iwA
+\ell
+endsnippet

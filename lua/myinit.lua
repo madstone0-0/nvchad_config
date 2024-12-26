@@ -4,8 +4,8 @@ local g = vim.g
 local a = vim.api
 local exec = a.nvim_command
 local fn = vim.fn
-local rainbow_delimiters = require "rainbow-delimiters"
 HOME = fn.environ()["HOME"]
+vim.loader.enable()
 
 require "autocmds"
 
@@ -54,6 +54,7 @@ local global_options = {
     mouse = "a",
     signcolumn = "yes",
     inccommand = "split",
+    -- statusline = [[%f %y %r %m %=%l/%L %p%%]],
 }
 
 g.markdown_fenced_languages = {
@@ -61,8 +62,8 @@ g.markdown_fenced_languages = {
 }
 
 local local_options = {
-    sessionoptions = "blank,buffers,folds,help,tabpages,winsize,winpos,terminal,localoptions",
-    fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:⏵,diff:/]],
+    sessionoptions = "blank,buffers,folds,help,tabpages,winsize,winpos,terminal",
+    fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:⏵,diff:-]],
     foldcolumn = "1",
     foldlevel = 50,
     foldlevelstart = 70,
@@ -71,13 +72,8 @@ local local_options = {
 }
 
 local plugin_options = {
-    -- Gutentags
-    gutentags_ctags_exclude_wildignore = 1,
-    gutentags_ctags_exclude = { "node_modules", "_build", "build", "CMakeFiles", "venv" },
-    gutentags_ctags_extra_args = { "--fields=+niazS", "--extra=+q", "--c++-kinds=+px", "--c-kinds=+px" },
-
     -- Matchup
-    matchup_matchparen_offscreen = { method = "status" },
+    -- matchup_matchparen_offscreen = { method = "status" },
 
     -- Vim Markdown
     mkdp_auto_start = 0,
@@ -131,37 +127,8 @@ local plugin_options = {
     loaded_zipPlugin = 0,
     loaded_zip = 0,
 
-    -- cmake
-    cmake_build_dir_location = "./build",
-    cmake_generate_options = "Ninja",
-
     -- AsyncRun
     asyncrun_open = 6,
-
-    -- Rainbow Delims
-    rainbow_delimiters = {
-        strategy = {
-            [""] = rainbow_delimiters.strategy["global"],
-            vim = rainbow_delimiters.strategy["local"],
-        },
-        query = {
-            [""] = "rainbow-delimiters",
-            lua = "rainbow-blocks",
-        },
-        priority = {
-            [""] = 110,
-            lua = 210,
-        },
-        highlight = {
-            "RainbowDelimiterRed",
-            "RainbowDelimiterYellow",
-            "RainbowDelimiterBlue",
-            "RainbowDelimiterOrange",
-            "RainbowDelimiterGreen",
-            "RainbowDelimiterViolet",
-            "RainbowDelimiterCyan",
-        },
-    },
 }
 
 for k, v in pairs(global_options) do
@@ -225,5 +192,4 @@ end
 
 -- require("base46").toggle_transparency(true)
 opt.clipboard = { "unnamed", "unnamedplus" }
-
 os.execute "python ~/.config/nvim/pywal/chadwal.py &> /dev/null &"

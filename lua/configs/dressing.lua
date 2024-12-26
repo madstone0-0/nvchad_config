@@ -1,5 +1,6 @@
 -- require("base46").load_highlight "telescope"
-local options = {
+local M = {}
+M.options = {
     input = {
         -- Set to false to disable the vim.ui.input implementation
         enabled = true,
@@ -66,6 +67,7 @@ local options = {
         -- see :help dressing_get_config
         get_config = nil,
     },
+
     select = {
         -- Set to false to disable the vim.ui.select implementation
         enabled = true,
@@ -79,7 +81,7 @@ local options = {
 
         -- Options for telescope selector
         -- These are passed into the telescope picker directly. Can be used like:
-        -- telescope = require('telescope.themes').get_ivy({...})
+        telescope = require("telescope.themes").get_ivy {},
 
         -- Options for built-in selector
         builtin = {
@@ -120,11 +122,26 @@ local options = {
         },
 
         -- Used to override format_item. See :help dressing-format
-        format_item_override = {},
+        format_item_override = {
+            codeaction = function(action_tuple)
+                local title = action_tuple[2].title:gsub("\r\n", "\\r\\n")
+                local client = vim.lsp.get_client_by_id(action_tuple[1])
+                if client.name == nil then
+                    return string.format("%s\t[%s]", title:gsub("\n", "\\n"), "Placeholder")
+                end
+                return string.format("%s\t[%s]", title:gsub("\n", "\\n"), client.name)
+            end,
+        },
 
         -- see :help dressing_get_config
         get_config = function(opts)
             if opts.kind == "legendary.nvim" then
+                return {
+                    telescope = {
+                        sorter = require("telescope.sorters").fuzzy_with_index_bias {},
+                    },
+                }
+            elseif opts.kind == "codeaction" then
                 return {
                     telescope = {
                         sorter = require("telescope.sorters").fuzzy_with_index_bias {},
@@ -137,4 +154,4 @@ local options = {
     },
 }
 
-return options
+return M

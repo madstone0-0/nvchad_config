@@ -215,9 +215,7 @@ local servers = {
     svelte = {},
     html = {},
     jsonls = {},
-    eslint = {
-        packageManager = "yarn",
-    },
+    eslint = {},
     denols = {
         root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
     },

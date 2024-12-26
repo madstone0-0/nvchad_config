@@ -34,7 +34,7 @@ function M.setup()
         graphql = {},
         handlebars = {},
         svelte = {},
-        markdown = { "cspell" },
+        -- markdown = { "cspell" },
 
         python = { "ruff", "mypy" },
         yaml = { "yamllint" },

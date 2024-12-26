@@ -3,32 +3,15 @@ local utils = require "utils"
 local au = vim.api.nvim_create_augroup
 local cmd = vim.api.nvim_create_autocmd
 local fn = vim.fn
-local paths = utils.Set {
-    "/home/mads/projects/C++/Learning",
-    "/home/mads/projects/C++/live",
-    "/mnt/windows/Users/HP/Programming/C++/school",
-}
-
-local exts = { "*.js", "*.py", "*.ts", "*.sh", "*.md", "*.lua", "*.yml", "*.cpp", "*.h", "*.tex", "*.jsx" }
-local filetypes = {
-    "javascript",
-    "python",
-    "typescript",
-    "sh",
-    "markdown",
-    "lua",
-    "yaml",
-    "cpp",
-    "tex",
-    "javascriptreact",
-    "typescriptreact",
-    "html",
-    "json",
-    "zig",
-    "haskell",
-    "r",
-    "rust",
-    "ardunio",
+local paths = {
+    Cpp = utils.Set {
+        "/home/mads/projects/C++/Learning",
+        "/home/mads/projects/C++/live",
+        "/mnt/windows/Users/HP/Programming/C++/school",
+    },
+    Go = utils.Set {
+        "/home/mads/projects/Go/Learning",
+    },
 }
 
 au("BufCheck", { clear = true })
@@ -235,14 +218,33 @@ cmd("BufWritePost", {
     group = "_cpp",
     pattern = { "*.cpp", "*.h", "*.hpp" },
     callback = function()
-        -- local currPath = vim.fn.expand "%:h:h:h"
         local currPath = vim.fn.getcwd()
-        if paths[currPath] then
-            -- vim.fn.feedkeys(" co", "n")
-            vim.cmd ":call feedkeys(' co')"
+        if paths["Cpp"][currPath] then
+            vim.cmd ":call feedkeys(' cos')"
         end
     end,
 })
+
+-- Build on go save
+au("_go", { clear = true })
+cmd("BufWritePost", {
+    group = "_go",
+    pattern = { "*.go" },
+    callback = function()
+        local currPath = vim.fn.getcwd()
+        if paths["Go"][currPath] then
+            -- vim.fn.feedkeys(" co", "n")
+            vim.cmd ":call feedkeys(' cos')"
+        end
+    end,
+})
+
+-- au("_lean", { clear = true })
+-- cmd({ "BufNewFile", "BufRead" }, {
+--     group = "_lean",
+--     pattern = { "*.lean" },
+--     command = "set filetype=lean",
+-- })
 
 au("_kdl", { clear = true })
 cmd({ "BufNewFile", "BufRead" }, {

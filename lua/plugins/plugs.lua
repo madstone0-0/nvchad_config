@@ -28,26 +28,7 @@ local plugins = {
         -- event = { "BufReadPost", "BufNewFile" },
         event = { "LspAttach" },
         cmd = { "LspInfo", "LspInstall", "LspUninstall" },
-        dependencies = {
-            -- {
-            --   "ray-x/lsp_signature.nvim",
-            --   event = "LspAttach",
-            --   config = function()
-            --     require("configs.signature").setup()
-            --   end,
-            -- },
-            -- {
-            --   "VidocqH/lsp-lens.nvim",
-            --   event = "LspAttach",
-            --   config = function()
-            --     require("lsp-lens").setup()
-            --   end,
-            -- },
-            -- {
-            --   "VonHeikemen/lsp-zero.nvim",
-            --   branch = "v3.x",
-            -- },
-        },
+        dependencies = {},
         config = function()
             -- require "nvchad.configs.lspconfig"
             require("nvchad.configs.lspconfig").defaults()
@@ -120,10 +101,6 @@ local plugins = {
             "theHamsta/nvim-dap-virtual-text",
             "rcarriga/nvim-dap-ui",
             "nvim-telescope/telescope-dap.nvim",
-            {
-                "mfussenegger/nvim-jdtls",
-                ft = { "java" },
-            },
             {
                 "Weissle/persistent-breakpoints.nvim",
                 config = function()
@@ -209,10 +186,21 @@ local plugins = {
 
     {
         "iamcco/markdown-preview.nvim",
-        build = function()
-            vim.fn["mkdp#util#install"]()
+        cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+        ft = { "markdown" },
+        build = function(plugin)
+            if vim.fn.executable "npx" then
+                vim.cmd("!cd " .. plugin.dir .. " && cd app && npx --yes yarn install")
+            else
+                vim.cmd [[Lazy load markdown-preview.nvim]]
+                vim.fn["mkdp#util#install"]()
+            end
         end,
-        ft = "markdown",
+        init = function()
+            if vim.fn.executable "npx" then
+                vim.g.mkdp_filetypes = { "markdown" }
+            end
+        end,
     },
 
     { "preservim/vim-markdown", ft = "markdown" },
@@ -259,26 +247,26 @@ local plugins = {
         end,
     },
 
-    {
-        "folke/neodev.nvim",
-        event = "BufReadPre *.lua",
-        config = function()
-            -- Neodev Setup
-            require("neodev").setup {
-                library = {
-                    plugins = {
-                        "dap",
-                        "nvim-dap-ui",
-                        "neotest",
-                        "nvim-treesitter",
-                        "plenary.nvim",
-                        "telescope.nvim",
-                        "lazy.nvim",
-                    },
-                },
-            }
-        end,
-    },
+    -- {
+    --     "folke/neodev.nvim",
+    --     event = "BufReadPre *.lua",
+    --     config = function()
+    --         -- Neodev Setup
+    --         require("neodev").setup {
+    --             library = {
+    --                 plugins = {
+    --                     "dap",
+    --                     "nvim-dap-ui",
+    --                     "neotest",
+    --                     "nvim-treesitter",
+    --                     "plenary.nvim",
+    --                     "telescope.nvim",
+    --                     "lazy.nvim",
+    --                 },
+    --             },
+    --         }
+    --     end,
+    -- },
 
     -- {
     --   "smjonas/snippet-converter.nvim",
@@ -336,6 +324,8 @@ local plugins = {
                     haskell = "runghc",
                     lhaskell = "runghc",
                     r = "\\R -f",
+                    go = "go run",
+                    lua = "lua ",
                 },
             }
         end,
@@ -398,7 +388,7 @@ local plugins = {
         "stevearc/dressing.nvim",
         config = function()
             require("dressing").setup {
-                require "configs.dressing",
+                require("configs.dressing").options,
             }
         end,
         event = "BufEnter",
@@ -432,45 +422,45 @@ local plugins = {
         end,
     },
 
-    {
-        "anuvyklack/windows.nvim",
-        cmd = { "WindowsMaximize", "WindowsMaximizeVertically", "WindowsMaximizeHorizontally", "WindowsEqualize" },
-        dependencies = {
-            "anuvyklack/middleclass",
-            "anuvyklack/animation.nvim",
-        },
-        config = function()
-            vim.o.winwidth = 10
-            vim.o.winminwidth = 10
-            vim.o.equalalways = false
-            require("windows").setup()
-        end,
-    },
-
     -- {
-    --     "folke/persistence.nvim",
-    --     event = "BufReadPre", -- this will only start session saving when an actual file was opened
-    --     module = "persistence",
+    --     "anuvyklack/windows.nvim",
+    --     cmd = { "WindowsMaximize", "WindowsMaximizeVertically", "WindowsMaximizeHorizontally", "WindowsEqualize" },
+    --     dependencies = {
+    --         "anuvyklack/middleclass",
+    --         "anuvyklack/animation.nvim",
+    --     },
     --     config = function()
-    --         require("persistence").setup {
-    --             options = { "buffers", "currdir", "winsize", "folds" },
-    --         }
+    --         vim.o.winwidth = 10
+    --         vim.o.winminwidth = 10
+    --         vim.o.equalalways = false
+    --         require("windows").setup()
     --     end,
     -- },
 
     {
-        "rmagatti/auto-session",
-        even = "BufReadPre",
-        cmd = { "SessionSave", "SessionRestore" },
-        -- lazy = false,
+        "folke/persistence.nvim",
+        event = "BufReadPre", -- this will only start session saving when an actual file was opened
+        module = "persistence",
         config = function()
-            require("auto-session").setup {
-                log_level = "error",
-                suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
-                auto_restore_enabled = false,
+            require("persistence").setup {
+                options = { "buffers", "currdir", "winsize", "folds" },
             }
         end,
     },
+
+    -- {
+    --     "rmagatti/auto-session",
+    --     even = "BufReadPre",
+    --     cmd = { "SessionSave", "SessionRestore" },
+    --     -- lazy = false,
+    --     config = function()
+    --         require("auto-session").setup {
+    --             log_level = "error",
+    --             suppress_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
+    --             auto_restore_enabled = false,
+    --         }
+    --     end,
+    -- },
 
     -- { url = "https://github.com/imsnif/kdl.vim", ft = { "kdl" } },
 
@@ -545,16 +535,16 @@ local plugins = {
         end,
     },
 
-    {
-        "TimUntersberger/neogit",
-        cmd = { "Neogit" },
-        keys = { "<leader>go" },
-        dependencies = { "nvim-lua/plenary.nvim" },
-        -- config = function()
-        --   require("configs.neo").setup()
-        -- end,
-        config = true,
-    },
+    -- {
+    --     "TimUntersberger/neogit",
+    --     cmd = { "Neogit" },
+    --     keys = { "<leader>go" },
+    --     dependencies = { "nvim-lua/plenary.nvim" },
+    --     -- config = function()
+    --     --   require("configs.neo").setup()
+    --     -- end,
+    --     config = true,
+    -- },
 
     { url = "https://github.com/lbrayner/vim-rzip", event = "LspAttach" },
 
@@ -582,6 +572,32 @@ local plugins = {
     {
         "HiPhish/rainbow-delimiters.nvim",
         event = "BufReadPre",
+        config = function()
+            local rainbow_delimiters = require "rainbow-delimiters"
+            rainbow_delimiters = {
+                strategy = {
+                    [""] = rainbow_delimiters.strategy["global"],
+                    vim = rainbow_delimiters.strategy["local"],
+                },
+                query = {
+                    [""] = "rainbow-delimiters",
+                    lua = "rainbow-blocks",
+                },
+                priority = {
+                    [""] = 110,
+                    lua = 210,
+                },
+                highlight = {
+                    "RainbowDelimiterRed",
+                    "RainbowDelimiterYellow",
+                    "RainbowDelimiterBlue",
+                    "RainbowDelimiterOrange",
+                    "RainbowDelimiterGreen",
+                    "RainbowDelimiterViolet",
+                    "RainbowDelimiterCyan",
+                },
+            }
+        end,
     },
     {
         "rust-lang/rust.vim",
@@ -616,9 +632,10 @@ local plugins = {
 
             return require("typescript-tools").setup {
                 on_attach = on_attach,
+                cmd = { "typescript-language-server", "--stdio" },
                 settings = {
                     single_file_support = true,
-                    root_dir = lspconfig.util.root_pattern "package.json",
+                    -- root_dir = lspconfig.util.root_pattern "package.json",
                     filetypes = {
                         "javascript",
                         "javascriptreact",
@@ -633,9 +650,73 @@ local plugins = {
     },
 
     {
+        "folke/todo-comments.nvim",
+        event = "BufReadPre",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        opts = {},
+    },
+
+    {
+        "j-hui/fidget.nvim",
+        event = "BufReadPre",
+        config = function()
+            require("configs.fidget").setup()
+        end,
+    },
+
+    {
         "danymat/neogen",
         event = "BufReadPre",
         config = true,
+    },
+
+    {
+        "stevearc/aerial.nvim",
+        event = "LspAttach",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            "nvim-tree/nvim-web-devicons",
+        },
+        config = function()
+            require("aerial").setup {}
+        end,
+    },
+
+    {
+        "folke/snacks.nvim",
+        opts = {
+            bigfile = {
+                -- enabled = true,
+                size = 1 * 1024 * 1024, -- 1MB
+            },
+        },
+    },
+
+    {
+        "JoosepAlviste/nvim-ts-context-commentstring",
+        event = "BufReadPre",
+        config = function()
+            require("ts_context_commentstring").setup {
+                enable_autocmd = false,
+            }
+
+            local get_option = vim.filetype.get_option
+            vim.filetype.get_option = function(filetype, option)
+                return option == "commentstring"
+                        and require("ts_context_commentstring.internal").calculate_commentstring()
+                    or get_option(filetype, option)
+            end
+        end,
+    },
+
+    {
+        "ThePrimeagen/harpoon",
+        event = "BufReadPre",
+        branch = "harpoon2",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        config = function()
+            require("configs.harpoon").setup()
+        end,
     },
 }
 

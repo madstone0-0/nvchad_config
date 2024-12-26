@@ -2,12 +2,6 @@ local M = {}
 local dap = require "dap"
 
 function M.setup(_)
-    dap.adapters.cppdbg = {
-        id = "cppdbg",
-        type = "executable",
-        command = vim.fn.stdpath "data" .. "/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7",
-    }
-
     dap.adapters.codelldb = {
         id = "codelldb",
         type = "server",
@@ -22,7 +16,7 @@ function M.setup(_)
     dap.configurations.cpp = {
         {
             name = "Launch file (Learning) (GDB)",
-            type = "cppdbg",
+            type = "codelldb",
             request = "launch",
             MIMode = "gdb",
             program = function()
@@ -48,7 +42,7 @@ function M.setup(_)
 
         {
             name = "Launch file with args (Learning) (GDB)",
-            type = "cppdbg",
+            type = "codelldb",
             request = "launch",
             MIMode = "gdb",
             program = function()
@@ -77,7 +71,7 @@ function M.setup(_)
 
         {
             name = "Launch file (GDB)",
-            type = "cppdbg",
+            type = "codelldb",
             request = "launch",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",
@@ -105,7 +99,7 @@ function M.setup(_)
 
         {
             name = "Find file (GDB)",
-            type = "cppdbg",
+            type = "codelldb",
             request = "launch",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",
@@ -126,7 +120,7 @@ function M.setup(_)
 
         {
             name = "Launch file with args (GDB)",
-            type = "cppdbg",
+            type = "codelldb",
             request = "launch",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",
@@ -151,7 +145,7 @@ function M.setup(_)
 
         {
             name = "Find file with args (GDB)",
-            type = "cppdbg",
+            type = "codelldb",
             request = "launch",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",
@@ -177,7 +171,7 @@ function M.setup(_)
 
         {
             name = "Attach to gdbserver :9090",
-            type = "cppdbg",
+            type = "codelldb",
             request = "launch",
             MIMode = "gdb",
             miDebuggerServerAddress = "localhost:9090",
@@ -209,7 +203,7 @@ function M.setup(_)
 
         {
             name = "Find attach file",
-            type = "cppdbg",
+            type = "codelldb",
             request = "attach",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",

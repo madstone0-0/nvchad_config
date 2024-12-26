@@ -307,7 +307,11 @@ M.telescope = {
         mappings = {
             n = { ["q"] = require("telescope.actions").close },
             i = {
-                ["<C-j>"] = require("telescope.actions").move_selection_next,
+                ["<C-j>"] = {
+                    require("telescope.actions").move_selection_next,
+                    type = "action",
+                    opts = { nowait = true, silent = true },
+                },
                 ["<C-k>"] = require("telescope.actions").move_selection_previous,
             },
         },
@@ -317,6 +321,26 @@ M.telescope = {
         find_files = {
             find_command = { "fd", "--hidden", "--type", "f", "--strip-cwd-prefix" },
             -- find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
+
+            attach_mappings = function(_, map)
+                local actions = require "telescope.actions"
+
+                map("i", "<C-s>", actions.file_vsplit)
+                map("i", "<C-h>", actions.file_split)
+
+                return true
+            end,
+        },
+
+        live_grep = {
+            attach_mappings = function(_, map)
+                local actions = require "telescope.actions"
+
+                map("i", "<C-s>", actions.file_vsplit)
+                map("i", "<C-h>", actions.file_split)
+
+                return true
+            end,
         },
     },
 

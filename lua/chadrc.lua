@@ -8,6 +8,15 @@ return {
 
         tabufline = {
             lazyload = true,
+            order = { "treeOffset", "buffers", "writing_status", "tabs", "btns" },
+            modules = {
+                writing_status = function()
+                    if vim.opt.spell:get() then
+                        return "🖋️"
+                    end
+                    return ""
+                end,
+            },
         },
 
         cmp = {

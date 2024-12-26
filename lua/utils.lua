@@ -8,4 +8,13 @@ function M.Set(list)
     return set
 end
 
+function M.findStringInTable(str, table)
+    for _, i in ipairs(table) do
+        if str == i then
+            return true
+        end
+    end
+    return false
+end
+
 return M
