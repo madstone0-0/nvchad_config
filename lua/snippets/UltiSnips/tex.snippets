@@ -1262,8 +1262,19 @@ snippet reasonT "reason table" iwA
 \end{table}
 endsnippet
 
+context "math()"
 snippet epsilon "epsilon" iwA
 \epsilon
+endsnippet
+
+context "math()"
+snippet delta "delta" iwA
+\delta
+endsnippet
+
+context "math()"
+snippet Delta "Delta" iwA
+\Delta
 endsnippet
 
 context "math()"
@@ -1357,39 +1368,49 @@ $2
 \\end{figure}
 endsnippet
 
-# priority 1
-# context "math()"
-# snippet "BB" "Math Bold" riA
-# \mbold{$1}$0
-# endsnippet
+priority 1
+context "math()"
+snippet "~BB" "Math Bold" riA
+\mbold{$1}$0
+endsnippet
 
-# priority 100
-# context "math()"
-# snippet "([ac-zAC-Z])B" "Math bold" riA
-# \mbold{`!p snip.rv=match.group(1)`}
-# endsnippet
+priority 100
+context "math()"
+snippet "([ac-zAC-Z])~B" "Math bold" riA
+\mbold{`!p snip.rv=match.group(1)`}
+endsnippet
 
 
 
-# context "math"
-# snippet vB "Bold v" iwA
-# \mathbf{v}
-# endsnippet
-#
-# context "math"
-# snippet aB "Bold a" iwA
-# \mathbf{a}_$1
-# endsnippet
-#
-# context "math"
-# snippet bB "Bold b" iwA
-# \mathbf{b}
-# endsnippet
-#
-# context "math"
-# snippet xB "Bold x" iwA
-# \mathbf{x}
-# endsnippet
+context "math"
+snippet ~vB "Bold v" iwA
+\mathbf{v}
+endsnippet
+
+context "math"
+snippet ~aB "Bold a" iwA
+\mathbf{a}_$1
+endsnippet
+
+context "math"
+snippet ~bB "Bold b" iwA
+\mathbf{b}
+endsnippet
+
+context "math"
+snippet ~xB "Bold x" iwA
+\mathbf{x}
+endsnippet
+
+context "math"
+snippet colsp "Column Space" iwA
+\text{Col }$1
+endsnippet
+
+context "math"
+snippet nulsp "Null Space" iwA
+\text{Nul }$1
+endsnippet
 
 context "math"
 snippet splt "Split env" iwA

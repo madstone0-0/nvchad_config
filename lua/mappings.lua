@@ -12,7 +12,7 @@ local function quickfix()
     end
 end
 
-local makeExts = { "cpp", "go" }
+local makeExts = { "cpp", "go", "c" }
 
 local function make(silent)
     local command = "./build.sh"
@@ -37,11 +37,6 @@ local function preview()
     elseif ft == "tex" then
         vim.cmd "VimtexCompile"
     end
-end
-
-local function lsp_lines()
-    require("lsp_lines").toggle()
-    vim.diagnostic.config { virtual_lines = { only_current_line = true } }
 end
 
 local keymaps = {
@@ -194,8 +189,8 @@ local keymaps = {
         {
             map = "<leader>ll",
             cmd = function()
-                require("lsp_lines").toggle()
-                vim.diagnostic.config { virtual_lines = { only_current_line = true } }
+                vim.g.virtual_lines = not vim.g.virtual_lines
+                vim.diagnostic.config { virtual_text = false, virtual_lines = vim.g.virtual_lines }
             end,
             opts = { desc = "Toggle lsp_lines" },
         },
@@ -520,13 +515,13 @@ local keymaps = {
             end,
             opts = { desc = "Lazygit open" },
         },
-        -- {
-        --     map = "<leader>gc",
-        --     cmd = function()
-        --         require("neogit").open { "commit" }
-        --     end,
-        --     opts = { desc = "Neogit Commits" },
-        -- },
+        {
+            map = "<leader>gn",
+            cmd = function()
+                vim.cmd "Neogen"
+            end,
+            opts = { desc = "Neogen annotation" },
+        },
         {
             map = "<leader>rd",
             cmd = function()

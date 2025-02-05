@@ -92,12 +92,26 @@ local plugins = {
 
     {
         "mfussenegger/nvim-dap",
+        cmd = { "DapContinue" },
+        lazy = true,
         enabled = true,
         module = { "dap" },
         dependencies = {
             { "Joakker/lua-json5", build = "./install.sh" },
-            { "mfussenegger/nvim-dap-python", ft = { "python" }, module = "dap-python" },
-            { "leoluz/nvim-dap-go", ft = { "go" }, module = "dap-go" },
+            {
+                "mfussenegger/nvim-dap-python",
+                lazy = true,
+                cmd = { "DapContinue" },
+                ft = { "python" },
+                module = "dap-python",
+            },
+            {
+                "leoluz/nvim-dap-go",
+                lazy = true,
+                cmd = { "DapContinue" },
+                ft = { "go" },
+                module = "dap-go",
+            },
             "theHamsta/nvim-dap-virtual-text",
             "rcarriga/nvim-dap-ui",
             "nvim-telescope/telescope-dap.nvim",
@@ -151,6 +165,16 @@ local plugins = {
         "hrsh7th/nvim-cmp",
         dependencies = {
             { "quangnguyen30192/cmp-nvim-ultisnips" },
+            {
+                url = "https://codeberg.org/FelipeLema/cmp-async-path",
+            },
+            {
+                "hrsh7th/cmp-cmdline",
+            },
+            {
+
+                "hrsh7th/cmp-emoji",
+            },
         },
         opts = overrides.cmp(),
     },
@@ -247,41 +271,10 @@ local plugins = {
         end,
     },
 
-    -- {
-    --     "folke/neodev.nvim",
-    --     event = "BufReadPre *.lua",
-    --     config = function()
-    --         -- Neodev Setup
-    --         require("neodev").setup {
-    --             library = {
-    --                 plugins = {
-    --                     "dap",
-    --                     "nvim-dap-ui",
-    --                     "neotest",
-    --                     "nvim-treesitter",
-    --                     "plenary.nvim",
-    --                     "telescope.nvim",
-    --                     "lazy.nvim",
-    --                 },
-    --             },
-    --         }
-    --     end,
-    -- },
-
-    -- {
-    --   "smjonas/snippet-converter.nvim",
-    --   cmd = "ConvertSnippets",
-    --   config = function()
-    --     require "configs.snippet_converter"
-    --   end,
-    -- },
-
     {
         "derekwyatt/vim-fswitch",
         cmd = { "FSSplitBelow" },
     },
-
-    -- { "ludovicchabant/vim-gutentags", event = "BufReadPost" },
 
     {
         "folke/trouble.nvim",
@@ -331,21 +324,6 @@ local plugins = {
         end,
     },
 
-    -- {
-    --   "ojroques/nvim-bufdel",
-    --   cmd = "BufDel",
-    --   config = function()
-    --     require("bufdel").setup {
-    --       quit = false,
-    --     }
-    --   end,
-    -- },
-
-    {
-        "lambdalisue/suda.vim",
-        lazy = false,
-    },
-
     {
         "kevinhwang91/nvim-bqf",
         ft = "qf",
@@ -356,23 +334,15 @@ local plugins = {
         cmd = "UndotreeToggle",
     },
 
-    -- {
-    --   "nmac427/guess-indent.nvim",
-    --   cmd = "GuessIndent",
-    --   config = function()
-    --     require("guess-indent").setup {}
-    --   end,
-    -- },
-
     {
         "gelguy/wilder.nvim",
-        dependencies = { "nixprime/cpsm" },
+        -- dependencies = { "nixprime/cpsm" },
         config = function()
-            require "configs.wilder"
+            require("configs.wilder").setup()
         end,
         -- event = "BufEnter",
         keys = { "/", ":", "?" },
-        -- lazy = false,
+        lazy = true,
     },
 
     {
@@ -394,13 +364,13 @@ local plugins = {
         event = "BufEnter",
     },
 
-    {
-        url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
-        config = function()
-            require("lsp_lines").setup()
-        end,
-        event = "BufReadPre",
-    },
+    -- {
+    --     url = "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+    --     config = function()
+    --         require("lsp_lines").setup()
+    --     end,
+    --     event = "BufReadPre",
+    -- },
 
     {
         "nvim-neotest/neotest",
@@ -421,21 +391,6 @@ local plugins = {
             }
         end,
     },
-
-    -- {
-    --     "anuvyklack/windows.nvim",
-    --     cmd = { "WindowsMaximize", "WindowsMaximizeVertically", "WindowsMaximizeHorizontally", "WindowsEqualize" },
-    --     dependencies = {
-    --         "anuvyklack/middleclass",
-    --         "anuvyklack/animation.nvim",
-    --     },
-    --     config = function()
-    --         vim.o.winwidth = 10
-    --         vim.o.winminwidth = 10
-    --         vim.o.equalalways = false
-    --         require("windows").setup()
-    --     end,
-    -- },
 
     {
         "folke/persistence.nvim",
@@ -461,8 +416,6 @@ local plugins = {
     --         }
     --     end,
     -- },
-
-    -- { url = "https://github.com/imsnif/kdl.vim", ft = { "kdl" } },
 
     {
         "kevinhwang91/nvim-ufo",
@@ -511,39 +464,12 @@ local plugins = {
     { "jghauser/mkdir.nvim" },
 
     -- {
-    --   "karb94/neoscroll.nvim",
-    --   event = "BufReadPre",
-    --   config = function()
-    --     require("neoscroll").setup()
-    --   end,
-    -- },
-
-    -- {
-    --   "stevearc/overseer.nvim",
-    --   cmd = { "OverseerRun", "OverseerToggle" },
-    --   config = function()
-    --     require("overseer").setup()
-    --   end,
-    -- },
-
-    {
-        "theHamsta/nvim_rocks",
-        event = "VeryLazy",
-        build = "pyenv exec hererocks . -j2.1.0-beta3 -r3.0.0 && cp nvim_rocks.lua lua",
-        config = function()
-            require("configs.rocks").setup()
-        end,
-    },
-
-    -- {
-    --     "TimUntersberger/neogit",
-    --     cmd = { "Neogit" },
-    --     keys = { "<leader>go" },
-    --     dependencies = { "nvim-lua/plenary.nvim" },
-    --     -- config = function()
-    --     --   require("configs.neo").setup()
-    --     -- end,
-    --     config = true,
+    --     "theHamsta/nvim_rocks",
+    --     event = "VeryLazy",
+    --     build = "pyenv exec hererocks . -j2.1.0-beta3 -r3.0.0 && cp nvim_rocks.lua lua",
+    --     config = function()
+    --         require("configs.rocks").setup()
+    --     end,
     -- },
 
     { url = "https://github.com/lbrayner/vim-rzip", event = "LspAttach" },
@@ -554,11 +480,6 @@ local plugins = {
         "skywind3000/asyncrun.vim",
         cmd = { "AsyncRun", "AsyncStop", "AsyncTask" },
     },
-
-    -- {
-    --   "MrcJkb/haskell-tools.nvim",
-    --   ft = { "haskell", "lhaskell" },
-    -- },
 
     {
         "enomsg/vim-haskellConcealPlus",
@@ -717,6 +638,38 @@ local plugins = {
         config = function()
             require("configs.harpoon").setup()
         end,
+    },
+    {
+        "Olical/conjure",
+        ft = { "clojure", "fennel", "scheme" }, -- etc
+        init = function()
+            -- Set configuration options here
+            -- Uncomment this to get verbose logging to help diagnose internal Conjure issues
+            -- This is VERY helpful when reporting an issue with the project
+            -- vim.g["conjure#debug"] = true
+            vim.g["conjure#filetype#scheme"] = "conjure.client.guile.socket"
+            vim.g["conjure#client#guile#socket#pipename"] = "/tmp/guile-repl.socket"
+            vim.g["conjure#mapping#prefix"] = "<leader>"
+        end,
+
+        -- Optional cmp-conjure integration
+        dependencies = {
+            {
+                "PaterJason/cmp-conjure",
+                config = function()
+                    local cmp = require "cmp"
+                    local config = cmp.get_config()
+                    table.insert(config.sources, { name = "conjure" })
+                    return cmp.setup(config)
+                end,
+            },
+        },
+    },
+    {
+        "nvzone/typr",
+        dependencies = "nvzone/volt",
+        opts = {},
+        cmd = { "Typr", "TyprStats" },
     },
 }
 

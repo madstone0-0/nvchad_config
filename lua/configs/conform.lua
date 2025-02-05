@@ -71,6 +71,7 @@ function M.setup()
             cpp = { "clang_format" },
             c = { "clang_format" },
             cmake = { "gersemi" },
+            vhdl = { "vsg" },
 
             zig = { "zigfmt" },
         },

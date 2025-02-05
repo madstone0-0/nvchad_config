@@ -42,7 +42,7 @@ return {
     },
 
     base46 = {
-        theme = "chadwal",
+        theme = "mountain",
         hl_override = highlights.override,
         hl_add = highlights.add,
         integrations = {
@@ -63,7 +63,7 @@ return {
             "whichkey",
         },
 
-        transparency = true,
+        transparency = false,
     },
 
     nvdash = {

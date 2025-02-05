@@ -40,7 +40,7 @@ local global_options = {
     backup = false,
     writebackup = false,
     numberwidth = 2,
-    wrap = true,
+    wrap = false,
     linebreak = true,
     scrolloff = 8, -- minimal number of screen lines to keep above and below the cursor
     sidescrolloff = 8,
@@ -72,6 +72,8 @@ local local_options = {
 }
 
 local plugin_options = {
+    -- Local Leader
+    localleader = ",",
     -- Matchup
     -- matchup_matchparen_offscreen = { method = "status" },
 

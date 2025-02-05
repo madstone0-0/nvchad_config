@@ -1,7 +1,25 @@
 local M = {}
 local dap = require "dap"
 
+function parseExecPath()
+    local buildPath = vim.fn.getcwd() .. "/build/"
+    local fullPath = vim.fn.expand "%:h"
+    local srcIdx = string.find(fullPath, "src")
+    if srcIdx == nil then
+        return ""
+    end
+    local execPath = string.sub(fullPath, srcIdx, string.len(fullPath))
+    local path = buildPath .. execPath .. "/${fileBasenameNoExtension}"
+    return path
+end
+
 function M.setup(_)
+    dap.adapters.cppdbg = {
+        id = "cppdbg",
+        type = "executable",
+        command = vim.fn.stdpath "data" .. "/mason/packages/cpptools/extension/debugAdapters/bin/OpenDebugAD7",
+    }
+
     dap.adapters.codelldb = {
         id = "codelldb",
         type = "server",
@@ -13,20 +31,15 @@ function M.setup(_)
         -- name = "lldb",
     }
 
+    local type = "cppdbg"
+
     dap.configurations.cpp = {
         {
             name = "Launch file (Learning) (GDB)",
-            type = "codelldb",
+            type = type,
             request = "launch",
             MIMode = "gdb",
-            program = function()
-                return vim.fn.getcwd()
-                    .. "/build/src/"
-                    .. vim.fn.expand "%:h:h:t"
-                    .. "/"
-                    .. vim.fn.expand "%:h:t"
-                    .. "/${fileBasenameNoExtension}"
-            end,
+            program = parseExecPath(),
             miDebuggerPath = "/usr/bin/gdb",
             justMyCode = true,
             cwd = "${workspaceFolder}",
@@ -42,16 +55,10 @@ function M.setup(_)
 
         {
             name = "Launch file with args (Learning) (GDB)",
-            type = "codelldb",
+            type = type,
             request = "launch",
             MIMode = "gdb",
-            program = function()
-                return vim.fn.getcwd()
-                    .. "/build/src/"
-                    .. vim.fn.expand "%:h:h:t"
-                    .. "/"
-                    .. "/${fileBasenameNoExtension}"
-            end,
+            program = parseExecPath(),
             miDebuggerPath = "/usr/bin/gdb",
             justMyCode = true,
             cwd = "${workspaceFolder}",
@@ -71,7 +78,7 @@ function M.setup(_)
 
         {
             name = "Launch file (GDB)",
-            type = "codelldb",
+            type = type,
             request = "launch",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",
@@ -99,7 +106,7 @@ function M.setup(_)
 
         {
             name = "Find file (GDB)",
-            type = "codelldb",
+            type = type,
             request = "launch",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",
@@ -120,7 +127,7 @@ function M.setup(_)
 
         {
             name = "Launch file with args (GDB)",
-            type = "codelldb",
+            type = type,
             request = "launch",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",
@@ -145,7 +152,7 @@ function M.setup(_)
 
         {
             name = "Find file with args (GDB)",
-            type = "codelldb",
+            type = type,
             request = "launch",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",
@@ -171,7 +178,7 @@ function M.setup(_)
 
         {
             name = "Attach to gdbserver :9090",
-            type = "codelldb",
+            type = type,
             request = "launch",
             MIMode = "gdb",
             miDebuggerServerAddress = "localhost:9090",
@@ -203,7 +210,7 @@ function M.setup(_)
 
         {
             name = "Find attach file",
-            type = "codelldb",
+            type = type,
             request = "attach",
             MIMode = "gdb",
             miDebuggerPath = "/usr/bin/gdb",

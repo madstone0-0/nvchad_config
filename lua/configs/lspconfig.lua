@@ -14,10 +14,10 @@ local lsp_configs = {
         hoverProvider = false,
     },
     pyright = {
-        renameProvider = false,
-        signatureHelp = false,
-        signatureProvider = false,
-        signatureHelpProvider = {},
+        renameProvider = true,
+        signatureHelp = true,
+        signatureProvider = true,
+        -- signatureHelpProvider = {},
         completionProvider = {
             resolveProvider = true,
         },
@@ -156,7 +156,7 @@ local servers = {
     --     },
     -- },
 
-    -- Cpp
+    -- Cpp / C
     -- "cmake",
     neocmake = {},
     ccls = {
@@ -210,6 +210,9 @@ local servers = {
             -- "/home/mads/Downloads/Compressed/arduino-ide_2.3.2_Linux_64bit/",
         },
     },
+
+    -- VHDL
+    vhdl_ls = {},
 
     -- Web
     svelte = {},
@@ -337,21 +340,21 @@ local servers = {
         },
     },
 
-    pylsp = {
-        settings = {
-            pylsp = {
-                plugins = {
-                    pycodestyle = {
-                        enabled = false,
-                        maxLineLength = 120,
-                    },
-                    pyflakes = {
-                        enabled = false,
-                    },
-                },
-            },
-        },
-    },
+    -- pylsp = {
+    --     settings = {
+    --         pylsp = {
+    --             plugins = {
+    --                 pycodestyle = {
+    --                     enabled = false,
+    --                     maxLineLength = 120,
+    --                 },
+    --                 pyflakes = {
+    --                     enabled = false,
+    --                 },
+    --             },
+    --         },
+    --     },
+    -- },
 
     -- Go
     gopls = {
@@ -377,4 +380,5 @@ end
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
     update_in_insert = true,
 })
-vim.diagnostic.config { virtual_text = false, virtual_lines = { only_current_line = true } }
+vim.g.virtual_lines = true
+vim.diagnostic.config { virtual_text = false, virtual_lines = true }

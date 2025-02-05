@@ -1,7 +1,5 @@
 local M = {}
 
-local python_present, dap_python = pcall(require, "dap-python")
-local go_present, dap_go = pcall(require, "dap-go")
 -- local dap_present, dap = pcall(require, "dap")
 M.available_langs = { "cpp", "python", "sh", "javascript", "typescript", "c", "rust", "lua", "go" }
 
@@ -122,11 +120,14 @@ local function configure_exts()
 end
 
 local function configure_debuggers()
+    local python_present, dap_python = pcall(require, "dap-python")
+    local go_present, dap_go = pcall(require, "dap-go")
+
     if python_present then
         require("configs.python_dap").setup()
     end
     if go_present then
-        require("dap-go").setup()
+        require("configs.go_dap").setup()
     end
     require("configs.cpp_dap").setup()
     require("configs.node_dap").setup()

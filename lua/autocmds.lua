@@ -4,9 +4,13 @@ local au = vim.api.nvim_create_augroup
 local cmd = vim.api.nvim_create_autocmd
 local fn = vim.fn
 local paths = {
+    C = utils.Set {
+        "/home/mads/projects/C/Learning",
+    },
     Cpp = utils.Set {
         "/home/mads/projects/C++/Learning",
         "/home/mads/projects/C++/live",
+        "/home/mads/projects/C++/mlinalg",
         "/mnt/windows/Users/HP/Programming/C++/school",
     },
     Go = utils.Set {
@@ -209,7 +213,7 @@ cmd({ "BufEnter" }, {
 })
 cmd({ "BufEnter" }, {
     group = "_cpp",
-    pattern = { "*.cpp" },
+    pattern = { "*.cpp", "*.c" },
     command = "let b:fswitchdst ='h,hpp'",
 })
 
@@ -220,6 +224,18 @@ cmd("BufWritePost", {
     callback = function()
         local currPath = vim.fn.getcwd()
         if paths["Cpp"][currPath] then
+            vim.cmd ":call feedkeys(' cos')"
+        end
+    end,
+})
+
+-- Cmake on c save
+cmd("BufWritePost", {
+    group = "_cpp",
+    pattern = { "*.h", "*.c" },
+    callback = function()
+        local currPath = vim.fn.getcwd()
+        if paths["C"][currPath] then
             vim.cmd ":call feedkeys(' cos')"
         end
     end,
