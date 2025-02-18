@@ -27,7 +27,7 @@ return {
         telescope = { style = "borderless" }, -- borderless / bordered
     },
 
-    lsp = { signature = true },
+    lsp = { signature = false },
 
     term = {
         winopts = { number = false },
@@ -42,7 +42,7 @@ return {
     },
 
     base46 = {
-        theme = "mountain",
+        theme = "chadwal",
         hl_override = highlights.override,
         hl_add = highlights.add,
         integrations = {

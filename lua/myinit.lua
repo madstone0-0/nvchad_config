@@ -51,9 +51,11 @@ local global_options = {
     cursorline = false,
     guifont = "CaskaydiaCove Nerd Font Mono:h11",
     number = true,
+    relativenumber = true,
     mouse = "a",
     signcolumn = "yes",
     inccommand = "split",
+
     -- statusline = [[%f %y %r %m %=%l/%L %p%%]],
 }
 

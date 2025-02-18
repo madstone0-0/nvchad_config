@@ -671,6 +671,11 @@ local plugins = {
         opts = {},
         cmd = { "Typr", "TyprStats" },
     },
+    {
+        "preservim/vim-pencil",
+        ft = { "tex", "markdown" },
+        cmd = { "Pencil", "TogglePencil" },
+    },
 }
 
 return plugins

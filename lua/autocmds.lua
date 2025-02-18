@@ -161,11 +161,12 @@ cmd({ "BufNewFile", "BufRead" }, {
     pattern = { "*.md" },
     command = "set filetype=markdown",
 })
-cmd({ "Filetype" }, {
-    group = "_markdown",
-    pattern = { "markdown" },
-    command = "setlocal spell spelllang=en_gb complete+=kspell",
-})
+
+-- cmd({ "Filetype" }, {
+--     group = "_markdown",
+--     pattern = { "markdown" },
+--     command = "setlocal spell spelllang=en_gb complete+=kspell",
+-- })
 
 au("_latex", { clear = true })
 cmd({ "Filetype" }, {
@@ -180,6 +181,8 @@ cmd({ "Filetype" }, {
     callback = function()
         vim.cmd "setlocal nocursorline"
         vim.cmd "NoMatchParen"
+        vim.cmd "PencilSoft"
+        vim.cmd "let g:pencil#conceallevel = 2"
     end,
 })
 
