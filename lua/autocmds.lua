@@ -12,6 +12,9 @@ local paths = {
         "/home/mads/projects/C++/live",
         "/home/mads/projects/C++/mlinalg",
         "/mnt/windows/Users/HP/Programming/C++/school",
+        "/home/mads/projects/C++/space",
+        "/home/mads/projects/C++/ml",
+        "/home/mads/projects/C++/game_dev",
     },
     Go = utils.Set {
         "/home/mads/projects/Go/Learning",
@@ -183,6 +186,7 @@ cmd({ "Filetype" }, {
         vim.cmd "NoMatchParen"
         vim.cmd "PencilSoft"
         vim.cmd "let g:pencil#conceallevel = 2"
+        vim.cmd "set nowrap"
     end,
 })
 

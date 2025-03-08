@@ -245,11 +245,11 @@ local servers = {
     lemminx = {},
 
     -- ASM
-    asm_lsp = {},
+    -- asm_lsp = {},
 
     -- PHP
-    intelephense = {},
-    phpactor = {},
+    -- intelephense = {},
+    -- phpactor = {},
 
     -- Rust
     -- rust_analyzer = {
@@ -267,18 +267,18 @@ local servers = {
     -- },
 
     -- Haskell
-    hls = {
-        settings = {
-            haskell = {
-                formattingProvider = "fourmolu",
-            },
-        },
-    },
+    -- hls = {
+    --     settings = {
+    --         haskell = {
+    --             formattingProvider = "fourmolu",
+    --         },
+    --     },
+    -- },
 
     -- R
-    r_language_server = {
-        root_dir = lspconfig.util.root_pattern("DESCRIPTION", "DESCRIPTION.in", "R", ".git", ".lintr"),
-    },
+    -- r_language_server = {
+    --     root_dir = lspconfig.util.root_pattern("DESCRIPTION", "DESCRIPTION.in", "R", ".git", ".lintr"),
+    -- },
 
     -- Lua
     lua_ls = {

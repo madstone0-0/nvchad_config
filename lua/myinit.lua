@@ -40,7 +40,7 @@ local global_options = {
     backup = false,
     writebackup = false,
     numberwidth = 2,
-    wrap = false,
+    wrap = true,
     linebreak = true,
     scrolloff = 8, -- minimal number of screen lines to keep above and below the cursor
     sidescrolloff = 8,
@@ -96,10 +96,12 @@ local plugin_options = {
     -- vimtex_compiler_method = "latexrun",
     vimtex_compiler_latexmk_engines = {
         _ = "-xelatex",
+        -- _ = "-lualatex",
     },
     vimtex_compiler_latexmk = {
         options = {
             "-xelatex",
+            -- "-lualatex",
             -- "-pdf",
             "-interaction=nonstopmode",
             "-synctex=1",
