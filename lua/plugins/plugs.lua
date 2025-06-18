@@ -24,9 +24,8 @@ local plugins = {
 
     {
         "neovim/nvim-lspconfig",
-        lazy = true,
-        -- event = { "BufReadPost", "BufNewFile" },
-        event = { "LspAttach" },
+        -- lazy = true,
+        event = { "LspAttach", "BufEnter" },
         cmd = { "LspInfo", "LspInstall", "LspUninstall" },
         dependencies = {},
         config = function()
@@ -172,7 +171,6 @@ local plugins = {
                 "hrsh7th/cmp-cmdline",
             },
             {
-
                 "hrsh7th/cmp-emoji",
             },
         },
@@ -398,7 +396,7 @@ local plugins = {
         module = "persistence",
         config = function()
             require("persistence").setup {
-                options = { "buffers", "currdir", "winsize", "folds" },
+                options = { "buffers", "curdir", "winsize", "folds", "tabpages" },
             }
         end,
     },
@@ -605,6 +603,7 @@ local plugins = {
 
     {
         "folke/snacks.nvim",
+        event = "BufReadPre",
         opts = {
             bigfile = {
                 -- enabled = true,
@@ -639,6 +638,7 @@ local plugins = {
             require("configs.harpoon").setup()
         end,
     },
+
     {
         "Olical/conjure",
         ft = { "clojure", "fennel", "scheme" }, -- etc
@@ -663,18 +663,29 @@ local plugins = {
                     return cmp.setup(config)
                 end,
             },
+            {
+                "gpanders/nvim-parinfer",
+                ft = { "scheme" },
+            },
         },
     },
+
     {
         "nvzone/typr",
         dependencies = "nvzone/volt",
         opts = {},
         cmd = { "Typr", "TyprStats" },
     },
+
     {
         "preservim/vim-pencil",
         ft = { "tex", "markdown" },
         cmd = { "Pencil", "TogglePencil" },
+    },
+
+    {
+        "tpope/vim-fugitive",
+        cmd = { "G", "Git" },
     },
 }
 
