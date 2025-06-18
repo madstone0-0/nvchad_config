@@ -15,7 +15,7 @@ end
 local makeExts = { "cpp", "go", "c" }
 
 local function make(silent)
-    local command = "./build.sh"
+    local command = "./build.sh debug yes"
 
     print(command)
     local ext = vim.fn.expand "%:e"
@@ -40,6 +40,7 @@ local function preview()
 end
 
 local keymaps = {
+    -- [[ Normal mode]]
     n = {
         {
             map = "<C-c>",
@@ -189,7 +190,7 @@ local keymaps = {
         {
             map = "<leader>ll",
             cmd = function()
-                vim.g.virtual_lines = not vim.g.virtual_lines
+                vim.g.virtual_lines.current_line = not vim.g.virtual_lines.current_line
                 vim.diagnostic.config { virtual_text = false, virtual_lines = vim.g.virtual_lines }
             end,
             opts = { desc = "Toggle lsp_lines" },
@@ -529,7 +530,15 @@ local keymaps = {
             end,
             opts = { desc = "Run build script" },
         },
+        {
+            map = "<leader>ca",
+            cmd = function()
+                vim.lsp.buf.code_action()
+            end,
+            opts = { desc = "Code Action" },
+        },
     },
+    -- [[ Insert mode]]
     i = {
         {
             map = "<C-l>",
@@ -552,11 +561,22 @@ local keymaps = {
             opts = { desc = "Escape" },
         },
     },
+    -- [[ Visual and Select mode]]
     v = {
         {
             map = "<leader>ca",
-            cmd = "<cmd>Lspsaga code_action<CR>",
-            opts = {},
+            cmd = function()
+                vim.lsp.buf.code_action()
+            end,
+            opts = { desc = "Code Action" },
+        },
+    },
+    -- [[ Visual mode]]
+    x = {
+        {
+            map = "p",
+            cmd = "P",
+            opts = { desc = "Paste without formatting", silent = true, noremap = true },
         },
     },
 }

@@ -15,9 +15,14 @@ local paths = {
         "/home/mads/projects/C++/space",
         "/home/mads/projects/C++/ml",
         "/home/mads/projects/C++/game_dev",
+        "/home/mads/projects/C++/wasm",
+        "/home/mads/projects/C++/mdsa",
+        -- "/home/mads/projects/C++/msim",
     },
     Go = utils.Set {
         "/home/mads/projects/Go/Learning",
+        "/home/mads/projects/Go/gowal",
+        "/home/mads/projects/Go/lotr_bpe",
     },
 }
 
@@ -184,9 +189,9 @@ cmd({ "Filetype" }, {
     callback = function()
         vim.cmd "setlocal nocursorline"
         vim.cmd "NoMatchParen"
+        vim.cmd "set nowrap"
         vim.cmd "PencilSoft"
         vim.cmd "let g:pencil#conceallevel = 2"
-        vim.cmd "set nowrap"
     end,
 })
 
@@ -223,44 +228,70 @@ cmd({ "BufEnter" }, {
     pattern = { "*.cpp", "*.c" },
     command = "let b:fswitchdst ='h,hpp'",
 })
+cmd({ "BufNewFile", "BufRead" }, {
+    group = "_cpp",
+    pattern = { "*.tpp" },
+    command = "set filetype=cpp",
+})
+cmd({ "BufEnter" }, {
+    group = "_cpp",
+    pattern = { "*.cpp", "*.c" },
+    callback = function()
+        vim.bo.commentstring = "// %s"
+    end,
+})
+
+au("_build", { clear = true })
+-- Global build on save TODO: Make this toggeable
+cmd("BufWritePost", {
+    group = "_build",
+    pattern = "*",
+    callback = function()
+        local currPath = vim.fn.getcwd()
+        local buildScriptPath = currPath .. "/build.sh"
+        if vim.fn.filereadable(buildScriptPath) == 1 then
+            vim.cmd ":call feedkeys(' cos')"
+        end
+    end,
+})
 
 -- Cmake on cpp save
-cmd("BufWritePost", {
-    group = "_cpp",
-    pattern = { "*.cpp", "*.h", "*.hpp" },
-    callback = function()
-        local currPath = vim.fn.getcwd()
-        if paths["Cpp"][currPath] then
-            vim.cmd ":call feedkeys(' cos')"
-        end
-    end,
-})
+-- cmd("BufWritePost", {
+--     group = "_cpp",
+--     pattern = { "*.cpp", "*.h", "*.hpp" },
+--     callback = function()
+--         local currPath = vim.fn.getcwd()
+--         if paths["Cpp"][currPath] then
+--             vim.cmd ":call feedkeys(' cos')"
+--         end
+--     end,
+-- })
 
 -- Cmake on c save
-cmd("BufWritePost", {
-    group = "_cpp",
-    pattern = { "*.h", "*.c" },
-    callback = function()
-        local currPath = vim.fn.getcwd()
-        if paths["C"][currPath] then
-            vim.cmd ":call feedkeys(' cos')"
-        end
-    end,
-})
+-- cmd("BufWritePost", {
+--     group = "_cpp",
+--     pattern = { "*.h", "*.c" },
+--     callback = function()
+--         local currPath = vim.fn.getcwd()
+--         if paths["C"][currPath] then
+--             vim.cmd ":call feedkeys(' cos')"
+--         end
+--     end,
+-- })
 
 -- Build on go save
 au("_go", { clear = true })
-cmd("BufWritePost", {
-    group = "_go",
-    pattern = { "*.go" },
-    callback = function()
-        local currPath = vim.fn.getcwd()
-        if paths["Go"][currPath] then
-            -- vim.fn.feedkeys(" co", "n")
-            vim.cmd ":call feedkeys(' cos')"
-        end
-    end,
-})
+-- cmd("BufWritePost", {
+--     group = "_go",
+--     pattern = { "*.go" },
+--     callback = function()
+--         local currPath = vim.fn.getcwd()
+--         if paths["Go"][currPath] then
+--             -- vim.fn.feedkeys(" co", "n")
+--             vim.cmd ":call feedkeys(' cos')"
+--         end
+--     end,
+-- })
 
 -- au("_lean", { clear = true })
 -- cmd({ "BufNewFile", "BufRead" }, {

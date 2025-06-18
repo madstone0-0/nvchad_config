@@ -55,8 +55,10 @@ local global_options = {
     mouse = "a",
     signcolumn = "yes",
     inccommand = "split",
-
     -- statusline = [[%f %y %r %m %=%l/%L %p%%]],
+
+    -- Folding
+    -- foldcolumn = "0",
 }
 
 g.markdown_fenced_languages = {
@@ -66,11 +68,16 @@ g.markdown_fenced_languages = {
 local local_options = {
     sessionoptions = "blank,buffers,folds,help,tabpages,winsize,winpos,terminal",
     fillchars = [[eob: ,fold: ,foldopen:▼,foldsep: ,foldclose:⏵,diff:-]],
+    autochdir = false,
+
+    -- Folding
     foldcolumn = "1",
-    foldlevel = 50,
+    foldlevel = 99,
     foldlevelstart = 70,
     foldenable = true,
-    autochdir = false,
+    foldmethod = "expr",
+    foldtext = "",
+    foldexpr = "v:lua.vim.treesitter.foldexpr()",
 }
 
 local plugin_options = {
@@ -179,7 +186,7 @@ exec(
 
 for i = 1, 9, 1 do
     vim.keymap.set("n", string.format("<C-S-%s>", i), function()
-        vim.api.nvim_set_current_buf(vim.t.bufs[i])
+        a.nvim_set_current_buf(vim.t.bufs[i])
     end)
 end
 
@@ -197,5 +204,13 @@ vim.notify = function(msg, ...)
 end
 
 -- require("base46").toggle_transparency(true)
-opt.clipboard = { "unnamed", "unnamedplus" }
-os.execute "python ~/.config/nvim/pywal/chadwal.py &> /dev/null &"
+vim.schedule(function()
+    opt.clipboard = { "unnamed", "unnamedplus" }
+    os.execute "python ~/.config/nvim/pywal/chadwal.py &> /dev/null &"
+end)
+
+-- Setup user commands
+vim.schedule(function()
+    local cmds = require("cmds")
+    cmds.setupCmds()
+end)
