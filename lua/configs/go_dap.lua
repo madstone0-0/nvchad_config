@@ -16,6 +16,15 @@ function M.setup(_)
                 mode = "remote",
                 request = "attach",
             },
+            {
+                type = "go",
+                name = "Debug Package (Args)",
+                request = "launch",
+                program = "${fileDirname}",
+                args = dap_go.get_arguments,
+                -- buildFlags = dap_go.delve.build_flags,
+                -- outputMode = dap_go.delve.output_mode,
+            },
             -- {
             --     type = "go",
             --     name = "Debug (Build Flags)",

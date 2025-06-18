@@ -2,15 +2,13 @@ local configs = require "nvchad.configs.lspconfig"
 local on_attach = configs.on_attach
 local capabilities = configs.capabilities
 local on_init = configs.on_init
-local lspconfig = require "lspconfig"
--- local navic = require "nvim-navic"
--- capabilities.offsetEncoding = "utf-8"
+local LSP = vim.lsp
 
 -- Language server configuration presets grouped by language
 local lsp_configs = {
     --[[ Python LSPs ]]
     --
-    ruff_lsp = {
+    ruff = {
         hoverProvider = false,
     },
     pyright = {
@@ -22,43 +20,43 @@ local lsp_configs = {
             resolveProvider = true,
         },
     },
-    pylsp = {
-        completionProvider = {
-            resolveProvider = false,
-        },
-        signatureHelp = true,
-    },
+    -- pylsp = {
+    --     completionProvider = {
+    --         resolveProvider = false,
+    --     },
+    --     signatureHelp = true,
+    -- },
 
     --[[ C/C++ LSPs ]]
     --
     clangd = {
-        hoverProvider = true,
-        renameProvider = true,
-        documentHighlightProvider = false,
-        completionProvider = {
-            resolveProvider = false,
-            -- Uncomment to customize trigger characters
-            -- triggerCharacters = { ".", "<", ">", ":", '"', "/", "*" }
-        },
-        implementationProvider = true,
-        signatureProvider = true,
-        -- Uncomment to disable semantic highlighting
-        -- textDocument = {
-        --     semanticHighlightingCapabilities = {
-        --         semanticHighlighting = false
-        --     }
-        -- }
+        -- hoverProvider = true,
+        -- renameProvider = true,
+        -- documentHighlightProvider = false,
+        -- completionProvider = {
+        --     resolveProvider = true,
+        --     -- Uncomment to customize trigger characters
+        --     -- triggerCharacters = { ".", "<", ">", ":", '"', "/", "*" }
+        -- },
+        -- implementationProvider = true,
+        -- signatureProvider = true,
+        -- -- Uncomment to disable semantic highlighting
+        -- -- textDocument = {
+        -- --     semanticHighlightingCapabilities = {
+        -- --         semanticHighlighting = false
+        -- --     }
+        -- -- }
     },
-    ccls = {
-        hoverProvider = false,
-        documentHighlightProvider = false,
-        renameProvider = false,
-        completionProvider = {
-            resolveProvider = true,
-        },
-        implementationProvider = false,
-        signatureProvider = false,
-    },
+    -- ccls = {
+    --     hoverProvider = false,
+    --     documentHighlightProvider = false,
+    --     renameProvider = false,
+    --     completionProvider = {
+    --         resolveProvider = true,
+    --     },
+    --     implementationProvider = false,
+    --     signatureProvider = false,
+    -- },
 
     --[[ PHP LSPs ]]
     --
@@ -156,72 +154,82 @@ local servers = {
     --     },
     -- },
 
+    -- Protobuf
+    protols = {},
+
     -- Cpp / C
     -- "cmake",
     neocmake = {},
-    ccls = {
-        handlers = {
-            ["textDocument/publishDiagnostics"] = function() end,
-        },
-        init_options = {
-            highlight = {
-                lsRanges = true,
-            },
-            compilationDatabaseDirectory = "build",
-            index = {
-                threads = 4,
-                comments = 2,
-            },
-            -- clang = {
-            --   includeArgs = { "-I .src/_includes" },
-            -- },
-        },
-    },
+    -- ccls = {
+    --     handlers = {
+    --         ["textDocument/publishDiagnostics"] = function() end,
+    --     },
+    --     init_options = {
+    --         highlight = {
+    --             lsRanges = true,
+    --         },
+    --         compilationDatabaseDirectory = "build",
+    --         index = {
+    --             threads = 4,
+    --             comments = 2,
+    --         },
+    --         -- clang = {
+    --         --   includeArgs = { "-I .src/_includes" },
+    --         -- },
+    --     },
+    -- },
 
     clangd = {
         cmd = {
             "clangd",
             "--background-index",
             "--pch-storage=memory",
-            "-j=8",
+            "-j=6",
             "--clang-tidy",
-            "--inlay-hints",
-            "--suggest-missing-includes",
-            "--cross-file-rename",
             "--completion-style=bundled",
-            "--folding-ranges",
             "--header-insertion=iwyu",
             "--ranking-model=decision_forest",
+            "--all-scopes-completion",
+            "--cross-file-rename",
+            "--offset-encoding=utf-16",
         },
         init_options = {
             clangdFileStatus = true,
-            usePlaceholders = true,
+            usePlaceholders = false,
             completeUnimported = true,
             semanticHighlighting = true,
+        },
+        filetypes = {
+            "cpp",
+            "c",
         },
     },
 
     -- Arduino
-    arduino_language_server = {
-        cmd = {
-            "arduino-language-server",
-            "-cli-config='" .. vim.fn.getcwd() .. "/sketch.yml'",
-            -- "-cli",
-            -- "/home/mads/Downloads/Compressed/arduino-ide_2.3.2_Linux_64bit/",
-        },
-    },
+    -- arduino_language_server = {
+    --     cmd = {
+    --         "arduino-language-server",
+    --         "-cli-config='" .. vim.fn.getcwd() .. "/sketch.yml'",
+    --         -- "-cli",
+    --         -- "/home/mads/Downloads/Compressed/arduino-ide_2.3.2_Linux_64bit/",
+    --     },
+    -- },
+
+    -- Scheme
+    -- scheme_langserver = {},
 
     -- VHDL
-    vhdl_ls = {},
+    -- vhdl_ls = {},
 
     -- Web
-    svelte = {},
+    -- svelte = {},
     html = {},
     jsonls = {},
-    eslint = {},
-    denols = {
-        root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
-    },
+    cssls = {},
+    -- eslint = {},
+    -- denols = {
+    --     root_dir = lspconfig.util.root_pattern("deno.json", "deno.jsonc"),
+    -- },
     -- ts_ls = {
     --     root_dir = lspconfig.util.root_pattern "package.json",
     --     single_file_support = true,
@@ -234,7 +242,6 @@ local servers = {
     --         "typescript.tsx",
     --     },
     -- },
-    cssls = {},
     tailwindcss = {},
 
     -- Zig
@@ -242,10 +249,13 @@ local servers = {
 
     -- SQL
     -- "sqlls",
-    lemminx = {},
+    -- lemminx = {},
 
     -- ASM
     -- asm_lsp = {},
+
+    -- WASM
+    wasm_language_tools = {},
 
     -- PHP
     -- intelephense = {},
@@ -310,11 +320,22 @@ local servers = {
     -- Python
     ruff = {
         init_options = {
+            configuration = {
+                lint = {
+                    ["extend-select"] = { "I", "PL" },
+                },
+            },
             settings = {
-                args = { "--line-length 120", "--extend-select I", "--extend-select PL" },
+                lineLength = 120,
                 interpreter = string.gsub(vim.fn.system "pyenv which python3", "\n", ""),
             },
         },
+    },
+
+    ty = {
+        cmd = { "ty", "server" },
+        filetypes = { "python" },
+        root_dir = vim.fs.root(0, { ".git/", "pyproject.toml" }),
     },
 
     pyright = {
@@ -374,14 +395,16 @@ for lsp, opts in pairs(servers) do
     opts.on_init = on_init
     opts.on_attach = user_attach
     opts.capabilities = user_capabilities(lsp)
-    lspconfig[lsp].setup(opts)
+
+    LSP.config(lsp, opts)
+    LSP.enable(lsp)
 end
 
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+LSP.handlers["textDocument/signatureHelp"] = LSP.with(LSP.handlers.signature_help, {
     focusable = false,
 })
 
-vim.g.virtual_lines = true
+vim.g.virtual_lines = { current_line = true }
 
 vim.diagnostic.config {
     virtual_text = false,

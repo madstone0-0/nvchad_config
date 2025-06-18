@@ -45,13 +45,16 @@ function M.setup()
             clang_format = {
                 prepend_args = { "--style=file" },
             },
+            yamlfmt = {
+                prepend_args = { "-global_conf" },
+            },
         },
 
         formatters_by_ft = {
             lua = { "stylua" },
             python = { "ruff_format", "ruff_fix" },
             go = { "gofmt" },
-            haskell = { "fourmolu" },
+            -- haskell = { "fourmolu" },
 
             json = { "biome" },
             jsonc = { "biome" },
@@ -71,7 +74,9 @@ function M.setup()
             cpp = { "clang_format" },
             c = { "clang_format" },
             cmake = { "gersemi" },
-            vhdl = { "vsg" },
+            -- vhdl = { "vsg" },
+
+            proto = { "buf" },
 
             zig = { "zigfmt" },
         },
