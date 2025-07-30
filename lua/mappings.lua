@@ -17,7 +17,12 @@ local makeExts = { "cpp", "go", "c" }
 local function make(silent)
     local command = "./build.sh debug yes"
 
-    print(command)
+    -- If build_cmd.txt exists in the current dir use that
+    local build_cmd_file = vim.fn.expand "./build_cmd.txt"
+    if vim.fn.filereadable(build_cmd_file) == 1 then
+        command = vim.fn.readfile(build_cmd_file)[1]
+    end
+
     local ext = vim.fn.expand "%:e"
     if utils.findStringInTable(ext, makeExts) then
         vim.opt.makeprg = command
@@ -219,11 +224,11 @@ local keymaps = {
             end,
             opts = { desc = "toggle transparency" },
         },
-        {
-            map = "<leader>ct",
-            cmd = "<cmd> :ColorizerToggle <CR>",
-            opts = { desc = "Toggle colorizer", silent = true },
-        },
+        -- {
+        --     map = "<leader>ct",
+        --     cmd = "<cmd> :ColorizerToggle <CR>",
+        --     opts = { desc = "Toggle colorizer", silent = true },
+        -- },
         {
             map = "<F5>",
             cmd = "<cmd> DapContinue <CR>",
@@ -239,7 +244,8 @@ local keymaps = {
         {
             map = "<leader>de",
             cmd = function()
-                require("dapui").eval(vim.fn.input "[Expression] > ")
+                require("dap-view").eval(vim.fn.input "[Expression] > ")
+                -- require("dapui").eval(vim.fn.input "[Expression] > ")
             end,
             opts = { desc = "Debugger Evaluate Input" },
         },
@@ -302,7 +308,8 @@ local keymaps = {
         {
             map = "<leader>du",
             cmd = function()
-                require("dapui").toggle()
+                require("dap-view").toggle()
+                -- require("dapui").toggle()
             end,
             opts = { desc = "Toggle dap ui" },
         },
@@ -531,11 +538,65 @@ local keymaps = {
             opts = { desc = "Run build script" },
         },
         {
+            map = "<leader>ee",
+            cmd = function()
+                utils.CustomPicker("▶︎ AsyncRun/Files", function()
+                    -- stream both with fd+compgen so Telescope sorts server‑side
+                    return require("telescope.finders").new_oneshot_job({
+                        "bash",
+                        "-lc",
+                        "compgen -c; fd --type f --hidden --exclude .git --max-depth 3",
+                    }, { cwd = vim.loop.cwd() })
+                end, function(value)
+                    vim.cmd("AsyncRun " .. value)
+                end)
+            end,
+            opts = { desc = "Telescope command picker" },
+        },
+        {
+            map = "<leader>ex",
+            cmd = function()
+                vim.ui.input({
+                    prompt = "Run ▶︎ ",
+                    default = "echo 'Hello World'",
+                    completion = "shellcmd",
+                }, function(cmdline)
+                    if not cmdline or cmdline == "" then
+                        return
+                    end
+                    vim.cmd("AsyncRun " .. cmdline)
+                end)
+            end,
+        },
+        {
             map = "<leader>ca",
             cmd = function()
                 vim.lsp.buf.code_action()
             end,
             opts = { desc = "Code Action" },
+        },
+        {
+            map = "<leader>ct",
+            cmd = function()
+                vim.cmd "Copilot enable"
+                vim.cmd "Copilot toggle"
+                vim.cmd "Copilot status"
+            end,
+            opts = { desc = "Toggle Copilot", silent = true },
+        },
+        {
+            map = "<leader>cd",
+            cmd = function()
+                vim.cmd "Copilot disable"
+            end,
+            opts = { desc = "Disable Copilot", silent = true },
+        },
+        {
+            map = "<leader>ce",
+            cmd = function()
+                vim.cmd "Copilot enable"
+            end,
+            opts = { desc = "Enable Copilot", silent = true },
         },
     },
     -- [[ Insert mode]]

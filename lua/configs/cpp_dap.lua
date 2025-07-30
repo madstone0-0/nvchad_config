@@ -1,5 +1,6 @@
 local M = {}
 local dap = require "dap"
+local utils = require "utils"
 
 function parseExecPath()
     local buildPath = vim.fn.getcwd() .. "/build/"
@@ -11,6 +12,18 @@ function parseExecPath()
     local execPath = string.sub(fullPath, srcIdx, string.len(fullPath))
     local path = buildPath .. execPath .. "/${fileBasenameNoExtension}"
     return path
+end
+
+function getProgramPath()
+    local res = vim.fn.input {
+        prompt = "Path to executable: ",
+        default = vim.fn.getcwd() .. "/build",
+        completion = "file",
+    }
+    if res == "" then
+        return vim.fn.getcwd() .. "/build"
+    end
+    return res
 end
 
 function M.setup(_)
@@ -112,7 +125,7 @@ function M.setup(_)
             miDebuggerPath = "/usr/bin/gdb",
             justMyCode = true,
             program = function()
-                return vim.fn.input { prompt = "Path to executable: ", default = vim.fn.getcwd() .. "/build" }
+                return getProgramPath()
             end,
             cwd = "${workspaceFolder}",
             stopAtEntry = false,
@@ -133,7 +146,7 @@ function M.setup(_)
             miDebuggerPath = "/usr/bin/gdb",
             justMyCode = true,
             program = function()
-                return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/build")
+                return getProgramPath()
             end,
             args = function()
                 local args = vim.fn.input "Arguments: "
@@ -158,7 +171,7 @@ function M.setup(_)
             miDebuggerPath = "/usr/bin/gdb",
             justMyCode = true,
             program = function()
-                return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/build")
+                return getProgramPath()
             end,
             args = function()
                 local args = vim.fn.input "Arguments: "

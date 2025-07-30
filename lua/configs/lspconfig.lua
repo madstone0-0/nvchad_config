@@ -404,10 +404,3 @@ LSP.handlers["textDocument/signatureHelp"] = LSP.with(LSP.handlers.signature_hel
     focusable = false,
 })
 
-vim.g.virtual_lines = { current_line = true }
-
-vim.diagnostic.config {
-    virtual_text = false,
-    virtual_lines = vim.g.virtual_lines,
-    update_in_insert = true,
-}

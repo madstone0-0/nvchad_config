@@ -207,10 +207,18 @@ end
 vim.schedule(function()
     opt.clipboard = { "unnamed", "unnamedplus" }
     os.execute "python ~/.config/nvim/pywal/chadwal.py &> /dev/null &"
+
+    vim.g.virtual_lines = { current_line = true }
+
+    vim.diagnostic.config {
+        virtual_text = false,
+        virtual_lines = vim.g.virtual_lines,
+        update_in_insert = true,
+    }
 end)
 
 -- Setup user commands
 vim.schedule(function()
-    local cmds = require("cmds")
+    local cmds = require "cmds"
     cmds.setupCmds()
 end)

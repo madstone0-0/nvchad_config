@@ -61,60 +61,73 @@ local function configure_exts()
         }
     end
 
-    local dapui_present, dapui = pcall(require, "dapui")
-    if dapui_present then
-        dapui.setup {
-            layouts = {
-                {
-                    elements = {
-                        {
-                            id = "scopes",
-                            size = 0.25,
-                        },
-                        {
-                            id = "breakpoints",
-                            size = 0.25,
-                        },
-                        {
-                            id = "stacks",
-                            size = 0.25,
-                        },
-                        {
-                            id = "watches",
-                            size = 0.25,
-                        },
-                        -- {
-                        --     id = "terminal",
-                        --     size = 0.25,
-                        -- },
-                    },
-                    position = "left",
-                    size = 35,
-                },
-                {
-                    elements = {
-                        {
-                            id = "repl",
-                            size = 0.3,
-                        },
-                        {
-                            id = "console",
-                            size = 0.7,
-                        },
-                    },
-                    position = "bottom",
-                    size = 10,
-                },
-            },
-        }
+    -- local dapui_present, dapui = pcall(require, "dapui")
+    -- if dapui_present then
+    --     dapui.setup {
+    --         layouts = {
+    --             {
+    --                 elements = {
+    --                     {
+    --                         id = "scopes",
+    --                         size = 0.25,
+    --                     },
+    --                     {
+    --                         id = "breakpoints",
+    --                         size = 0.25,
+    --                     },
+    --                     {
+    --                         id = "stacks",
+    --                         size = 0.25,
+    --                     },
+    --                     {
+    --                         id = "console",
+    --                         size = 0.25,
+    --                     },
+    --                     -- {
+    --                     --     id = "terminal",
+    --                     --     size = 0.25,
+    --                     -- },
+    --                 },
+    --                 position = "left",
+    --                 size = 35,
+    --             },
+    --             {
+    --                 elements = {
+    --                     {
+    --                         id = "repl",
+    --                         size = 0.3,
+    --                     },
+    --                     {
+    --                         id = "watches",
+    --                         size = 0.7,
+    --                     },
+    --                 },
+    --                 position = "bottom",
+    --                 size = 10,
+    --             },
+    --         },
+    --     }
+    --     dap.listeners.after.event_initialized["dapui_config"] = function()
+    --         dapui.open()
+    --     end
+    --     dap.listeners.before.event_terminated["dapui_config"] = function()
+    --         dapui.close()
+    --     end
+    --     dap.listeners.before.event_exited["dapui_config"] = function()
+    --         dapui.close()
+    --     end
+    -- end
+
+    local dapview_present, dapview = pcall(require, "dap-view")
+    if dapview_present then
         dap.listeners.after.event_initialized["dapui_config"] = function()
-            dapui.open()
+            dapview.open()
         end
         dap.listeners.before.event_terminated["dapui_config"] = function()
-            dapui.close()
+            dapview.close()
         end
         dap.listeners.before.event_exited["dapui_config"] = function()
-            dapui.close()
+            dapview.close()
         end
     end
 end

@@ -54,7 +54,7 @@ function M.setup()
             lua = { "stylua" },
             python = { "ruff_format", "ruff_fix" },
             go = { "gofmt" },
-            -- haskell = { "fourmolu" },
+            haskell = { "fourmolu" },
 
             json = { "biome" },
             jsonc = { "biome" },

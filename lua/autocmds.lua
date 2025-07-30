@@ -249,7 +249,8 @@ cmd("BufWritePost", {
     callback = function()
         local currPath = vim.fn.getcwd()
         local buildScriptPath = currPath .. "/build.sh"
-        if vim.fn.filereadable(buildScriptPath) == 1 then
+        local buildCmdPath = currPath .. "./build_cmd.txt"
+        if vim.fn.filereadable(buildScriptPath) == 1 or vim.fn.filereadable(buildCmdPath) then
             vim.cmd ":call feedkeys(' cos')"
         end
     end,
@@ -318,5 +319,14 @@ cmd("Signal", {
     pattern = "SIGUSR1",
     callback = function()
         require("nvchad.utils").reload()
+    end,
+})
+
+cmd("BufDelete", {
+    callback = function()
+        local bufs = vim.t.bufs
+        if #bufs == 1 and vim.api.nvim_buf_get_name(bufs[1]) == "" then
+            vim.cmd "Nvdash"
+        end
     end,
 })
