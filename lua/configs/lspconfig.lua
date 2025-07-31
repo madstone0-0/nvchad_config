@@ -277,13 +277,13 @@ local servers = {
     -- },
 
     -- Haskell
-    -- hls = {
-    --     settings = {
-    --         haskell = {
-    --             formattingProvider = "fourmolu",
-    --         },
-    --     },
-    -- },
+    hls = {
+        settings = {
+            haskell = {
+                formattingProvider = "fourmolu",
+            },
+        },
+    },
 
     -- R
     -- r_language_server = {
@@ -403,4 +403,3 @@ end
 LSP.handlers["textDocument/signatureHelp"] = LSP.with(LSP.handlers.signature_help, {
     focusable = false,
 })
-
